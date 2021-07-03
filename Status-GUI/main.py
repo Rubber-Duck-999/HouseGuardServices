@@ -4,6 +4,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import time
 import random
+import threading
+import datetime
  
 quotes = ('A man is not complete until he is married.Then he is finished.')
  
@@ -60,7 +62,6 @@ class GUIView:
 							('!active',
 							'blue')
 						])
-
 
 	def setup_widgets(self):
 		# Label widgets
@@ -152,13 +153,37 @@ class GUIController:
 	def run(self):
 		self.view.refresh_button.bind("<Button-1>", 
 									self.btnClicked)
+		self.view.window.bind("<<event1>>",
+							self.eventhandler)
 		self.view.tick()
-		self.view.check_values()
+		thd = threading.Thread(target=self.timecnt)
+		# timer thread
+		thd.daemon = True
+		thd.start()
 		self.view.window.mainloop()
  
 	def btnClicked(self,event):
 		self.view.check_values()
- 
+
+	def timecnt(self):  # runs in background thread
+		print('Timer Thread',threading.get_ident())  # background thread id
+		for x in range(10):
+			self.view.window.event_generate("<<event1>>",
+											when="tail",
+											state=123) 
+			# trigger event in main thread
+			time.sleep(5)
+			# one second
+
+	def eventhandler(self, evt):
+		# runs in main thread
+		print('Event Thread',threading.get_ident())
+		# event thread id (same as main)
+		print(evt.state)
+		# 123, data from event
+		self.view.check_values()
+		# update widget
+
 if __name__ == '__main__':
 	names = [
 		"Temperature",
@@ -167,5 +192,6 @@ if __name__ == '__main__':
 		"G2G Today",
 		"Devices"
 	]
+	# start timer loop
 	controller=GUIController(names)
 	controller.run()
