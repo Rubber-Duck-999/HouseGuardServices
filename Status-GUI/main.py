@@ -1,11 +1,16 @@
 #!/usr/bin/python3
 
 import tkinter as tk
-from tkinter.ttk import *
+import tkinter.ttk as ttk
+import time
+import random
  
 quotes = ('A man is not complete until he is married.Then he is finished.')
  
-class QuoteModel:
+class Model:
+	def __init__(self):
+		'''Constructor'''
+
 	def get_quote(self, n):
 		try:
 			value = quotes[n]
@@ -13,79 +18,154 @@ class QuoteModel:
 			value = 'Not found!'
 		return value
  
-class QuoteGUIView:
-	def __init__(self, alarm_state):
-		self.alarm_state = alarm_state
+class GUIView:
+	def __init__(self, names):
+		'''Constructor'''
 		self.window = tk.Tk()
 		self.window.title("HouseGuard")
-
-		style = Style()
-		font = ('calibri', 120, 'bold')
-		style.configure('TLabel', font=font, borderwidth='4')
-
-		style.map('TLabel', foreground=[('!active', 'blue')])
-		style.configure('TButton', font=font, borderwidth='4')
-
-		style.map('TButton', foreground=[('active', '!disabled', 'blue')],
-				background=[('active', 'yellow')])
-
-		frame3 = tk.Frame(self.window)
-		frame3.pack()
-		text = "Alarm State: {}".format(self.alarm_state)
-		self.state_label = Label(frame3, text=text)
-		self.state_label.pack()
-
-		frame4 = tk.Frame(self.window)
-		frame4.pack()
-		self.on_button = Button(frame4, text="ON", command=self.on_event)
-		self.off_button = Button(frame4, text="OFF", command=self.off_event)
-
-		self.state = False
 		self.window.bind("<F11>", self.toggle_fullscreen)
 		self.window.bind("<Escape>", self.end_fullscreen)
-		self.set_buttons()
+		self.state = False
+		self.names = names
+		self.lists = []
+		self.setup_styles()
+		self.setup_widgets()
+		self.window.columnconfigure(0, weight=2)
+		self.window.columnconfigure(1, weight=1)
+		self.time_local = ''
+
+	def setup_styles(self):
+		self.style = ttk.Style()
+		font = ('calibri', 24, 'bold')
+		self.style.configure('TLabel',
+							font=font,
+							borderwidth='4')
+		self.style.map('TLabel',
+						foreground=[('!active', 'black')])
+		self.style.configure('TButton', 
+							font=font, 
+							borderwidth='4')
+		self.style.map('TButton', 
+						foreground=[
+							('active',
+							'!disabled',
+							'blue'),
+							('!active',
+							'!disabled',
+							'black'),
+						],
+						background=[
+							('active',
+							'black'),
+							('!active',
+							'blue')
+						])
+
+
+	def setup_widgets(self):
+		# Label widgets
+		for x in range(len(self.names)):
+			self.state_label = ttk.Label(text=self.names[x])
+			self.state_label.grid(row=x,
+								column=0,
+								sticky = tk.W+tk.E,
+								pady=5,
+								padx=5)
+		for x in range(len(self.names)):
+			label = ttk.Label(text="N/A",
+							justify=tk.CENTER)
+			self.lists.append(label)
+			self.lists[x].grid(row=x,
+								column=1,
+								padx=5,
+								pady=5)
+		self.refresh_button = ttk.Button(text="Refresh")
+		self.refresh_button.grid(row=len(self.names),
+								columnspan=2,
+								sticky=tk.W+tk.E,
+								padx=5,
+								pady=5)
+		self.clock = ttk.Label(text="Time",
+							justify=tk.CENTER)
+		row = len(self.names)+1
+		self.clock.grid(row=row,
+						columnspan=2,
+						sticky=tk.W+tk.E,
+						padx=5,
+						pady=5)
 		self.toggle_fullscreen()
 
 	def toggle_fullscreen(self, event=None):
 		self.state = not self.state  # Just toggling the boolean
-		self.window.attributes("-fullscreen", self.state)
+		self.window.attributes("-fullscreen",
+								self.state)
 		return "break"
 
 	def end_fullscreen(self, event=None):
 		self.state = False
-		self.window.attributes("-fullscreen", self.state)
+		self.window.attributes("-fullscreen",
+								self.state)
 		return "break"
 
-	def set_buttons(self):
-		self.on_button.pack()
-		self.off_button.pack()
+	def refresh(self):
+		print('Refresh Clicked')
 
-	def on_event(self):
-		print('On Button Clicked')
-		self.state_label['text'] = 'Alarm State: ON'
+	def set_values(self, received):
+		try:
+			for i in range(len(self.names)):
+				if received['name'] == self.names[i]:
+					label = self.lists[i]
+					label['text'] = received['value']
+					self.lists[i] = label
+		except KeyError:
+			print('Issue found on key')
+		except IndexError:
+			print('Issue found on index')
 
-	def off_event(self):
-		print('Off Button Clicked')
-		self.state_label['text'] = 'Alarm State: OFF'
+	def tick(self):
+		# get the current local time from the PC
+		time2 = time.strftime('%H:%M:%S')
+		# if time string has changed, update it
+		if time2 != self.time_local:
+			self.time_local = time2
+			self.clock.config(text=time2)
+		# calls itself every 200 milliseconds
+		# to update the time display as needed
+		# could use >200 ms, but display gets jerky
+		self.clock.after(500, self.tick)
 
-class QuoteGUIController:
-	def __init__(self):
-		self.view = QuoteGUIView('ON')
-		self.model = QuoteModel()
+	def check_values(self):
+		for name in self.names:
+			data = {
+				"name": name,
+				"value": random.randint(0, 20)
+			}
+			self.set_values(data)
+
+class GUIController:
+	def __init__(self, names):
+		'''Constructor'''
+		self.names = names
+		self.view = GUIView(self.names)
+		self.model = Model()
  
 	def run(self):
-		self.view.on_button.bind("<Button-1>", self.btnClicked)
+		self.view.refresh_button.bind("<Button-1>", 
+									self.btnClicked)
+		self.view.tick()
+		self.view.check_values()
 		self.view.window.mainloop()
  
 	def btnClicked(self,event):
-		n=self.view.quoteNum.get()
-		try:
-			n=int(n)
-		except ValueError as err:
-			self.view.error("Incorrect index:"+n)
-		else:
-			quote = self.model.get_quote(n)
+		self.view.check_values()
  
 if __name__ == '__main__':
-	controller=QuoteGUIController()
+	names = [
+		"Temperature",
+		"Humidity",
+		"Alarm",
+		"G2G Today",
+		"Devices"
+	]
+	controller=GUIController(names)
 	controller.run()
