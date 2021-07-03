@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import tkinter as tk
+from tkinter.ttk import *
  
 quotes = ('A man is not complete until he is married.Then he is finished.')
  
@@ -18,18 +19,26 @@ class QuoteGUIView:
 		self.window = tk.Tk()
 		self.window.title("HouseGuard")
 
+		style = Style()
+		font = ('calibri', 120, 'bold')
+		style.configure('TLabel', font=font, borderwidth='4')
+
+		style.map('TLabel', foreground=[('!active', 'blue')])
+		style.configure('TButton', font=font, borderwidth='4')
+
+		style.map('TButton', foreground=[('active', '!disabled', 'blue')],
+				background=[('active', 'yellow')])
+
 		frame3 = tk.Frame(self.window)
 		frame3.pack()
 		text = "Alarm State: {}".format(self.alarm_state)
-		self.state_label = tk.Label(frame3, text=text)
+		self.state_label = Label(frame3, text=text)
 		self.state_label.pack()
 
 		frame4 = tk.Frame(self.window)
 		frame4.pack()
-		self.on_button = tk.Button(frame4, text="ON",
-							width=12, command=self.on_event)
-		self.off_button = tk.Button(frame4, text="OFF",
-							width=12, command=self.off_event)
+		self.on_button = Button(frame4, text="ON", command=self.on_event)
+		self.off_button = Button(frame4, text="OFF", command=self.off_event)
 
 		self.state = False
 		self.window.bind("<F11>", self.toggle_fullscreen)
