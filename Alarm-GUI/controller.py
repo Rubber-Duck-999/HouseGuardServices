@@ -5,8 +5,8 @@ import view
 
 class GUIController:
 	def __init__(self):
-		self.view = view.QuoteGUIView('ON')
-		self.model = model.QuoteModel()
+		self.view = view.GUIView('ON')
+		self.model = model.Model()
  
 	def run(self):
 		self.view.on_button.bind("<Button-1>", self.btnClicked)
