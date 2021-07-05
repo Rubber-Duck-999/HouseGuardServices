@@ -23,13 +23,13 @@ class GUIView:
 		frame3 = tk.Frame(self.window)
 		frame3.pack()
 		text = "Alarm State: {}".format(self.alarm_state)
-		self.state_label = Label(frame3, text=text)
+		self.state_label = ttk.Label(frame3, text=text)
 		self.state_label.pack()
 
 		frame4 = tk.Frame(self.window)
 		frame4.pack()
-		self.on_button = Button(frame4, text="ON", command=self.on_event)
-		self.off_button = Button(frame4, text="OFF", command=self.off_event)
+		self.on_button = ttk.Button(frame4, text="ON", command=self.on_event)
+		self.off_button = ttk.Button(frame4, text="OFF", command=self.off_event)
 
 		self.state = False
 		self.window.bind("<F11>", self.toggle_fullscreen)
