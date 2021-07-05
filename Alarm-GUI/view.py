@@ -10,7 +10,7 @@ class GUIView:
 		self.window = tk.Tk()
 		self.window.title("HouseGuard")
 
-		style = Style()
+		style = ttk.Style()
 		font = ('calibri', 86, 'bold')
 		style.configure('TLabel', font=font, borderwidth='4')
 
