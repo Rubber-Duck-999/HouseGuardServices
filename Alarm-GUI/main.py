@@ -3,5 +3,5 @@
 import controller
 
 if __name__ == '__main__':
-	controller = GUIController()
+	controller = controller.GUIController()
 	controller.run()
