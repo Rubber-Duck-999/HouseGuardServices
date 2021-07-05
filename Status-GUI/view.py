@@ -23,7 +23,7 @@ class GUIView:
 
 	def setup_styles(self):
 		self.style = ttk.Style()
-		font = ('calibri', 24, 'bold')
+		font = ('calibri', 72, 'bold')
 		self.style.configure('TLabel',
 							font=font,
 							borderwidth='10',
@@ -44,12 +44,11 @@ class GUIView:
 							'!disabled',
 							'black'),
 						],
-						bordercolor='blue',
 						background=[
 							('active',
 							'black'),
 							('!active',
-							'blue')
+							'blue'),
 						])
 
 	def setup_widgets(self):

@@ -28,9 +28,12 @@ class GUIController:
 	def btnClicked(self,event):
 		self.view.check_values()
 
-	def timecnt(self):  # runs in background thread
-		print('Timer Thread',threading.get_ident())  # background thread id
-		for x in range(10):
+	def timecnt(self):
+		# runs in background thread
+		print('Timer Thread',threading.get_ident())
+		# background thread id
+		x = True
+		while x:
 			self.view.window.event_generate("<<event1>>",
 											when="tail",
 											state=123) 
