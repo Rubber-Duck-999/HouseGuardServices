@@ -4,6 +4,7 @@ import time
 import model
 import view
 import threading
+import pyautogui
 
 class GUIController:
 
@@ -49,3 +50,4 @@ class GUIController:
 		# 123, data from event
 		self.view.check_values()
 		# update widget
+		pyautogui.click(100, 100)
