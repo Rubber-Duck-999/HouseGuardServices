@@ -22,7 +22,7 @@ class GUIView:
 
 		frame3 = tk.Frame(self.window)
 		frame3.pack()
-		text = "Alarm State: {}".format(self.alarm_state)
+		text = "{}".format(self.alarm_state)
 		self.state_label = ttk.Label(frame3, text=text)
 		self.state_label.pack()
 
@@ -53,8 +53,8 @@ class GUIView:
 
 	def on_event(self):
 		print('On Button Clicked')
-		self.state_label['text'] = 'Alarm State: ON'
+		self.state_label['text'] = 'ON'
 
 	def off_event(self):
 		print('Off Button Clicked')
-		self.state_label['text'] = 'Alarm State: OFF'
+		self.state_label['text'] = 'OFF'
