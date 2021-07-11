@@ -1,9 +1,10 @@
+#!/usr/bin/python3
+'''Python script to send '''
 # Import the email modules we'll need
 import smtplib
 import json
 import logging
 import os
-import pymongo
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 

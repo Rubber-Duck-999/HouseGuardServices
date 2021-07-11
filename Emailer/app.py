@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-'''Python script to check too good to go api'''
+'''Python script to send emails on server'''
 import logging
 from local import Emailer
 from db import Database
@@ -11,7 +11,8 @@ logging.info("Starting program")
 app = Flask(__name__)
 
 @app.route("/alarm/<int:state>", methods=["POST"])
-def index(state):
+def alarm(state):
+    logging.info('# alarm()')
     logging.info('Alarm Message received')
     emailer = Emailer()
     emailer.get_config()
@@ -24,6 +25,7 @@ def index(state):
 
 @app.route("/weather/<int:temp>", methods=["POST"])
 def weather(temp):
+    logging.info('# weather()')
     logging.info('Weather Message received')
     logging.info(temp)
     database = Database()
