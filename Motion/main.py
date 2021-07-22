@@ -41,6 +41,7 @@ class Motion():
             with open(config_name) as file:
                 data = json.load(file)
             self.server_address = 'http://{}/motion'.format(data["server_address"])
+            logging.info(self.server_address)
             self.send_data = True
         except KeyError:
             logging.error("Variables not set")
