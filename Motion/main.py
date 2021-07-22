@@ -47,7 +47,7 @@ class Motion():
         except FileNotFound:
             logging.error("File is missing")
 
-    def motion(self):
+    def motion(self, value):
         '''Motion detection'''
         detected = datetime.datetime.now()
         if self.initialised:
