@@ -37,8 +37,10 @@ def alarm(state):
 def weather():
     logging.info('# weather()')
     logging.info('Weather Message received')
-    temp = request.get_json().get('temperature')
-    logging.info(temp)
+    request_data = request.get_json()
+    if request_data:
+        if 'temperature' in request_data:
+            logging.info(request_data['temperature'])
     #database = Database()
     #database.insert(temp)
     return 'Received'
