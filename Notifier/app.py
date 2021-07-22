@@ -11,7 +11,7 @@ logging.info("Starting program")
 app = Flask(__name__)
 
 @app.route("/motion", methods=["POST"])
-def alarm():
+def motion():
     logging.info('# motion()')
     logging.info('Motion received')
     emailer = Emailer()
