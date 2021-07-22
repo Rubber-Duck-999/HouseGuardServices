@@ -3,7 +3,7 @@
 import logging
 from local import Emailer
 from db import Database
-from flask import Flask
+from flask import Flask, request
 
 logging.basicConfig(level=logging.INFO)
 logging.info("Starting program")
@@ -33,13 +33,14 @@ def alarm(state):
     emailer.email('Alarm has Changed', message)
     return 'Received'
 
-@app.route("/weather/<int:temp>", methods=["POST"])
-def weather(temp):
+@app.route("/weather", methods=["POST"])
+def weather():
     logging.info('# weather()')
     logging.info('Weather Message received')
+    temp = request.get_json().get('temperature')
     logging.info(temp)
-    database = Database()
-    database.insert(temp)
+    #database = Database()
+    #database.insert(temp)
     return 'Received'
 
 if __name__ == "__main__":
