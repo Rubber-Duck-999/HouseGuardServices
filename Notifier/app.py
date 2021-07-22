@@ -31,3 +31,6 @@ def weather(temp):
     database = Database()
     database.insert(temp)
     return 'Received'
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0')
