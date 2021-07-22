@@ -77,6 +77,7 @@ class Motion():
     def loop(self):
         '''Loop and wait for event'''
         logging.info('loop()')
+        self.get_settings()
         time.sleep(2)
         try:
             GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
