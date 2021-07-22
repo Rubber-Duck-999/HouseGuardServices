@@ -64,11 +64,8 @@ class Motion():
     def publish_data(self):
         '''Send data to server if asked'''
         if self.send_data:
-            data = {
-                'motion': 1
-            }
             try:
-                response = requests.post(self.server_address, data=data, timeout=5)
+                response = requests.post(self.server_address, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
             except requests.ConnectionError as error:
