@@ -23,7 +23,8 @@ class NetworkTest:
         self.change_state = False
         low = 50
         high = 100
-        if todays_date.minute % 2:
+        print('Time: {}'.format(todays_date.minute))
+        if todays_date.minute % 2 == 0:
             down_speed = self.speed.download() / 1048576
             down = round(down_speed)
             print('Down: {}'.format(down))
