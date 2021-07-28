@@ -2,7 +2,7 @@
 '''To set up the led array'''
 import blinkt
 import time
-from datetime import datetime, time
+from datetime import datetime
 import colorsys
 
 class Led:
@@ -18,8 +18,8 @@ class Led:
 
     def within_time(self):
         check_time = datetime.utcnow().time()
-        begin_time = time(8,00)
-        end_time   = time(20,00)
+        begin_time = datetime.time(8,00)
+        end_time   = datetime.time(20,00)
         begin = check_time >= begin_time
         end   = check_time <= end_time
         self.time_allowed = begin and end
@@ -30,7 +30,7 @@ class Led:
         time.sleep(0.05)
 
     def run_day(self):
-        self.hue = int(time() * 100) % 360
+        self.hue = int(time.time() * 100) % 360
         for x in range(8):
             offset = x * self.spacing
             h = ((self.hue + offset) % 360) / 360.0
