@@ -31,7 +31,7 @@ class Led:
         print('run_night()')
         blinkt.set_all(0, 0, 0, self.brightness)
         blinkt.show()
-        time.sleep(5)
+        time.sleep(30)
 
     def set_pixels(self):
         print('set_pixels()')
@@ -39,25 +39,24 @@ class Led:
         green = 0
         red   = 0
         colour = self.network_test.check_speed()
-        if self.network_test.change_state:
-            if colour == Colours.Red:
-                # Yellow
-                blue  = 245
-            elif colour == Colours.Yellow:
-                # Red
-                red   = 245
-                green = 66
-            elif colour == Colours.Green:
-                # Green
-                green = 245
-            for x in range(self.pixels):
-                blinkt.set_pixel(x, red, green, blue)
+        if colour == Colours.Red:
+            # Yellow
+            blue  = 245
+        elif colour == Colours.Yellow:
+            # Red
+            red   = 245
+            green = 66
+        elif colour == Colours.Green:
+            # Green
+            green = 245
+        for x in range(self.pixels):
+            blinkt.set_pixel(x, red, green, blue)
 
     def run_day(self):
         print('run_day()')
         self.set_pixels()
         blinkt.show()
-        time.sleep(5)
+        time.sleep(30)
 
     def startup(self):
         print('startup()')
