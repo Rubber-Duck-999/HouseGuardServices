@@ -51,10 +51,10 @@ class Led:
 
     def startup(self):
         print('startup()')
-        while not self.time_allowed:
+        while self.time_allowed:
             self.within_time()
             self.run_day()
-        while self.time_allowed:
+        while not self.time_allowed:
             self.within_time()
             self.run_night()
 
@@ -62,4 +62,5 @@ class Led:
 if __name__ == "__main__":
     print('Starting Program')
     led = Led()
-    led.startup()
+    while True:
+        led.startup()
