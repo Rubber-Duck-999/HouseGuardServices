@@ -17,7 +17,7 @@ class Led:
         blinkt.set_clear_on_exit(True)
 
     def within_time(self):
-        check_time = self.local.utcnow().time()
+        check_time = datetime.utcnow().time()
         begin_time = time(8,00)
         end_time   = time(20,00)
         begin = check_time >= begin_time
