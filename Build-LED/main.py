@@ -27,6 +27,7 @@ class Led:
     def run_night(self):
         blinkt.set_all(100, 100, 100, self.brightness)
         blinkt.show()
+        time.sleep(0.05)
 
     def run_day(self):
         self.hue = int(time.time() * 100) % 360
@@ -41,10 +42,10 @@ class Led:
     def startup(self):
         while self.time_allowed:
             self.within_time()
-            run_day()
+            self.run_day()
         while not self.time_allowed:
             self.within_time()
-            run_night()
+            self.run_night()
 
 
 if __name__ == "__main__":
