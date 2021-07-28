@@ -29,7 +29,7 @@ class NetworkTest:
                 return Colours.Red
             elif down > low and down <= high:
                 return Colours.Yellow
-            else down > high:
+            else:
                 return Colours.Green
 
 if __name__ == "__main__":
