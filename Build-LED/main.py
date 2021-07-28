@@ -10,7 +10,7 @@ class Led:
     def __init__(self):
         self.spacing = 360.0 / 16.0
         self.hue = 0
-        self.brightness = 0.05
+        self.brightness = 0.1
         self.time_allowed = True
         blinkt.clear()
         blinkt.show()
