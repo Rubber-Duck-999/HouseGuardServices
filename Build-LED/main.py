@@ -2,7 +2,7 @@
 '''To set up the led array'''
 import blinkt
 import time
-from datetime import datetime
+import datetime
 import colorsys
 
 class Led:
@@ -30,7 +30,7 @@ class Led:
         time.sleep(0.05)
 
     def run_day(self):
-        self.hue = int(time.time() * 100) % 360
+        self.hue = int(datetime.time() * 100) % 360
         for x in range(8):
             offset = x * self.spacing
             h = ((self.hue + offset) % 360) / 360.0
