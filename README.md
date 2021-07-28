@@ -2,10 +2,12 @@
 
 Services for the houseguard system in one place
 
-## Serrvices
+## Services
 
 * Alarm GUI
-    * GUI for displaying alarm status and switchign on and off
+    * GUI for displaying alarm status and switching on and off
+* Build LED
+    * Shows LED lights
 * Emailer
     * Notifier for the whole project
 * Motion
