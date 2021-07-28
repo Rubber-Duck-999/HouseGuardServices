@@ -30,7 +30,7 @@ class Led:
         time.sleep(0.05)
 
     def run_day(self):
-        self.hue = int(time.time() * 100) % 360
+        self.hue = int(time() * 100) % 360
         for x in range(8):
             offset = x * self.spacing
             h = ((self.hue + offset) % 360) / 360.0
