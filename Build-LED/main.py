@@ -40,10 +40,10 @@ class Led:
         time.sleep(0.05)
 
     def startup(self):
-        while self.time_allowed:
+        while not self.time_allowed:
             self.within_time()
             self.run_day()
-        while not self.time_allowed:
+        while self.time_allowed:
             self.within_time()
             self.run_night()
 
