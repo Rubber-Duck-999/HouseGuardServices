@@ -38,21 +38,20 @@ class Led:
         blue  = 0
         green = 0
         red   = 0
-        if not self.network_test.change_state():
-            return
-        colour = self.network_test.check_speed()
-        if colour == Colours.Red:
-            # Yellow
-            blue  = 245
-        elif colour == Colours.Yellow:
-            # Red
-            red   = 245
-            green = 66
-        elif colour == Colours.Green:
-            # Green
-            green = 245
-        for x in range(self.pixels):
-            blinkt.set_pixel(x, red, green, blue)
+        if self.network_test.change_state:
+            colour = self.network_test.check_speed()
+            if colour == Colours.Red:
+                # Yellow
+                blue  = 245
+            elif colour == Colours.Yellow:
+                # Red
+                red   = 245
+                green = 66
+            elif colour == Colours.Green:
+                # Green
+                green = 245
+            for x in range(self.pixels):
+                blinkt.set_pixel(x, red, green, blue)
 
     def run_day(self):
         print('run_day()')
