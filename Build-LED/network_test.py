@@ -2,8 +2,9 @@
 
 import speedtest
 from datetime import datetime
+import enum.Enum
 
-class Colours(Enum):
+class Colours(enum.Enum):
     Red    = 1
     Yellow = 2
     Green  = 3
