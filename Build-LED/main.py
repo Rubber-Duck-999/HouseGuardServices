@@ -31,7 +31,7 @@ class Led:
         print('run_night()')
         blinkt.set_all(0, 0, 0, self.brightness)
         blinkt.show()
-        time.sleep(0.05)
+        time.sleep(5)
 
     def set_pixels(self):
         print('set_pixels()')
@@ -58,7 +58,7 @@ class Led:
         print('run_day()')
         self.set_pixels()
         blinkt.show()
-        time.sleep(0.001)
+        time.sleep(5)
 
     def startup(self):
         print('startup()')
