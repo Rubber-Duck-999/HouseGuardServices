@@ -35,9 +35,9 @@ class Led:
             offset = x * self.spacing
             h = ((self.hue + offset) % 360) / 360.0
             r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(h, 1.0, 1.0)]
-            blinkt.set_pixel(x, r, g, self.brightness)
+            blinkt.set_pixel(x, r, g, b)
         blinkt.show()
-        time.sleep(0.05)
+        time.sleep(0.001)
 
     def startup(self):
         while not self.time_allowed:
