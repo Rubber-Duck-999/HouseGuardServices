@@ -38,8 +38,8 @@ class Led:
         blue  = 0
         green = 0
         red   = 0
+        colour = self.network_test.check_speed()
         if self.network_test.change_state:
-            colour = self.network_test.check_speed()
             if colour == Colours.Red:
                 # Yellow
                 blue  = 245
