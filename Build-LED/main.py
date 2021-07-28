@@ -4,15 +4,16 @@ import blinkt
 import time
 import datetime
 import colorsys
+from network_test import NetworkTest, Colours
 
 class Led:
 
     def __init__(self):
         print('__init__()')
-        self.spacing = 360.0 / 16.0
-        self.hue = 0
         self.brightness = 0.1
+        self.pixels = 8
         self.time_allowed = True
+        self.network_test = NetworkTest()
         blinkt.clear()
         blinkt.show()
         blinkt.set_clear_on_exit(True)
@@ -24,28 +25,38 @@ class Led:
         end_time   = datetime.time(20,00)
         begin = check_time >= begin_time
         end   = check_time <= end_time
-        self.time_allowed = begin and end
+        self.time_allowed = True #begin and end
 
     def run_night(self):
         print('run_night()')
-        blinkt.set_all(100, 100, 100, self.brightness)
+        blinkt.set_all(0, 0, 0, self.brightness)
         blinkt.show()
         time.sleep(0.05)
 
+    def set_pixels(self):
+        print('set_pixels()')
+        blue  = 0
+        green = 0
+        red   = 0
+        if not self.network_test.change_state():
+            return
+        colour = self.network_test.check_speed()
+        if colour == Colours.Red:
+            # Yellow
+            blue  = 245
+        elif colour == Colours.Yellow:
+            # Red
+            red   = 245
+            green = 66
+        elif colour == Colours.Green:
+            # Green
+            green = 245
+        for x in range(self.pixels):
+            blinkt.set_pixel(x, red, green, blue)
+
     def run_day(self):
         print('run_day()')
-        hue = int(time.time() * 100) % 360
-        for x in range(8):
-            offset = x * self.spacing
-            h = ((hue + offset) % 360) / 360.0
-            r, g, b = [int(c * 255) for c in colorsys.hsv_to_rgb(h, 1.0, 1.0)]
-            blinkt.set_pixel(x, r, g, b)
-            print('Setting pixel: {} to R: {}, G: {}, B: {}'.format(
-                x,
-                r,
-                g,
-                b
-            ))
+        self.set_pixels()
         blinkt.show()
         time.sleep(0.001)
 
