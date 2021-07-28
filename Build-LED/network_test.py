@@ -21,12 +21,14 @@ class NetworkTest:
         '''Check speed of both checks'''
         todays_date = datetime.now()
         self.change_state = False
+        low = 50
+        high = 100
         if todays_date.minute % 2:
             down_speed = self.speed.download() / 1048576
             down = round(down_speed)
             print('Down: {}'.format(down))
             self.change_state = True
-            if down <= low_threshold:
+            if down <= low:
                 return Colours.Red
             elif down > low and down <= high:
                 return Colours.Yellow
