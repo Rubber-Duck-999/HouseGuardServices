@@ -29,7 +29,7 @@ class Led:
 
     def run_night(self):
         print('run_night()')
-        blinkt.set_all(0, 0, 0, self.brightness)
+        blinkt.set_all(100, 100, 100, 0.001)
         blinkt.show()
         time.sleep(30)
 
