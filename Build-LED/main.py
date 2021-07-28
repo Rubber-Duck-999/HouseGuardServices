@@ -21,11 +21,11 @@ class Led:
     def within_time(self):
         print('within_time()')
         check_time = datetime.datetime.utcnow().time()
-        begin_time = datetime.time(8,00)
-        end_time   = datetime.time(20,00)
+        begin_time = datetime.time(7,00)
+        end_time   = datetime.time(20,30)
         begin = check_time >= begin_time
         end   = check_time <= end_time
-        self.time_allowed = True #begin and end
+        self.time_allowed = begin and end
 
     def run_night(self):
         print('run_night()')
