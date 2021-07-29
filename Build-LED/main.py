@@ -55,7 +55,6 @@ class Led:
 
 if __name__ == "__main__":
     print('Starting Program')
-    led = Led()
     T1 = Thread(target=Led().run_lights, args=())
     T2 = Thread(target=Led().check_network, args=())
     T1.start()
