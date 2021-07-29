@@ -39,11 +39,8 @@ class Led:
 
     def set_all(self):
         print('set_all()')
-        blue    = 100
-        green   = 100
-        red     = 100
         for x in range(self.pixels):
-            blinkt.set_pixel(x, red, green, blue, self.brightness)
+            blinkt.set_pixel(x, 0, 0, 0, self.brightness)
         blinkt.show()
 
     def run_lights(self):
@@ -53,7 +50,7 @@ class Led:
             while pixel < self.pixels:
                 self.set_all()
                 self.set_pixels(pixel)
-                time.sleep(1)
+                time.sleep(0.5)
                 pixel += 1
 
     def check_network(self):
