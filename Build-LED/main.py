@@ -68,8 +68,8 @@ def check_network(q):
 if __name__ == "__main__":
     print('Starting Program')
     q = queue.Queue()
-    T1 = Thread(target=Led().run_lights, args=(q))
-    T2 = Thread(target=check_network, args=(q))
+    T1 = Thread(target=Led().run_lights, args=(q,))
+    T2 = Thread(target=check_network, args=(q,))
     T1.start()
     T2.start()
     T1.join()
