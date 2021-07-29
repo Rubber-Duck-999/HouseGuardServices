@@ -14,7 +14,6 @@ class Led:
         self.time_allowed = True
         self.network_test = NetworkTest()
         blinkt.clear()
-        blinkt.set_brightness(self.brightness)
         blinkt.show()
         blinkt.set_clear_on_exit(True)
 
@@ -35,7 +34,7 @@ class Led:
             # Green
             green = 220 + varying
         for x in range(self.pixels):
-            blinkt.set_pixel(x, red, green, blue)
+            blinkt.set_pixel(x, red, green, blue, self.brightness)
 
     def run(self, colour):
         print('run()')
