@@ -36,6 +36,7 @@ class Led:
             green = 192
             blue  = 203
             return red, green, blue
+        print('Colour: {}'.format(colour))
         if colour == Colours.Red:
             red   = 255
         elif colour == Colours.Orange:
