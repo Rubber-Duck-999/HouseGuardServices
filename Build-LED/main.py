@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 '''To set up the led array'''
 import blinkt
-from threading import Thread, queue
+from threading import Thread
+import queue
 import time
 import colorsys
 from network_test import NetworkTest, Colours
