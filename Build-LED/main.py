@@ -40,11 +40,13 @@ class Led:
         if colour == Colours.Red:
             red   = 255
         elif colour == Colours.Orange:
-            red   = 255
-            blue  = 102
+            red   = 236
+            green = 94
+            blue  = 2
         elif colour == Colours.Purple:
-            red   = 128
-            blue  = 128
+            red   = 110
+            green = 51
+            blue  = 255
         elif colour == Colours.Green:
             green = 255
         elif colour == Colours.Blue:
@@ -56,6 +58,7 @@ class Led:
             time.sleep(5)
             red, green, blue = self.get_colours(show)
             self.set_all(red, green, blue)
+        time.sleep(5)
         colour = Colours.Red
         while True:
             pixel = 0
