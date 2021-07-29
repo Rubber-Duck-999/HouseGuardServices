@@ -9,7 +9,7 @@ class Led:
 
     def __init__(self):
         print('__init__()')
-        self.brightness = 0.1
+        self.brightness = 0.05
         self.pixels = 8
         self.time_allowed = True
         self.network_test = NetworkTest()
