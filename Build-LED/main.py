@@ -27,7 +27,7 @@ class Led:
         if colour == None:
             print('Colour is None')
             return
-        print('Colour: {}'.format(self.colour))
+        print('Colour: {}'.format(colour))
         if colour == Colours.Red:
             # Red
             red  = 255
