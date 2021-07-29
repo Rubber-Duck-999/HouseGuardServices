@@ -1,17 +1,14 @@
 #!/usr/bin/python3
 '''To set up the led array'''
 import blinkt
-from threading import Thread
+from threading import Thread, queue
 import time
 import colorsys
 from network_test import NetworkTest, Colours
 
-colour = Colours.Red
-
-
 class Led:
 
-    def __init__(self):
+    def __init__(self, q):
         print('__init__()')
         self.brightness = 0.05
         self.pixels = 8
@@ -19,7 +16,7 @@ class Led:
         blinkt.show()
         blinkt.set_clear_on_exit(True)
 
-    def set_pixels(self, x):
+    def set_pixels(self, x, colour):
         print('set_pixels()')
         blue    = 0
         green   = 0
@@ -51,24 +48,27 @@ class Led:
         print('run_lights()')
         while True:
             pixel = 0
+            colour = q.get()
             while pixel < self.pixels:
                 self.set_all()
-                self.set_pixels(pixel)
+                self.set_pixels(pixel, colour)
                 time.sleep(0.5)
                 pixel += 1
 
-def check_network():
+def check_network(q):
     print('check_network()')
     while True:
         network_test = NetworkTest()
         colour = network_test.check_speed()
+        q.put(colour)
         time.sleep(10)
 
 
 if __name__ == "__main__":
     print('Starting Program')
-    T1 = Thread(target=Led().run_lights, args=())
-    T2 = Thread(target=check_network, args=())
+    q = queue.Queue()
+    T1 = Thread(target=Led().run_lights, args=(q))
+    T2 = Thread(target=check_network, args=(q))
     T1.start()
     T2.start()
     T1.join()
