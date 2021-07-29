@@ -2,7 +2,6 @@
 '''To set up the led array'''
 import blinkt
 import time
-import datetime
 import colorsys
 from network_test import NetworkTest, Colours
 
