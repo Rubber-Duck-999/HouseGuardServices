@@ -55,9 +55,9 @@ class Led:
 
     def run_lights(self, q):
         for show in Colours:
+            time.sleep(5)
             red, green, blue = self.get_colours(show)
             self.set_all(red, green, blue)
-            time.sleep(2)
         colour = Colours.Red
         while True:
             pixel = 0
@@ -77,7 +77,7 @@ def check_network(q):
         network_test = NetworkTest()
         colour = network_test.check_speed()
         q.put(colour)
-        time.sleep(30)
+        time.sleep(10)
 
 
 if __name__ == "__main__":
