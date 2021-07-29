@@ -21,8 +21,10 @@ class Led:
     def within_time(self):
         print('within_time()')
         check_time = datetime.datetime.utcnow().time()
+        print('Time now: {}'.format(check_time))
         begin_time = datetime.time(7,00)
         end_time   = datetime.time(20,30)
+        print('Begin: {}, End: {}'.format(begin_time, end_time))
         begin = check_time >= begin_time
         end   = check_time <= end_time
         self.time_allowed = begin and end
