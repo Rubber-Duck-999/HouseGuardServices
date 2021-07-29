@@ -38,15 +38,12 @@ class Led:
             return red, green, blue
         if colour == Colours.Red:
             red   = 255
+        elif colour == Colours.Orange:
+            red   = 255
+            blue  = 102
         elif colour == Colours.Purple:
             red   = 128
             blue  = 128
-        elif colour == Colours.Purple:
-            red   = 204
-            green = 102
-        elif colour == Colours.Yellow:
-            red   = 255
-            green = 255
         elif colour == Colours.Green:
             green = 255
         elif colour == Colours.Blue:
