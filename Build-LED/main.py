@@ -41,14 +41,14 @@ class Led:
         elif colour == Colours.Purple:
             red   = 128
             blue  = 128
-        elif colour == Colours.Orange:
-            red   = 255
-            green = 165
+        elif colour == Colours.Purple:
+            red   = 204
+            green = 102
         elif colour == Colours.Yellow:
-            red   = 245
-            green = 66
+            red   = 255
+            green = 255
         elif colour == Colours.Green:
-            green = 245
+            green = 255
         elif colour == Colours.Blue:
             blue  = 255
         return red, green, blue
@@ -69,7 +69,7 @@ class Led:
             while pixel < self.pixels:
                 self.set_all(0, 0, 0)
                 self.set_pixels(pixel, colour)
-                time.sleep(0.2)
+                time.sleep(1)
                 pixel += 1
 
 def check_network(q):
