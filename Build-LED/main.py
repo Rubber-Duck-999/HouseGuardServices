@@ -10,7 +10,6 @@ from network_test import NetworkTest, Colours
 class Led:
 
     def __init__(self):
-        print('__init__()')
         self.brightness = 0.05
         self.pixels = 8
         blinkt.clear()
@@ -18,35 +17,36 @@ class Led:
         blinkt.set_clear_on_exit(True)
 
     def set_pixels(self, x, colour):
-        print('set_pixels()')
         blue    = 0
         green   = 0
         red     = 0
         if colour == None:
             print('Colour is None')
             return
-        print('Colour: {}'.format(colour))
         if colour == Colours.Red:
-            # Red
-            red  = 255
+            red   = 255
+        elif colour == Colours.Purple:
+            red   = 128
+            blue  = 128
+        elif colour == Colours.Orange:
+            red   = 255
+            green = 165
         elif colour == Colours.Yellow:
-            # Yellow
             red   = 245
             green = 66
         elif colour == Colours.Green:
-            # Green
             green = 245
+        elif colour == Colours.Blue:
+            blue  = 255
         blinkt.set_pixel(x, red, green, blue, self.brightness)
         blinkt.show()
 
     def set_all(self):
-        print('set_all()')
         for x in range(self.pixels):
             blinkt.set_pixel(x, 0, 0, 0, self.brightness)
         blinkt.show()
 
     def run_lights(self, q):
-        print('run_lights()')
         colour = Colours.Red
         while True:
             pixel = 0
@@ -59,16 +59,15 @@ class Led:
             while pixel < self.pixels:
                 self.set_all()
                 self.set_pixels(pixel, colour)
-                time.sleep(0.5)
+                time.sleep(0.2)
                 pixel += 1
 
 def check_network(q):
-    print('check_network()')
     while True:
         network_test = NetworkTest()
         colour = network_test.check_speed()
         q.put(colour)
-        time.sleep(10)
+        time.sleep(60)
 
 
 if __name__ == "__main__":

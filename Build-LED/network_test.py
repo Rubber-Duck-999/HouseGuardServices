@@ -6,8 +6,11 @@ import enum
 
 class Colours(enum.Enum):
     Red    = 1
-    Yellow = 2
-    Green  = 3
+    Purple = 2
+    Orange = 3
+    Yellow = 4
+    Green  = 5
+    Blue   = 6
 
 
 class NetworkTest:
@@ -18,17 +21,26 @@ class NetworkTest:
 
     def check_speed(self):
         '''Check speed of both checks'''
-        low = 50
-        high = 100
+        red    = 25
+        purple = 50
+        orange = 75
+        yellow = 100
+        green  = 125
+        blue  = 150
         down_speed = self.speed.download() / 1048576
         down = round(down_speed)
-        print('Down: {}'.format(down))
-        if down <= low:
+        if down <= red:
             return Colours.Red
-        elif down > low and down <= high:
+        elif down > red and down <= purple:
+            return Colours.Purple
+        elif down > purple and down <= orange:
+            return Colours.Orange
+        elif down > orange and down <= green:
             return Colours.Yellow
-        else:
+        elif down > green and down <= blue:
             return Colours.Green
+        else:
+            return Colours.Blue
 
 if __name__ == "__main__":
     network_test = NetworkTest()
