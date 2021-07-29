@@ -6,14 +6,15 @@ import time
 import colorsys
 from network_test import NetworkTest, Colours
 
+colour = Colours.Red
+
+
 class Led:
 
     def __init__(self):
         print('__init__()')
         self.brightness = 0.05
         self.pixels = 8
-        self.network_test = NetworkTest()
-        self.colour = Colours.Red
         blinkt.clear()
         blinkt.show()
         blinkt.set_clear_on_exit(True)
@@ -23,15 +24,18 @@ class Led:
         blue    = 0
         green   = 0
         red     = 0
+        if colour == None:
+            print('Colour is None')
+            return
         print('Colour: {}'.format(self.colour))
-        if self.colour == Colours.Red:
+        if colour == Colours.Red:
             # Red
             red  = 255
-        elif self.colour == Colours.Yellow:
+        elif colour == Colours.Yellow:
             # Yellow
             red   = 245
             green = 66
-        elif self.colour == Colours.Green:
+        elif colour == Colours.Green:
             # Green
             green = 245
         blinkt.set_pixel(x, red, green, blue, self.brightness)
@@ -53,17 +57,18 @@ class Led:
                 time.sleep(0.5)
                 pixel += 1
 
-    def check_network(self):
-        print('check_network()')
-        while True:
-            self.colour = self.network_test.check_speed()
-            time.sleep(10)
+def check_network():
+    print('check_network()')
+    while True:
+        network_test = NetworkTest()
+        colour = network_test.check_speed()
+        time.sleep(10)
 
 
 if __name__ == "__main__":
     print('Starting Program')
     T1 = Thread(target=Led().run_lights, args=())
-    T2 = Thread(target=Led().check_network, args=())
+    T2 = Thread(target=check_network, args=())
     T1.start()
     T2.start()
     T1.join()
