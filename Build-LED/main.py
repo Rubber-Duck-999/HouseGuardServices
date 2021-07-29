@@ -9,7 +9,7 @@ from network_test import NetworkTest, Colours
 
 class Led:
 
-    def __init__(self, q):
+    def __init__(self):
         print('__init__()')
         self.brightness = 0.05
         self.pixels = 8
@@ -45,7 +45,7 @@ class Led:
             blinkt.set_pixel(x, 0, 0, 0, self.brightness)
         blinkt.show()
 
-    def run_lights(self):
+    def run_lights(self, q):
         print('run_lights()')
         while True:
             pixel = 0
