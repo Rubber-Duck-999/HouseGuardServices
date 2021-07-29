@@ -10,7 +10,7 @@ class Led:
 
     def __init__(self):
         print('__init__()')
-        self.brightness = 0.01
+        self.brightness = 0.05
         self.pixels = 8
         self.network_test = NetworkTest()
         self.colour = Colours.Red
@@ -23,17 +23,16 @@ class Led:
         blue    = 0
         green   = 0
         red     = 0
-        varying = x * 5
         if self.colour == Colours.Red:
             # Red
-            red  = 220 + varying
+            red  = 255
         elif self.colour == Colours.Yellow:
             # Yellow
-            red   = 220 + varying
+            red   = 245
             green = 66
         elif self.colour == Colours.Green:
             # Green
-            green = 220 + varying
+            green = 245
         blinkt.set_pixel(x, red, green, blue, self.brightness)
         blinkt.show()
 
@@ -43,7 +42,7 @@ class Led:
             pixel = 0
             while pixel < self.pixels:
                 self.set_pixels(pixel)
-                time.sleep(0.1)
+                time.sleep(1)
                 pixel += 1
 
     def check_network(self):
