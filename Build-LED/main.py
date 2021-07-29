@@ -54,7 +54,6 @@ class Led:
             try:
                 colour = q.get(False)
             except queue.Empty:
-                print('Colour is empty')
                 colour = last_colour
             while pixel < self.pixels:
                 self.set_all()
