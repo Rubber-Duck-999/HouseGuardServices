@@ -18,57 +18,41 @@ class Led:
         blinkt.show()
         blinkt.set_clear_on_exit(True)
 
-    def within_time(self):
-        print('within_time()')
-        check_time = datetime.datetime.utcnow().time()
-        print('Time now: {}'.format(check_time))
-        begin_time = datetime.time(7,00)
-        end_time   = datetime.time(20,30)
-        print('Begin: {}, End: {}'.format(begin_time, end_time))
-        begin = check_time >= begin_time
-        end   = check_time <= end_time
-        self.time_allowed = begin and end
-
-    def run_night(self):
-        print('run_night()')
-        blinkt.set_all(100, 100, 100, 0.05)
-        blinkt.show()
-        time.sleep(30)
-
-    def set_pixels(self):
+    def set_pixels(self, colour):
         print('set_pixels()')
         blue  = 0
         green = 0
         red   = 0
-        colour = self.network_test.check_speed()
+        x     = x * 5
         if colour == Colours.Red:
-            # Yellow
-            blue  = 245
-        elif colour == Colours.Yellow:
             # Red
-            red   = 245
+            red  = 220 + x
+        elif colour == Colours.Yellow:
+            # Yellow
+            red   = 220 + x
             green = 66
         elif colour == Colours.Green:
             # Green
-            green = 245
+            green = 220 + x
         for x in range(self.pixels):
             blinkt.set_pixel(x, red, green, blue)
 
-    def run_day(self):
-        print('run_day()')
-        self.set_pixels()
-        blinkt.show()
-        time.sleep(30)
+    def run(self, colour):
+        print('run()')
+        x = 0
+        while x < 5:
+            self.set_pixels(colour, x)
+            blinkt.show()
+            time.sleep(5)
+            self.set_pixels(colour, x)
+            blinkt.show()
+            time.sleep(5)
+            x += 1
 
     def startup(self):
         print('startup()')
-        self.within_time()
-        while self.time_allowed:
-            self.within_time()
-            self.run_day()
-        while not self.time_allowed:
-            self.within_time()
-            self.run_night()
+        colour = self.network_test.check_speed()
+        self.run(colour)
 
 
 if __name__ == "__main__":

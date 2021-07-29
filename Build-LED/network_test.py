@@ -18,8 +18,8 @@ class NetworkTest:
 
     def check_speed(self):
         '''Check speed of both checks'''
-        low = 35
-        high = 70
+        low = 50
+        high = 100
         down_speed = self.speed.download() / 1048576
         down = round(down_speed)
         print('Down: {}'.format(down))
