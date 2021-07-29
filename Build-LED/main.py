@@ -42,7 +42,7 @@ class Led:
         blue    = 100
         green   = 100
         red     = 100
-        for x in self.pixels:
+        for x in range(self.pixels):
             blinkt.set_pixel(x, red, green, blue, self.brightness)
         blinkt.show()
 
