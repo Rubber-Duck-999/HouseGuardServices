@@ -17,22 +17,22 @@ class Led:
         blinkt.show()
         blinkt.set_clear_on_exit(True)
 
-    def set_pixels(self, colour):
+    def set_pixels(self, colour, x):
         print('set_pixels()')
-        blue  = 0
-        green = 0
-        red   = 0
-        x     = x * 5
+        blue    = 0
+        green   = 0
+        red     = 0
+        varying = x * 5
         if colour == Colours.Red:
             # Red
-            red  = 220 + x
+            red  = 220 + varying
         elif colour == Colours.Yellow:
             # Yellow
-            red   = 220 + x
+            red   = 220 + varying
             green = 66
         elif colour == Colours.Green:
             # Green
-            green = 220 + x
+            green = 220 + varying
         for x in range(self.pixels):
             blinkt.set_pixel(x, red, green, blue)
 
