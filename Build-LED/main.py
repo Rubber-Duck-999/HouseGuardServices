@@ -55,7 +55,7 @@ class Led:
 
     def run_lights(self, q):
         for show in Colours:
-            red, green, blue = self.show_all(show)
+            red, green, blue = self.get_colours(show)
             self.set_all(red, green, blue)
             time.sleep(2)
         colour = Colours.Red
