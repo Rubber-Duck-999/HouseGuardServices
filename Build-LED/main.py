@@ -47,9 +47,15 @@ class Led:
 
     def run_lights(self, q):
         print('run_lights()')
+        colour = Colours.Red
         while True:
             pixel = 0
-            colour = q.get()
+            last_colour = colour
+            try:
+                colour = q.get(False)
+            except queue.Empty:
+                print('Colour is empty')
+                colour = last_colour
             while pixel < self.pixels:
                 self.set_all()
                 self.set_pixels(pixel, colour)
