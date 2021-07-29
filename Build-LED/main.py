@@ -17,12 +17,25 @@ class Led:
         blinkt.set_clear_on_exit(True)
 
     def set_pixels(self, x, colour):
+        red, green, blue = self.get_colours(colour)
+        blinkt.set_pixel(x, red, green, blue, self.brightness)
+        blinkt.show()
+
+    def set_all(self, red, green, blue):
+        for x in range(self.pixels):
+            blinkt.set_pixel(x, red, green, blue, self.brightness)
+        blinkt.show()
+
+    def get_colours(self, colour):
         blue    = 0
         green   = 0
         red     = 0
         if colour == None:
             print('Colour is None')
-            return
+            red   = 255
+            green = 192
+            blue  = 203
+            return red, green, blue
         if colour == Colours.Red:
             red   = 255
         elif colour == Colours.Purple:
@@ -38,15 +51,13 @@ class Led:
             green = 245
         elif colour == Colours.Blue:
             blue  = 255
-        blinkt.set_pixel(x, red, green, blue, self.brightness)
-        blinkt.show()
-
-    def set_all(self):
-        for x in range(self.pixels):
-            blinkt.set_pixel(x, 0, 0, 0, self.brightness)
-        blinkt.show()
+        return red, green, blue
 
     def run_lights(self, q):
+        for show in Colours:
+            red, green, blue = self.show_all(show)
+            self.set_all(red, green, blue)
+            time.sleep(2)
         colour = Colours.Red
         while True:
             pixel = 0
@@ -56,7 +67,7 @@ class Led:
             except queue.Empty:
                 colour = last_colour
             while pixel < self.pixels:
-                self.set_all()
+                self.set_all(0, 0, 0)
                 self.set_pixels(pixel, colour)
                 time.sleep(0.2)
                 pixel += 1
@@ -66,7 +77,7 @@ def check_network(q):
         network_test = NetworkTest()
         colour = network_test.check_speed()
         q.put(colour)
-        time.sleep(60)
+        time.sleep(30)
 
 
 if __name__ == "__main__":
