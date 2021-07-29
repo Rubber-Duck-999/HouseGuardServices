@@ -23,7 +23,7 @@ class Led:
         blue    = 0
         green   = 0
         red     = 0
-        print('Colour: [}'.format(self.colour))
+        print('Colour: {}'.format(self.colour))
         if self.colour == Colours.Red:
             # Red
             red  = 255
