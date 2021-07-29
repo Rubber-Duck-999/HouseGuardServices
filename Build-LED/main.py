@@ -37,11 +37,21 @@ class Led:
         blinkt.set_pixel(x, red, green, blue, self.brightness)
         blinkt.show()
 
+    def set_all(self):
+        print('set_all()')
+        blue    = 100
+        green   = 100
+        red     = 100
+        for x in self.pixels:
+            blinkt.set_pixel(x, red, green, blue, self.brightness)
+        blinkt.show()
+
     def run_lights(self):
         print('run_lights()')
         while True:
             pixel = 0
             while pixel < self.pixels:
+                self.set_all()
                 self.set_pixels(pixel)
                 time.sleep(1)
                 pixel += 1
