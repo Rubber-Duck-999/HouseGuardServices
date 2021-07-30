@@ -17,6 +17,7 @@ class NetworkTest:
     def __init__(self):
         '''Constructor for class'''
         self.speed = speedtest.Speedtest()
+        self.down  = 0
 
     def check_speed(self):
         '''Check speed of both checks'''
@@ -26,13 +27,16 @@ class NetworkTest:
         green  = 150
         down_speed = self.speed.download() / 1048576
         down = round(down_speed)
-        if down <= red:
+        if self.down != down:
+            print('Speed changed: {}'.format(down))
+            self.down = down
+        if self.down <= red:
             return Colours.Red
-        if down <= orange:
+        if self.down <= orange:
             return Colours.Orange
-        if down <= purple:
+        if self.down <= purple:
             return Colours.Purple
-        if down <= green:
+        if self.down <= green:
             return Colours.Green
         return Colours.Blue
 
