@@ -36,7 +36,6 @@ class Led:
             green = 192
             blue  = 203
             return red, green, blue
-        print('Colour: {}'.format(colour))
         if colour == Colours.Red:
             red   = 255
         elif colour == Colours.Orange:
@@ -65,6 +64,7 @@ class Led:
             last_colour = colour
             try:
                 colour = q.get(False)
+                print('New Colour: {}'.format(colour))
             except queue.Empty:
                 colour = last_colour
             while pixel < self.pixels:
