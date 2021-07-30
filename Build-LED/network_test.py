@@ -29,7 +29,7 @@ class NetworkTest:
         try:
             down_speed = self.speed.download() / 1048576
             down = round(down_speed)
-        except SpeedtestException as error:
+        except speedtest.SpeedtestException as error:
             print('Error occurred')
         if self.down != down:
             print('Speed changed: {}'.format(down))
