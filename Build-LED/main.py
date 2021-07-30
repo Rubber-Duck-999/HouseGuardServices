@@ -78,7 +78,7 @@ def check_network(q):
         network_test = NetworkTest()
         colour = network_test.check_speed()
         q.put(colour)
-        time.sleep(10)
+        time.sleep(30)
 
 
 if __name__ == "__main__":
