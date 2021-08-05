@@ -13,7 +13,7 @@ class Emailer:
 
     def __init__(self):
         '''Constructor for class'''
-        self.config_file   = "config_name = '/home/pi/Documents/HouseGuardServices/config.json'"
+        self.config_file   = '/home/pi/Documents/HouseGuardServices/config.json'
         self.from_email    = ''
         self.to_email      = ''
         self.from_password = ''
@@ -21,7 +21,7 @@ class Emailer:
 
     def get_config(self):
         '''Get configuration values'''
-        print('# get_config()')
+        logging.info('# get_config()')
         try:
             if not os.path.isfile(self.config_file):
                 return False
@@ -33,16 +33,16 @@ class Emailer:
             self.start_temp    = config_data["start_temp"]
             return True
         except IOError as error:
-            print('File not available: {}'.format(error))
+            logging.error('File not available: {}'.format(error))
         except KeyError as error:
-            print('Key not available: {}'.format(error))
+            logging.error('Key not available: {}'.format(error))
         except TypeError as error:
-            print('Type not available: {}'.format(error))
+            logging.error('Type not available: {}'.format(error))
         return False
 
     def email(self, subject, text):
         '''Set up message for email from stores'''
-        print('# email()')
+        logging.info('# email()')
         try:
             server = smtplib.SMTP('smtp.gmail.com', 587)
             server.ehlo()
@@ -58,8 +58,8 @@ class Emailer:
             server.sendmail(self.from_email, self.to_email, message.as_string())
             server.close()
         except smtplib.SMTPAuthenticationError as error:
-            logging.info('Error occured on auth: {}'.format(error))
+            logging.error('Error occured on auth: {}'.format(error))
         except smtplib.SMTPException as error:
-            logging.info('Error occured on SMTP: {}'.format(error))
+            logging.error('Error occured on SMTP: {}'.format(error))
         except TypeError as error:
-            logging.info('Type error: {}'.format(error))
+            logging.error('Type error: {}'.format(error))
