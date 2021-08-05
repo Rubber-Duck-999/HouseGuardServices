@@ -16,7 +16,17 @@ GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
-logging.basicConfig(level=logging.INFO)
+filename = 'motion.log'
+
+# Add the log message handler to the logger
+handler = logging.handlers.RotatingFileHandler(
+              filename,
+              maxBytes=1000,
+              backupCount=10)
+logging.basicConfig(handlers=[handler],
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
+
 logging.info("Starting program")
 
 class FileNotFound(Exception):
