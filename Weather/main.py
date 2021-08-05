@@ -11,6 +11,13 @@ import json
 from bme280 import BME280
 import requests
 
+try:
+	os.remove('weather.log')
+except:
+	print("The log did not exist")
+
+logging.basicConfig(filename='weather.log',filemode='w', format='%(levelname)s - %(message)s', level=logging.INFO)
+
 logging.basicConfig(level=logging.INFO)
 logging.info("Starting program")
 
