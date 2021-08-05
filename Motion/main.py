@@ -18,6 +18,11 @@ PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
 filename = 'motion.log'
+try:
+    all_files = filename + '*'
+    os.remove(all_files)
+except OSError as error:
+    pass
 
 # Add the log message handler to the logger
 handler = logging.handlers.RotatingFileHandler(

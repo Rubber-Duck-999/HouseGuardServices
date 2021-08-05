@@ -15,9 +15,11 @@ def motion():
     logging.info('# motion()')
     logging.info('Motion received')
     emailer = Emailer()
-    emailer.get_config()
-    message = 'Motion Ocurred'
-    emailer.email('Motion on Alarm', message)
+    if emailer.get_config():
+        message = 'Motion Ocurred'
+        emailer.email('Motion on Alarm', message)
+    else:
+        logging.error('Config was not setup')
     return 'Received'
 
 @app.route("/alarm/<int:state>", methods=["POST"])
@@ -25,12 +27,14 @@ def alarm(state):
     logging.info('# alarm()')
     logging.info('Alarm Message received')
     emailer = Emailer()
-    emailer.get_config()
-    if state == 1:
-        message = 'Alarm is now switched to: {}'.format('ON')
+    if emailer.get_config():
+        if state == 1:
+            message = 'Alarm is now switched to: {}'.format('ON')
+        else:
+            message = 'Alarm is now switched to: {}'.format('OFF')
+        emailer.email('Alarm has Changed', message)
     else:
-        message = 'Alarm is now switched to: {}'.format('OFF')
-    emailer.email('Alarm has Changed', message)
+        logging.error('Config was not setup')
     return 'Received'
 
 @app.route("/weather", methods=["POST"])

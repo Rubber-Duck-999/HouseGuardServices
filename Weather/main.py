@@ -18,7 +18,6 @@ try:
 except OSError as error:
     pass
 
-
 # Add the log message handler to the logger
 handler = logging.handlers.RotatingFileHandler(
               filename,
