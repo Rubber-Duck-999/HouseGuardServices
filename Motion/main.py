@@ -44,7 +44,7 @@ class Motion():
 
     def get_settings(self):
         '''Get config env var'''
-        logging.info('get_cpu_temperature()')
+        logging.info('get_settings()')
         config_name = '../config.json'
         try:
             if not os.path.isfile(config_name):
