@@ -43,17 +43,14 @@ class Server(Flask):
     def alarm(self, state):
         logging.info('# alarm()')
         logging.info('Alarm Message received')
-        if self.error_found():
-            message = ''
-            if state == 1:
-                message = 'Alarm is now switched to: {}'.format('ON')
-                self.alarm_state = True
-            else:
-                message = 'Alarm is now switched to: {}'.format('OFF')
-                self.alarm_state = False
-            self.emailer.email('Alarm has Changed', message)
+        message = ''
+        if state == 1:
+            message = 'Alarm is now switched to: {}'.format('ON')
+            self.alarm_state = True
         else:
-            logging.error('Config was not setup')
+            message = 'Alarm is now switched to: {}'.format('OFF')
+            self.alarm_state = False
+        self.emailer.email('Alarm has Changed', message)
         return 'Received'
 
     def weather(self):
