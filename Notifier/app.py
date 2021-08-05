@@ -35,7 +35,7 @@ class Server(Flask):
         logging.info('Motion received')
         if self.alarm_state:
             message = 'Motion Ocurred'
-            emailer.email('Motion on Alarm', message)
+            self.emailer.email('Motion on Alarm', message)
         else:
             logging.error('Alarm was offline')
         return 'Received'
@@ -44,6 +44,7 @@ class Server(Flask):
         logging.info('# alarm()')
         logging.info('Alarm Message received')
         if self.error_found():
+            message = ''
             if state == 1:
                 message = 'Alarm is now switched to: {}'.format('ON')
                 self.alarm_state = True
