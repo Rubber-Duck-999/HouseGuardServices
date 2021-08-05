@@ -20,24 +20,27 @@ filename = 'motion.log'
 
 # Add the log message handler to the logger
 handler = logging.handlers.RotatingFileHandler(
-              filename,
-              maxBytes=1000,
-              backupCount=10)
+    filename,
+    maxBytes=1000,
+    backupCount=10)
 logging.basicConfig(handlers=[handler],
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
         self.last_detected = ''
-        self.initialised   = True
+        self.initialised = True
         self.server_address = ''
         self.send_data = False
 
@@ -50,7 +53,8 @@ class Motion():
                 raise FileNotFound('File is missing')
             with open(config_name) as file:
                 data = json.load(file)
-            self.server_address = 'http://{}/motion'.format(data["server_address"])
+            self.server_address = 'http://{}/motion'.format(
+                data["server_address"])
             logging.info(self.server_address)
             self.send_data = True
         except KeyError:
@@ -96,6 +100,7 @@ class Motion():
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
+
 
 if __name__ == "__main__":
     motion = Motion()
