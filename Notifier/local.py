@@ -13,7 +13,7 @@ class Emailer:
 
     def __init__(self):
         '''Constructor for class'''
-        self.config_file   = "../config.json"
+        self.config_file   = "config_name = '/home/pi/Documents/HouseGuardServices/config.json'"
         self.from_email    = ''
         self.to_email      = ''
         self.from_password = ''
