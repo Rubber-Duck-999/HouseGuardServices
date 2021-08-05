@@ -25,6 +25,7 @@ class Server(Flask):
         self.route('/motion', methods=['POST'])(self.motion)
         self.route('/alarm/<int:state>', methods=['POST'])(self.alarm)
         self.route('/weather', methods=['POST'])(self.weather)
+        self.alarm_state = True
 
     def check_config(self):
         return self.emailer.get_config()
@@ -32,11 +33,11 @@ class Server(Flask):
     def motion(self):
         logging.info('# motion()')
         logging.info('Motion received')
-        if self.error_found():
+        if self.alarm_state:
             message = 'Motion Ocurred'
             emailer.email('Motion on Alarm', message)
         else:
-            logging.error('Config was not setup')
+            logging.error('Alarm was offline')
         return 'Received'
 
     def alarm(self, state):
@@ -45,8 +46,10 @@ class Server(Flask):
         if self.error_found():
             if state == 1:
                 message = 'Alarm is now switched to: {}'.format('ON')
+                self.alarm_state = True
             else:
                 message = 'Alarm is now switched to: {}'.format('OFF')
+                self.alarm_state = False
             self.emailer.email('Alarm has Changed', message)
         else:
             logging.error('Config was not setup')
