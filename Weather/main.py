@@ -12,14 +12,16 @@ from bme280 import BME280
 import requests
 
 try:
-	os.remove('weather.log')
+    os.remove('weather.log')
 except:
-	print("The log did not exist")
+    print("The log did not exist")
 
-logging.basicConfig(filename='weather.log',filemode='w', format='%(levelname)s - %(message)s', level=logging.INFO)
+logging.basicConfig(filename='weather.log', filemode='w',
+                    format='%(levelname)s - %(message)s', level=logging.INFO)
 
 logging.basicConfig(level=logging.INFO)
 logging.info("Starting program")
+
 
 class FileNotFound(Exception):
     '''Exception class for file checking'''
@@ -35,14 +37,14 @@ class Temperature:
         # BME280 temperature/pressure/humidity sensor
         # Tuning factor for compensation. Decrease this number to adjust the
         # temperature down, and increase to adjust up
-        self.factor     = 1
-        self.bme280     = BME280()
-        self.send_data  = False
-        self.cpu_temp   = 0.0
+        self.factor = 1
+        self.bme280 = BME280()
+        self.send_data = False
+        self.cpu_temp = 0.0
         # Default of 10 minutes
-        self.wait_time      = 10 * Temperature.SECONDS_PER_MINUTE
+        self.wait_time = 10 * Temperature.SECONDS_PER_MINUTE
         self.server_address = ''
-        self.temperature    = 0
+        self.temperature = 0
 
     def get_settings(self):
         '''Get config env var'''
@@ -53,9 +55,10 @@ class Temperature:
                 raise FileNotFound('File is missing')
             with open(config_name) as file:
                 data = json.load(file)
-            self.wait_time      = data["weather_wait_time"]
-            self.server_address = 'http://{}/weather'.format(data["server_address"])
-            self.factor         = data["temperature_factor"]
+            self.wait_time = data["weather_wait_time"]
+            self.server_address = 'http://{}/weather'.format(
+                data["server_address"])
+            self.factor = data["temperature_factor"]
             self.send_data = True
         except KeyError:
             logging.error("Variables not set")
@@ -65,12 +68,14 @@ class Temperature:
     def get_cpu_temperature(self):
         '''Get the temperature of the CPU for compensation'''
         logging.info('get_cpu_temperature()')
-        process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE, universal_newlines=True)
+        process = Popen(['vcgencmd', 'measure_temp'],
+                        stdout=PIPE, universal_newlines=True)
         output, _error = process.communicate()
         if process.returncode != 0:
             logging.error("Vcgencmd failed")
         else:
-            self.cpu_temp = float(output[output.index('=') + 1:output.rindex("'")])
+            self.cpu_temp = float(
+                output[output.index('=') + 1:output.rindex("'")])
 
     def get_sensor_temperature(self):
         '''Grab the bme280 temp'''
@@ -79,7 +84,8 @@ class Temperature:
         logging.info('CPU Temp: {}'.format(self.cpu_temp))
         raw_temp = self.bme280.get_temperature()
         logging.info('Raw Temp: {}'.format(raw_temp))
-        self.temperature = raw_temp - ((self.cpu_temp - raw_temp) / self.factor)
+        self.temperature = raw_temp - \
+            ((self.cpu_temp - raw_temp) / self.factor)
         logging.info("Temperature: {:.2f}'C".format(self.temperature))
 
     def publish_data(self):
@@ -89,7 +95,8 @@ class Temperature:
                 'temperature': self.temperature
             }
             try:
-                response = requests.post(self.server_address, data=data, timeout=5)
+                response = requests.post(
+                    self.server_address, data=data, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
             except requests.ConnectionError as error:
@@ -104,6 +111,7 @@ class Temperature:
             self.get_sensor_temperature()
             self.publish_data()
             time.sleep(self.wait_time)
+
 
 if __name__ == "__main__":
     temp = Temperature()
