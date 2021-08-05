@@ -1,2 +1,3 @@
-# HouseGuardServices
-Services for the houseguard system in one place
+# HouseGuardServices - Motion
+
+Notifies house guard whether motion occurs

@@ -11,14 +11,23 @@ import json
 from bme280 import BME280
 import requests
 
+filename = 'weather.log'
 try:
-	os.remove('weather.log')
-except:
-	print("The log did not exist")
+    all_files = filename + '*'
+    os.remove(all_files)
+except OSError as error:
+    pass
 
-logging.basicConfig(filename='weather.log',filemode='w', format='%(levelname)s - %(message)s', level=logging.INFO)
 
-logging.basicConfig(level=logging.INFO)
+# Add the log message handler to the logger
+handler = logging.handlers.RotatingFileHandler(
+              filename,
+              maxBytes=1000,
+              backupCount=10)
+logging.basicConfig(handlers=[handler],
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
+
 logging.info("Starting program")
 
 class FileNotFound(Exception):
