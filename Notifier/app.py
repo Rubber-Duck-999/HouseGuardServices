@@ -43,6 +43,7 @@ def weather():
     logging.info('Weather Message received')
     request_data = request.get_json()
     if request_data:
+        logging.info(request_data)
         if 'temperature' in request_data:
             logging.info(request_data['temperature'])
     #database = Database()
