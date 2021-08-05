@@ -13,4 +13,4 @@ class GUIController:
 		self.view.window.mainloop()
  
 	def btnClicked(self,event):
-		print('Value')
+		value = 0

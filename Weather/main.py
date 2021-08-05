@@ -6,25 +6,19 @@ Weather temperature script
 import time
 import os
 import logging
-import logging.handlers
 from subprocess import PIPE, Popen
 import json
 from bme280 import BME280
 import requests
 
-filename = 'weather.log'
+filename = '/home/pi/Documents/HouseGuardServices/weather.log'
 try:
-    all_files = filename + '*'
-    os.remove(all_files)
+    os.remove(filename)
 except OSError as error:
     pass
 
 # Add the log message handler to the logger
-handler = logging.handlers.RotatingFileHandler(
-              filename,
-              maxBytes=1000,
-              backupCount=10)
-logging.basicConfig(handlers=[handler],
+logging.basicConfig(filename=filename,
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 

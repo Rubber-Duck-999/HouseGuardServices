@@ -17,7 +17,7 @@ GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
-filename = 'motion.log'
+filename = '/home/pi/Documents/HouseGuardServices/motion.log'
 try:
     all_files = filename + '*'
     os.remove(all_files)

@@ -52,9 +52,7 @@ class GUIView:
 		self.off_button.pack()
 
 	def on_event(self):
-		print('On Button Clicked')
 		self.state_label['text'] = 'ON'
 
 	def off_event(self):
-		print('Off Button Clicked')
 		self.state_label['text'] = 'OFF'
