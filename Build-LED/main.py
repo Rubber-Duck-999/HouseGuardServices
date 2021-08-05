@@ -30,7 +30,7 @@ class Led:
         blue    = 0
         green   = 0
         red     = 0
-        if colour == None:
+        if colour is None:
             print('Colour is None')
             red   = 255
             green = 192
