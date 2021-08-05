@@ -7,6 +7,7 @@ import time
 import colorsys
 from network_test import NetworkTest, Colours
 
+
 class Led:
 
     def __init__(self):
@@ -27,29 +28,29 @@ class Led:
         blinkt.show()
 
     def get_colours(self, colour):
-        blue    = 0
-        green   = 0
-        red     = 0
-        if colour == None:
+        blue = 0
+        green = 0
+        red = 0
+        if colour is None:
             print('Colour is None')
-            red   = 255
+            red = 255
             green = 192
-            blue  = 203
+            blue = 203
             return red, green, blue
         if colour == Colours.Red:
-            red   = 255
+            red = 255
         elif colour == Colours.Orange:
-            red   = 236
+            red = 236
             green = 94
-            blue  = 2
+            blue = 2
         elif colour == Colours.Purple:
-            red   = 110
+            red = 110
             green = 51
-            blue  = 255
+            blue = 255
         elif colour == Colours.Green:
             green = 255
         elif colour == Colours.Blue:
-            blue  = 255
+            blue = 255
         return red, green, blue
 
     def run_lights(self, q):
@@ -72,6 +73,7 @@ class Led:
                 self.set_pixels(pixel, colour)
                 time.sleep(1)
                 pixel += 1
+
 
 def check_network(q):
     while True:
