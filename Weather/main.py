@@ -90,6 +90,7 @@ class Temperature:
         logging.info('Raw Temp: {}'.format(raw_temp))
         self.temperature = raw_temp - ((self.cpu_temp - raw_temp) / self.factor)
         logging.info("Temperature: {:.2f}'C".format(self.temperature))
+        self.temperature = round(self.temperature, 1)
 
     def publish_data(self):
         '''Send data to server if asked'''
