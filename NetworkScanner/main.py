@@ -4,6 +4,7 @@ import netifaces
 import nmap
 import logging
 
+
 def get_list():
     '''Get network devices addresses'''
     logging.info('# get_list()')
@@ -16,6 +17,7 @@ def get_list():
             logging.info('{}'.format(host))
     except nmap.PortScannerError as error:
         logging.error('Nmap scan fail')
+
 
 def get_ip():
     '''Gets host ip'''
