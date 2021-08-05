@@ -10,6 +10,7 @@ logging.info("Starting program")
 
 app = Flask(__name__)
 
+
 @app.route("/motion", methods=["POST"])
 def motion():
     logging.info('# motion()')
@@ -21,6 +22,7 @@ def motion():
     else:
         logging.error('Config was not setup')
     return 'Received'
+
 
 @app.route("/alarm/<int:state>", methods=["POST"])
 def alarm(state):
@@ -37,6 +39,7 @@ def alarm(state):
         logging.error('Config was not setup')
     return 'Received'
 
+
 @app.route("/weather", methods=["POST"])
 def weather():
     logging.info('# weather()')
@@ -47,8 +50,9 @@ def weather():
         if 'temperature' in request_data:
             logging.info(request_data['temperature'])
     #database = Database()
-    #database.insert(temp)
+    # database.insert(temp)
     return 'Received'
+
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')
