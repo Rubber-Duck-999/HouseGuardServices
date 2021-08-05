@@ -6,6 +6,7 @@ Weather temperature script
 import time
 import os
 import logging
+import logging.handlers
 from subprocess import PIPE, Popen
 import json
 from bme280 import BME280
