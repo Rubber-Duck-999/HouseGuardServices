@@ -80,10 +80,14 @@ class Motion():
                 response = requests.post(self.server_address, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
+                else:
+                    logging.error('Requests unsuccessful')
             except requests.ConnectionError as error:
                 logging.error("Connection error: {}".format(error))
             except requests.Timeout as error:
                 logging.error("Timeout on server: {}".format(error))
+        else:
+            logging.error('Send data is off')
 
     def loop(self):
         '''Loop and wait for event'''
