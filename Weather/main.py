@@ -98,7 +98,7 @@ class Temperature:
                 'temperature': self.temperature
             }
             try:
-                response = requests.post(self.server_address, data=data, timeout=5)
+                response = requests.post(self.server_address, json=data, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
             except requests.ConnectionError as error:
