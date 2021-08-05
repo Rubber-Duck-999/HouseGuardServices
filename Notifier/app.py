@@ -14,8 +14,9 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class Server(Flask):
 
@@ -61,6 +62,7 @@ class Server(Flask):
             if 'temperature' in request_data:
                 logging.info(request_data['temperature'])
         return 'Received'
+
 
 if __name__ == "__main__":
     logging.info("Starting program")
