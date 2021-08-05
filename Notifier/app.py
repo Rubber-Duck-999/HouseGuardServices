@@ -6,7 +6,7 @@ import os
 from local import Emailer
 from flask import Flask, request
 
-filename = 'notifier.log'
+filename = '/home/pi/Documents/HouseGuardServices/notifier.log'
 try:
     os.remove(filename)
 except OSError as error:
