@@ -3,6 +3,7 @@ import pymongo
 import datetime
 from pymongo.errors import PyMongoError
 
+
 class MissingSetup(Exception):
     '''Setup has not completed'''
 
@@ -13,10 +14,10 @@ class Database:
     def __init__(self):
         '''Constructor'''
         logging.info('__init__()')
-        self.client     = pymongo.MongoClient("mongodb://localhost:27017/")
-        self.database_name   = 'database'
+        self.client = pymongo.MongoClient("mongodb://localhost:27017/")
+        self.database_name = 'database'
         self.collection_name = 'collection'
-        self.collection      = None
+        self.collection = None
 
     def check(self):
         '''Read data from db'''
@@ -48,7 +49,7 @@ class Database:
         try:
             self.check()
             created_at = datetime.datetime.now()
-            mydict = { "temperature": temp, "created_at": created_at }
+            mydict = {"temperature": temp, "created_at": created_at}
             record = self.collection.insert_one(mydict)
             self.check()
         except PyMongoError as error:
