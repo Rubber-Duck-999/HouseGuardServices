@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 import os
 import time
 import logging
+import logging.handlers
 import datetime
 import json
 import requests
