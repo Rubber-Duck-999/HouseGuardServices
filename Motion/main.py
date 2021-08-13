@@ -22,12 +22,14 @@ GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/motion.log'
 
@@ -39,20 +41,23 @@ except OSError as error:
     pass
 
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
         self.last_detected = ''
-        self.initialised   = True
+        self.initialised = True
         self.server_address = ''
         self.send_data = False
         self.host = ''
@@ -69,7 +74,7 @@ class Motion():
             with open(config_name) as file:
                 data = json.load(file)
             self.server_address = '{}/motion'.format(data["server_address"])
-            self.host           = data["host"]
+            self.host = data["host"]
             logging.info(self.server_address)
             self.send_data = True
         except KeyError:
@@ -83,11 +88,11 @@ class Motion():
             self.session = boto3.Session()
             credentials = self.session.get_credentials()
             self.auth = AWSRequestsAuth(aws_access_key=credentials.access_key,
-                        aws_secret_access_key=credentials.secret_key,
-                        aws_token=credentials.token,
-                        aws_host=self.host,
-                        aws_region='eu-west-2',
-                        aws_service='execute-api')
+                                        aws_secret_access_key=credentials.secret_key,
+                                        aws_token=credentials.token,
+                                        aws_host=self.host,
+                                        aws_region='eu-west-2',
+                                        aws_service='execute-api')
         except botocore.exceptions.ConfigNotFound:
             logging.error('Credentials not found')
 
@@ -109,7 +114,8 @@ class Motion():
         '''Send data to server if asked'''
         if self.send_data:
             try:
-                response = requests.post(self.server_address, timeout=5, auth=self.auth)
+                response = requests.post(
+                    self.server_address, timeout=5, auth=self.auth)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -128,12 +134,14 @@ class Motion():
         time.sleep(2)
         self.setup_aws()
         try:
-            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion, bouncetime=100)
+            GPIO.add_event_detect(PIR_PIN, GPIO.RISING,
+                                  callback=self.motion, bouncetime=100)
             while True:
                 time.sleep(100)
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
+
 
 if __name__ == "__main__":
     motion = Motion()
