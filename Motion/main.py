@@ -2,8 +2,10 @@
 '''
 Motion script
 '''
-
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    import Mock.GPIO as GPIO
 import os
 import time
 import logging
@@ -11,25 +13,32 @@ import logging.handlers
 import datetime
 import json
 import requests
+import botocore
+import boto3
+from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 # Setup global
 GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
-filename = '/home/pi/Documents/HouseGuardServices/motion.log'
+def get_user():
+    try:
+        username = os.getlogin()
+    except OSError:
+        username = 'pi'
+    return username
+
+filename = '/home/{}/Documents/HouseGuardServices/motion.log'
+
 try:
-    all_files = filename + '*'
-    os.remove(all_files)
+    name = get_user()
+    filename = filename.format(name)
+    os.remove(filename)
 except OSError as error:
     pass
 
-# Add the log message handler to the logger
-handler = logging.handlers.RotatingFileHandler(
-              filename,
-              maxBytes=1000,
-              backupCount=10)
-logging.basicConfig(handlers=[handler],
+logging.basicConfig(filename=filename,
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 
@@ -46,23 +55,41 @@ class Motion():
         self.initialised   = True
         self.server_address = ''
         self.send_data = False
+        self.host = ''
 
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        name = get_user()
+        config_name = '/home/{}/Documents/HouseGuardServices/config.json'
+        config_name = config_name.format(name)
         try:
             if not os.path.isfile(config_name):
                 raise FileNotFound('File is missing')
             with open(config_name) as file:
                 data = json.load(file)
-            self.server_address = 'http://{}/motion'.format(data["server_address"])
+            self.server_address = '{}/motion'.format(data["server_address"])
+            self.host           = data["host"]
             logging.info(self.server_address)
             self.send_data = True
         except KeyError:
             logging.error("Variables not set")
         except FileNotFound:
             logging.error("File is missing")
+
+    def setup_aws(self):
+        '''Setup IAM credentials'''
+        try:
+            self.session = boto3.Session()
+            credentials = self.session.get_credentials()
+            self.auth = AWSRequestsAuth(aws_access_key=credentials.access_key,
+                        aws_secret_access_key=credentials.secret_key,
+                        aws_token=credentials.token,
+                        aws_host=self.host,
+                        aws_region='eu-west-2',
+                        aws_service='execute-api')
+        except botocore.exceptions.ConfigNotFound:
+            logging.error('Credentials not found')
 
     def motion(self, value):
         '''Motion detection'''
@@ -73,7 +100,7 @@ class Motion():
             self.initialised = False
             return
         delta = detected - self.last_detected
-        if delta.total_seconds() > 60:
+        if delta.total_seconds() > 120:
             self.last_detected = datetime.datetime.now()
             logging.info('New Motion Detected: {}'.format(detected))
             self.publish_data()
@@ -82,7 +109,7 @@ class Motion():
         '''Send data to server if asked'''
         if self.send_data:
             try:
-                response = requests.post(self.server_address, timeout=5)
+                response = requests.post(self.server_address, timeout=5, auth=self.auth)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -99,8 +126,9 @@ class Motion():
         logging.info('loop()')
         self.get_settings()
         time.sleep(2)
+        self.setup_aws()
         try:
-            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
+            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion, bouncetime=100)
             while True:
                 time.sleep(100)
         except KeyboardInterrupt:
