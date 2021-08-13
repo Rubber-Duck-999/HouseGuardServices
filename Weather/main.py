@@ -17,12 +17,14 @@ import botocore
 import requests
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/weather.log'
 
@@ -35,10 +37,11 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
+
 
 class FileNotFound(Exception):
     '''Exception class for file checking'''
@@ -54,14 +57,14 @@ class Temperature:
         # BME280 temperature/pressure/humidity sensor
         # Tuning factor for compensation. Decrease this number to adjust the
         # temperature down, and increase to adjust up
-        self.factor     = 1
-        self.bme280     = BME280()
-        self.send_data  = False
+        self.factor = 1
+        self.bme280 = BME280()
+        self.send_data = False
         # Default of 10 minutes
-        self.wait_time      = 10 * Temperature.SECONDS_PER_MINUTE
+        self.wait_time = 10 * Temperature.SECONDS_PER_MINUTE
         self.server_address = ''
-        self.temperature    = 0
-        self.auth           = ''
+        self.temperature = 0
+        self.auth = ''
 
     def setup_aws(self):
         '''Setup IAM credentials'''
@@ -69,11 +72,11 @@ class Temperature:
             self.session = boto3.Session()
             credentials = self.session.get_credentials()
             self.auth = AWSRequestsAuth(aws_access_key=credentials.access_key,
-                        aws_secret_access_key=credentials.secret_key,
-                        aws_token=credentials.token,
-                        aws_host=self.host,
-                        aws_region='eu-west-2',
-                        aws_service='execute-api')
+                                        aws_secret_access_key=credentials.secret_key,
+                                        aws_token=credentials.token,
+                                        aws_host=self.host,
+                                        aws_region='eu-west-2',
+                                        aws_service='execute-api')
         except botocore.exceptions.ConfigNotFound:
             logging.error('Credentials not found')
 
@@ -88,10 +91,10 @@ class Temperature:
                 raise FileNotFound('File is missing')
             with open(config_name) as file:
                 data = json.load(file)
-            self.wait_time      = data["weather_wait_time"]
+            self.wait_time = data["weather_wait_time"]
             self.server_address = '{}/weather'.format(data["server_address"])
-            self.host           = data["host"]
-            self.factor         = data["temperature_factor"]
+            self.host = data["host"]
+            self.factor = data["temperature_factor"]
             self.send_data = True
         except KeyError:
             logging.error("Variables not set")
@@ -103,12 +106,14 @@ class Temperature:
         logging.info('get_cpu_temperature()')
         cpu_temp = 0.0
         try:
-            process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE, universal_newlines=True)
+            process = Popen(['vcgencmd', 'measure_temp'],
+                            stdout=PIPE, universal_newlines=True)
             output, _error = process.communicate()
             if process.returncode != 0:
                 logging.error("Vcgencmd failed")
             else:
-                cpu_temp = float(output[output.index('=') + 1:output.rindex("'")])
+                cpu_temp = float(
+                    output[output.index('=') + 1:output.rindex("'")])
         except FileNotFoundError:
             logging.error('Mocking as not found')
         return cpu_temp
@@ -131,7 +136,8 @@ class Temperature:
                 'temperature': self.temperature
             }
             try:
-                response = requests.post(self.server_address, json=data, timeout=5, auth=self.auth)
+                response = requests.post(
+                    self.server_address, json=data, timeout=5, auth=self.auth)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -149,6 +155,7 @@ class Temperature:
             self.get_sensor_temperature()
             self.publish_data()
             time.sleep(60 * self.wait_time)
+
 
 if __name__ == "__main__":
     temp = Temperature()

@@ -1,5 +1,6 @@
 class BME280:
     '''Class to mock temp sensor'''
+
     def __init__(self):
         '''Constructor for mock'''
 
