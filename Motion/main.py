@@ -15,6 +15,7 @@ import json
 import requests
 import botocore
 import boto3
+import subprocess
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 # Setup global
@@ -56,6 +57,7 @@ class Motion():
         self.server_address = ''
         self.send_data = False
         self.host = ''
+        self.path = '/home/{}/Desktop/cam_images/'
 
     def get_settings(self):
         '''Get config env var'''
@@ -103,6 +105,7 @@ class Motion():
         if delta.total_seconds() > 120:
             self.last_detected = datetime.datetime.now()
             logging.info('New Motion Detected: {}'.format(detected))
+            self.run()
             self.publish_data()
 
     def publish_data(self):
@@ -120,6 +123,15 @@ class Motion():
                 logging.error("Timeout on server: {}".format(error))
         else:
             logging.error('Send data is off')
+
+    def run(self):
+        try:
+            fileName= "img_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
+            cmd = "raspistill -o " + self.path + fileName
+            subprocess.call(cmd, shell=True)
+            time.sleep(1)
+        except FileNotFoundError:
+            logging.error('File not found')
 
     def loop(self):
         '''Loop and wait for event'''
