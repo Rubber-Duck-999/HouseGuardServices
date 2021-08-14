@@ -99,11 +99,11 @@ class Model:
 			}
 			try:
 				self.setup_aws()
-				response = requests.post(self.server_address, json=data, timeout=5, auth=self.auth)
+				'''response = requests.post(self.server_address, json=data, timeout=5, auth=self.auth)
 				if response.status_code == 200:
 					logging.info("Requests successful")
 				else:
-					logging.error('Response: {}'.format(response))
+					logging.error('Response: {}'.format(response))'''
 			except requests.ConnectionError as error:
 				logging.error("Connection error: {}".format(error))
 			except requests.Timeout as error:

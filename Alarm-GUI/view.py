@@ -63,5 +63,6 @@ class GUIView:
 			self.state_label['text'] = 'OFF'
 
 	def show_wait(self):
+		if not self.wait:
+			self.state_label['text'] = '{} - WAIT'.format(self.state_label['text'])
 		self.wait = True
-		messagebox.showwarning('Warning', 'Please wait')

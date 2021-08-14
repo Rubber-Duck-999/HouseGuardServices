@@ -17,6 +17,7 @@ class GUIController:
 		if not self.model.check_time():
 			self.view.show_wait()
 		else:
+			self.view.wait = False
 			if self.model.publish_data('ON'):
 				self.view.state_label['text'] = 'ON'
 
@@ -24,5 +25,6 @@ class GUIController:
 		if not self.model.check_time():
 			self.view.show_wait()
 		else:
+			self.view.wait = False
 			if self.model.publish_data('OFF'):
 				self.view.state_label['text'] = 'OFF'
