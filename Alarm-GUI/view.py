@@ -3,12 +3,15 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import random
+from tkinter import messagebox
  
 class GUIView:
 	def __init__(self, alarm_state):
 		self.alarm_state = alarm_state
 		self.window = tk.Tk()
 		self.window.title("HouseGuard")
+
+		self.wait = False
 
 		style = ttk.Style()
 		font = ('calibri', 86, 'bold')
@@ -17,8 +20,8 @@ class GUIView:
 		style.map('TLabel', foreground=[('!active', 'blue')])
 		style.configure('TButton', font=font, borderwidth='4')
 
-		style.map('TButton', foreground=[('active', '!disabled', 'blue')],
-				background=[('active', 'yellow')])
+		style.map('TButton', foreground=[('active', '!disabled', 'white')],
+				background=[('active', 'purple')])
 
 		frame3 = tk.Frame(self.window)
 		frame3.pack()
@@ -52,7 +55,13 @@ class GUIView:
 		self.off_button.pack()
 
 	def on_event(self):
-		self.state_label['text'] = 'ON'
+		if not self.wait:
+			self.state_label['text'] = 'ON'
 
 	def off_event(self):
-		self.state_label['text'] = 'OFF'
+		if not self.wait:
+			self.state_label['text'] = 'OFF'
+
+	def show_wait(self):
+		self.wait = True
+		messagebox.showwarning('Warning', 'Please wait')
