@@ -5,6 +5,7 @@ import nmap
 import subprocess
 import logging
 
+
 def get_list():
     '''Get network devices addresses'''
     logging.info('# get_list()')
@@ -24,6 +25,7 @@ def get_list():
         print(out)
     except nmap.PortScannerError as error:
         logging.error('Nmap scan fail')
+
 
 def get_ip():
     '''Gets host ip'''

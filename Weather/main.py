@@ -14,12 +14,14 @@ except ImportError:
     from mock_bme280 import BME280
 import requests
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/weather.log'
 
@@ -32,10 +34,11 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
+
 
 class FileNotFound(Exception):
     '''Exception class for file checking'''
@@ -51,13 +54,13 @@ class Temperature:
         # BME280 temperature/pressure/humidity sensor
         # Tuning factor for compensation. Decrease this number to adjust the
         # temperature down, and increase to adjust up
-        self.factor     = 1
-        self.bme280     = BME280()
-        self.send_data  = False
+        self.factor = 1
+        self.bme280 = BME280()
+        self.send_data = False
         # Default of 10 minutes
-        self.wait_time      = 10 * Temperature.SECONDS_PER_MINUTE
+        self.wait_time = 10 * Temperature.SECONDS_PER_MINUTE
         self.server_address = ''
-        self.temperature    = 0
+        self.temperature = 0
 
     def get_settings(self):
         '''Get config env var'''
@@ -70,9 +73,9 @@ class Temperature:
                 raise FileNotFound('File is missing')
             with open(config_name) as file:
                 data = json.load(file)
-            self.wait_time      = data["weather_wait_time"]
+            self.wait_time = data["weather_wait_time"]
             self.server_address = '{}/weather'.format(data["server_address"])
-            self.factor         = data["temperature_factor"]
+            self.factor = data["temperature_factor"]
             self.send_data = True
         except KeyError:
             logging.error("Variables not set")
@@ -84,12 +87,14 @@ class Temperature:
         logging.info('get_cpu_temperature()')
         cpu_temp = 0.0
         try:
-            process = Popen(['vcgencmd', 'measure_temp'], stdout=PIPE, universal_newlines=True)
+            process = Popen(['vcgencmd', 'measure_temp'],
+                            stdout=PIPE, universal_newlines=True)
             output, _error = process.communicate()
             if process.returncode != 0:
                 logging.error("Vcgencmd failed")
             else:
-                cpu_temp = float(output[output.index('=') + 1:output.rindex("'")])
+                cpu_temp = float(
+                    output[output.index('=') + 1:output.rindex("'")])
         except FileNotFoundError:
             logging.error('Mocking as not found')
         return cpu_temp
@@ -112,7 +117,8 @@ class Temperature:
                 'temperature': self.temperature
             }
             try:
-                response = requests.post(self.server_address, json=data, timeout=5)
+                response = requests.post(
+                    self.server_address, json=data, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -129,6 +135,7 @@ class Temperature:
             self.get_sensor_temperature()
             self.publish_data()
             time.sleep(4 * 60 * self.wait_time)
+
 
 if __name__ == "__main__":
     temp = Temperature()

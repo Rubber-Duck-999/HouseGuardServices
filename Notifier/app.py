@@ -7,12 +7,14 @@ from state import State
 from local import Emailer
 from flask import Flask, request
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/notifier.log'
 
@@ -25,8 +27,9 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class Server(Flask):
 
@@ -105,6 +108,7 @@ class Server(Flask):
                 'temperature': self.state.get_temperature()
             }
         return data
+
 
 if __name__ == "__main__":
     logging.info("Starting program")
