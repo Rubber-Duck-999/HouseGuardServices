@@ -21,7 +21,7 @@ class State:
         return self.last_motion
 
     def set_motion(self):
-        self.last_motion = datetime.now()
+        self.last_motion = datetime.datetime.now()
 
     def set_devices(self, allowed, blocked, unknown):
         self.devices['allowed'] = allowed
