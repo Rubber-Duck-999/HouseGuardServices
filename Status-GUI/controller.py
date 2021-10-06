@@ -27,7 +27,7 @@ class GUIController:
 		self.view.window.mainloop()
  
 	def btnClicked(self,event):
-		self.view.check_values()
+		self.view.check_values(self.model.check_data())
 
 	def timecnt(self):
 		# runs in background thread
@@ -46,8 +46,8 @@ class GUIController:
 		# runs in main thread
 		print('Event Thread',threading.get_ident())
 		# event thread id (same as main)
-		print(evt.state)
+		data_list = self.model.check_data()
 		# 123, data from event
-		self.view.check_values()
+		self.view.check_values(data_list)
 		# update widget
 		pyautogui.click(100, 100)

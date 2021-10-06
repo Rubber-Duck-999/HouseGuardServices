@@ -5,8 +5,9 @@ import controller
 if __name__ == '__main__':
 	names = [
 		"Temperature",
-		"Alarm",
-		"Devices"
+		"Motion",
+		"Allowed",
+		"Blocked"
 	]
 	# start timer loop
 	controller = controller.GUIController(names)

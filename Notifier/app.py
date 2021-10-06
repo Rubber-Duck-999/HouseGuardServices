@@ -74,7 +74,7 @@ class Server(Flask):
         else:
             logging.error('Alarm was offline')
             data = {
-                'LastMotion': self.state.get_motion()
+                'motion': self.state.get_motion()
             }
         return data
 

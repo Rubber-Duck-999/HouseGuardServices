@@ -3,7 +3,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import time
-import random
  
 class GUIView:
 	def __init__(self, names):
@@ -23,7 +22,7 @@ class GUIView:
 
 	def setup_styles(self):
 		self.style = ttk.Style()
-		font = ('calibri', 72, 'bold')
+		font = ('calibri', 44, 'bold')
 		self.style.configure('TLabel',
 							font=font,
 							borderwidth='10',
@@ -123,10 +122,6 @@ class GUIView:
 		# could use >200 ms, but display gets jerky
 		self.clock.after(500, self.tick)
 
-	def check_values(self):
-		for name in self.names:
-			data = {
-				"name": name,
-				"value": random.randint(0, 20)
-			}
+	def check_values(self, data_list):
+		for data in data_list:
 			self.set_values(data)
