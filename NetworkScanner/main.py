@@ -2,6 +2,7 @@
 
 import netifaces
 import nmap
+import subprocess
 import logging
 
 def get_list():
@@ -13,7 +14,14 @@ def get_list():
         nm.scan(hosts=base, arguments='-n -sP -PE -PA21,23,80,3389')
         hosts_list = [(x, nm[x]['status']['state']) for x in nm.all_hosts()]
         for host, status in hosts_list:
-            logging.info('{}'.format(host))
+            logging.info('{} {}'.format(host, status))
+        output = subprocess.Popen(
+            ['arp', '-e'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        out, err = output.communicate()
+        print(out)
     except nmap.PortScannerError as error:
         logging.error('Nmap scan fail')
 

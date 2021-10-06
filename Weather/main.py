@@ -12,10 +12,7 @@ try:
     from bme280 import BME280
 except ImportError:
     from mock_bme280 import BME280
-import boto3
-import botocore
 import requests
-from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 def get_user():
     try:
@@ -61,21 +58,6 @@ class Temperature:
         self.wait_time      = 10 * Temperature.SECONDS_PER_MINUTE
         self.server_address = ''
         self.temperature    = 0
-        self.auth           = ''
-
-    def setup_aws(self):
-        '''Setup IAM credentials'''
-        try:
-            self.session = boto3.Session()
-            credentials = self.session.get_credentials()
-            self.auth = AWSRequestsAuth(aws_access_key=credentials.access_key,
-                        aws_secret_access_key=credentials.secret_key,
-                        aws_token=credentials.token,
-                        aws_host=self.host,
-                        aws_region='eu-west-2',
-                        aws_service='execute-api')
-        except botocore.exceptions.ConfigNotFound:
-            logging.error('Credentials not found')
 
     def get_settings(self):
         '''Get config env var'''
@@ -90,7 +72,6 @@ class Temperature:
                 data = json.load(file)
             self.wait_time      = data["weather_wait_time"]
             self.server_address = '{}/weather'.format(data["server_address"])
-            self.host           = data["host"]
             self.factor         = data["temperature_factor"]
             self.send_data = True
         except KeyError:
@@ -131,7 +112,7 @@ class Temperature:
                 'temperature': self.temperature
             }
             try:
-                response = requests.post(self.server_address, json=data, timeout=5, auth=self.auth)
+                response = requests.post(self.server_address, json=data, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -144,11 +125,10 @@ class Temperature:
     def loop(self):
         '''Loop through sensor and publish'''
         self.get_settings()
-        self.setup_aws()
         while True:
             self.get_sensor_temperature()
             self.publish_data()
-            time.sleep(60 * self.wait_time)
+            time.sleep(4 * 60 * self.wait_time)
 
 if __name__ == "__main__":
     temp = Temperature()

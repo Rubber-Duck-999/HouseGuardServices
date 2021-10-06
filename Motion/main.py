@@ -13,10 +13,7 @@ import logging.handlers
 import datetime
 import json
 import requests
-import botocore
-import boto3
 import subprocess
-from aws_requests_auth.aws_auth import AWSRequestsAuth
 
 # Setup global
 GPIO.setmode(GPIO.BCM)
@@ -52,12 +49,11 @@ class Motion():
     '''Motion class for finding'''
     def __init__(self):
         '''Constructor'''
-        self.last_detected = ''
-        self.initialised   = True
+        self.last_detected  = ''
+        self.initialised    = True
         self.server_address = ''
-        self.send_data = False
-        self.host = ''
-        self.path = '/home/{}/Desktop/cam_images/'
+        self.send_data      = False
+        self.path           = '/home/{}/Desktop/cam_images/'
 
     def get_settings(self):
         '''Get config env var'''
@@ -71,7 +67,6 @@ class Motion():
             with open(config_name) as file:
                 data = json.load(file)
             self.server_address = '{}/motion'.format(data["server_address"])
-            self.host           = data["host"]
             logging.info(self.server_address)
             self.send_data = True
         except KeyError:
@@ -79,21 +74,7 @@ class Motion():
         except FileNotFound:
             logging.error("File is missing")
 
-    def setup_aws(self):
-        '''Setup IAM credentials'''
-        try:
-            self.session = boto3.Session()
-            credentials = self.session.get_credentials()
-            self.auth = AWSRequestsAuth(aws_access_key=credentials.access_key,
-                        aws_secret_access_key=credentials.secret_key,
-                        aws_token=credentials.token,
-                        aws_host=self.host,
-                        aws_region='eu-west-2',
-                        aws_service='execute-api')
-        except botocore.exceptions.ConfigNotFound:
-            logging.error('Credentials not found')
-
-    def motion(self, value):
+    def motion(self):
         '''Motion detection'''
         detected = datetime.datetime.now()
         if self.initialised:
@@ -112,7 +93,7 @@ class Motion():
         '''Send data to server if asked'''
         if self.send_data:
             try:
-                response = requests.post(self.server_address, timeout=5, auth=self.auth)
+                response = requests.post(self.server_address, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -138,7 +119,6 @@ class Motion():
         logging.info('loop()')
         self.get_settings()
         time.sleep(2)
-        self.setup_aws()
         try:
             GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion, bouncetime=100)
             while True:
