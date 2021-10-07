@@ -67,6 +67,8 @@ class Emailer:
             server.login(self.from_email, self.from_password)
             server.sendmail(self.from_email, self.to_email, message.as_string())
             server.close()
+            logging.info('Remove file')
+            os.remove(filename)
         except smtplib.SMTPAuthenticationError as error:
             logging.error('Error occured on auth: {}'.format(error))
         except smtplib.SMTPException as error:
