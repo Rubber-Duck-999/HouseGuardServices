@@ -67,7 +67,8 @@ class Server(Flask):
         logging.info('Motion received')
         data = self.success_post()
         if self.alarm_state:
-            filename = request.get_json()['image']
+            data = request.get_json()
+            filename = data['image']
             self.state.set_motion()
             self.emailer.email('Motion on Alarm', 'Motion Ocurred', filename)
         else:
