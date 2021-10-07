@@ -40,7 +40,7 @@ class Emailer:
             logging.error('Type not available: {}'.format(error))
         return False
 
-    def email(self, subject, text):
+    def email(self, subject, text, filename):
         '''Set up message for email from stores'''
         logging.info('# email()')
         try:
@@ -52,9 +52,15 @@ class Emailer:
             message['Subject'] = subject
             message['From'] = self.from_email
             message['To'] = ", ".join(self.to_email)
+            part = MIMEBase('application', "octet-stream")
+            with open(filename, 'rb') as file:
+                part.set_payload(file.read())
+            encoders.encode_base64(part)
+            part.add_header('Content-Disposition',
+                        'attachment; filename={}'.format(Path(path).name))
+            msg.attach(part)
             message.attach(MIMEText(text, 'plain'))
             server.login(self.from_email, self.from_password)
-            print('Send email')
             server.sendmail(self.from_email, self.to_email, message.as_string())
             server.close()
         except smtplib.SMTPAuthenticationError as error:

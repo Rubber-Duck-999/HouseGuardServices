@@ -71,7 +71,7 @@ class Server(Flask):
             if uploaded_file.filename != '':
                 uploaded_file.save(uploaded_file.filename)
             self.state.set_motion()
-            self.emailer.email('Motion on Alarm', 'Motion Ocurred')
+            self.emailer.email('Motion on Alarm', 'Motion Ocurred', uploaded_file.filename)
         else:
             logging.error('Alarm was offline')
             data = {
