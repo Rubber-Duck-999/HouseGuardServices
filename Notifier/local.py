@@ -5,6 +5,7 @@ import smtplib
 import json
 import logging
 import os
+frompathlib import Path
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email import encoders
@@ -60,7 +61,7 @@ class Emailer:
                 part.set_payload(file.read())
             encoders.encode_base64(part)
             part.add_header('Content-Disposition',
-                        'attachment; filename={}'.format(Path(path).name))
+                        'attachment; filename={}'.format(Path(filename).name))
             msg.attach(part)
             message.attach(MIMEText(text, 'plain'))
             server.login(self.from_email, self.from_password)
