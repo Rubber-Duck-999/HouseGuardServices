@@ -74,7 +74,7 @@ class Motion():
         except FileNotFound:
             logging.error("File is missing")
 
-    def motion(self):
+    def motion(self, value):
         '''Motion detection'''
         detected = datetime.datetime.now()
         if self.initialised:
@@ -83,7 +83,7 @@ class Motion():
             self.initialised = False
             return
         delta = detected - self.last_detected
-        if delta.total_seconds() > 120:
+        if delta.total_seconds() > 15:
             self.last_detected = datetime.datetime.now()
             logging.info('New Motion Detected: {}'.format(detected))
             self.run()
@@ -111,7 +111,7 @@ class Motion():
             for file in directory:
                 pathFile = os.path.join(directory, file)
                 os.remove(pathFile)
-            fileName= "img_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
+            fileName= "img_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
             cmd = "raspistill -o " + self.path + fileName
             subprocess.call(cmd, shell=True)
             time.sleep(1)
