@@ -1,15 +1,15 @@
 #!/usr/bin/python3
 '''Python script to send '''
 # Import the email modules we'll need
+from email.mime.base import MIMEBase
+from email import encoders
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import smtplib
 import json
 import logging
 import os
 frompathlib import Path
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email import encoders
-from email.mime.base import MIMEBase
 
 
 class Emailer:
@@ -17,9 +17,10 @@ class Emailer:
 
     def __init__(self, path):
         '''Constructor for class'''
-        self.config_file   = '/home/{}/Documents/HouseGuardServices/config.json'.format(path)
-        self.from_email    = ''
-        self.to_email      = ''
+        self.config_file = '/home/{}/Documents/HouseGuardServices/config.json'.format(
+            path)
+        self.from_email = ''
+        self.to_email = ''
         self.from_password = ''
         self.last_temperature = ''
 
@@ -29,12 +30,12 @@ class Emailer:
         try:
             if not os.path.isfile(self.config_file):
                 return False
-            config_file        = open(self.config_file, "r")
-            config_data        = json.load(config_file)
-            self.from_email    = config_data["from_email"]
+            config_file = open(self.config_file, "r")
+            config_data = json.load(config_file)
+            self.from_email = config_data["from_email"]
             self.from_password = config_data["from_password"]
-            self.to_email      = config_data["to_email"]
-            self.start_temp    = config_data["start_temp"]
+            self.to_email = config_data["to_email"]
+            self.start_temp = config_data["start_temp"]
             return True
         except IOError as error:
             logging.error('File not available: {}'.format(error))
@@ -61,11 +62,12 @@ class Emailer:
                 part.set_payload(file.read())
             encoders.encode_base64(part)
             part.add_header('Content-Disposition',
-                        'attachment; filename={}'.format(Path(filename).name))
+                            'attachment; filename={}'.format(Path(filename).name))
             msg.attach(part)
             message.attach(MIMEText(text, 'plain'))
             server.login(self.from_email, self.from_password)
-            server.sendmail(self.from_email, self.to_email, message.as_string())
+            server.sendmail(self.from_email, self.to_email,
+                            message.as_string())
             server.close()
         except smtplib.SMTPAuthenticationError as error:
             logging.error('Error occured on auth: {}'.format(error))
