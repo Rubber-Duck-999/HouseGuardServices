@@ -39,7 +39,7 @@ class Server(Flask):
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
         self.state = State()
         self.alarm_state = True
-        self.path = '/home/{}/Desktop/cam_images/'
+        self.path = '/home/pi/Desktop/cam_images/'
 
     def check_config(self):
         return self.emailer.get_config()

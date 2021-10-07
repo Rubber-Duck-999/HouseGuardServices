@@ -53,7 +53,7 @@ class Motion():
         self.initialised    = True
         self.server_address = ''
         self.send_data      = False
-        self.path           = '/home/{}/Desktop/cam_images/'
+        self.path           = '/home/pi/Desktop/cam_images/'
 
     def get_settings(self):
         '''Get config env var'''
