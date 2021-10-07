@@ -39,7 +39,7 @@ class GUIController:
 											when="tail",
 											state=123) 
 			# trigger event in main thread
-			time.sleep(5)
+			time.sleep(30)
 			# one second
 
 	def eventhandler(self, evt):

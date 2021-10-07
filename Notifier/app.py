@@ -5,7 +5,7 @@ import logging.handlers
 import os
 from state import State
 from local import Emailer
-from flask import Flask, request
+from flask import Flask, request, jsonify
 
 def get_user():
     try:
@@ -45,9 +45,10 @@ class Server(Flask):
 
     def success_post(self):
         logging.info('# success_post()')
-        return {
+        data = {
             "message": "Success"
         }
+        return data
 
     def devices(self):
         logging.info('# devices()')
@@ -59,7 +60,7 @@ class Server(Flask):
             data = self.success_post()
         else:
             self.state.get_devices()
-        return data
+        return jsonify(data)
 
     def motion(self):
         logging.info('# motion()')
@@ -76,7 +77,7 @@ class Server(Flask):
             data = {
                 'motion': self.state.get_motion()
             }
-        return data
+        return jsonify(data)
 
     def alarm(self, state):
         logging.info('# alarm()')
@@ -89,7 +90,7 @@ class Server(Flask):
             message = 'Alarm is now switched to: {}'.format('OFF')
             self.alarm_state = False
         self.emailer.email('Alarm has Changed', message)
-        return data
+        return jsonify(data)
 
     def weather(self):
         logging.info('# weather()')
@@ -104,7 +105,7 @@ class Server(Flask):
             data = {
                 'temperature': self.state.get_temperature()
             }
-        return data
+        return jsonify(data)
 
 if __name__ == "__main__":
     logging.info("Starting program")
