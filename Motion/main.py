@@ -107,6 +107,10 @@ class Motion():
 
     def run(self):
         try:
+            directory = os.listdir(self.path)
+            for file in directory:
+                pathFile = os.path.join(directory, file)
+                os.remove(pathFile)
             fileName= "img_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
             cmd = "raspistill -o " + self.path + fileName
             subprocess.call(cmd, shell=True)

@@ -39,6 +39,7 @@ class Server(Flask):
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
         self.state = State()
         self.alarm_state = True
+        self.path = '/home/{}/Desktop/cam_images/'
 
     def check_config(self):
         return self.emailer.get_config()
@@ -67,10 +68,11 @@ class Server(Flask):
         logging.info('Motion received')
         data = self.success_post()
         if self.alarm_state:
-            data = request.get_json()
-            filename = data['image']
-            self.state.set_motion()
-            self.emailer.email('Motion on Alarm', 'Motion Ocurred', filename)
+            directory = os.listdir(self.path)
+            for file in directory:
+                pathFile = os.path.join(directory, file)
+                self.state.set_motion()
+                self.emailer.email('Motion on Alarm', 'Motion Ocurred', pathFile)
         else:
             logging.error('Alarm was offline')
             data = {
