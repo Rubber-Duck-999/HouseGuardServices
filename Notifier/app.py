@@ -67,11 +67,9 @@ class Server(Flask):
         logging.info('Motion received')
         data = self.success_post()
         if self.alarm_state:
-            uploaded_file = request.files['image']
-            if uploaded_file.filename != '':
-                uploaded_file.save(uploaded_file.filename)
+            filename = request.get_json()['image']
             self.state.set_motion()
-            self.emailer.email('Motion on Alarm', 'Motion Ocurred', uploaded_file.filename)
+            self.emailer.email('Motion on Alarm', 'Motion Ocurred', filename)
         else:
             logging.error('Alarm was offline')
             data = {
