@@ -1,40 +1,26 @@
-.App {
-  text-align: left;
-}
-
 .logo {
-  position: fixed;
-  left: 10px;
-  top: 10px;
+  float: left;
+  position: relative;
+  margin: 10px 15px 15px 10px;
 }
 
 .title {
-  position: fixed;
-  left: 150px;
-  top: 40px;
-}
-
-.buttons {
-  position: fixed;
-  right: 50px;
-  top: 40px;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+  position: relative;
+  margin: 45px 40px 15px 10px;
+  float: right;
 }
 
 .App-header {
   background-color: #355C7D;
   min-height: 120px;
   width: 100%;
-  display: flex;
-  position: fixed;
+  position: sticky;
   flex-direction: column;
+  font-size: calc(20px + 2vmin);
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.App-Bar {
+  color: #355C7D;
 }
