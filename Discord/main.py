@@ -2,6 +2,7 @@ import discord
 import json
 from message import MessageManager
 
+
 class HouseClient(discord.Client):
 
     def __init__(self, *args, **kwargs):
@@ -49,10 +50,11 @@ class HouseClient(discord.Client):
             return
 
         message_manager = MessageManager(message.content)
-        
+
         sentence = message_manager.get_message()
 
         await message.channel.send(sentence)
+
 
 client = HouseClient()
 token = client.get_settings()
