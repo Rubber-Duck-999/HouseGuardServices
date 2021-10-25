@@ -8,12 +8,12 @@ import (
 )
 
 func main() {
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.WarnLevel)
 	customFormatter := new(log.TextFormatter)
 	customFormatter.TimestampFormat = "2006-01-02 15:04:05"
 	log.SetFormatter(customFormatter)
 	customFormatter.FullTimestamp = true
-	log.Warn("NAC - Beginning to run Network ScannerProgram")
+	log.Warn("NAC - Beginning to run Network Scanner Program")
 	parser := argparse.NewParser("file", "Config file for runtime purpose")
 	// Create string flag
 	f := parser.String("f", "config", &argparse.Options{Required: true, Help: "Necessary config"})
@@ -30,10 +30,9 @@ func main() {
 	var data ConfigTypes
 	if Exists(file) {
 		GetData(&data, file)
-		found := make([]Device, 0)
 		scan := Scan{
 			Devices: data.Devices,
-			Found:   found,
+			File:    file,
 		}
 		scan.checkDevices()
 	} else {

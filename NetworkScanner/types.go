@@ -14,7 +14,7 @@ type Device struct {
 
 type Scan struct {
 	Devices []Device
-	Found   []Device
+	File    string
 }
 
 const ALLOWED int = 1

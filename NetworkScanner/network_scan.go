@@ -13,6 +13,7 @@ import (
 
 	"github.com/Ullaakut/nmap"
 	log "github.com/sirupsen/logrus"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -22,7 +23,7 @@ const (
 // Default to listen on all IPv4 interfaces
 var ListenAddr = "0.0.0.0"
 
-func (scan Scan) runARP() {
+func (scan *Scan) runARP() {
 	log.Debug("### Running ARP ###")
 	data, err := exec.Command("arp", "-a").Output()
 	if err != nil {
@@ -68,14 +69,14 @@ func (scan Scan) runARP() {
 				}
 
 				device := Device{string(data), mac, ip, true, UNKNOWN}
-				scan.Found = append(scan.Found, device)
+				scan.Devices = append(scan.Devices, device)
 				time.Sleep(1 * time.Second)
 			}
 		}
 	}
 }
 
-func (scan Scan) nmap_scan() {
+func (scan *Scan) nmap_scan() {
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	defer cancel()
 
@@ -102,19 +103,22 @@ func (scan Scan) nmap_scan() {
 	log.Debug("Nmap done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
 }
 
-func (scan Scan) checkDevices() {
+func (scan *Scan) checkDevices() {
 	for {
 		scan.nmap_scan()
 		scan.runARP()
-		log.Warn("### scan.Found ###")
-		for id := range scan.Found {
-			log.Warn("Device - ", scan.Found[id].Name, " : ",
-				scan.Found[id].Ip, " : ",
-				scan.Found[id].Mac, " : ",
-				scan.Found[id].Alive, " : ",
-				scan.Found[id].Allowed, " : ")
-		}
+		log.Warn("### Devices ###")
+		log.Warn("Number of devices - ", len(scan.Devices))
 		log.Debug("### End of ARP ###")
+		data, err := yaml.Marshal(&scan)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = ioutil.WriteFile(scan.File, data, 0)
+		if err != nil {
+
+			log.Fatal(err)
+		}
 		time.Sleep(30 * time.Second)
 	}
 }
