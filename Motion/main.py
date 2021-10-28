@@ -75,21 +75,21 @@ class Motion():
         except FileNotFound:
             logging.error("File is missing")
 
-    def motion(self, value):
+    def motion(self):
         '''Motion detection'''
         detected = datetime.datetime.now()
         logging.info('Motion Detected: {}'.format(detected))
         if self.initialised:
             self.last_detected = datetime.datetime.now()
-            logging.info('Motion First Detected: {}'.format(detected))
+            logging.info('Motion First Detected')
             self.initialised = False
-            return
-        delta = detected - self.last_detected
-        if delta.total_seconds() > 15:
-            self.last_detected = datetime.datetime.now()
-            logging.info('New Motion Detected: {}'.format(detected))
-            self.run()
-            self.publish_data()
+        else:
+            delta = detected - self.last_detected
+            if delta.total_seconds() > 5:
+                self.last_detected = datetime.datetime.now()
+                logging.info('New Motion Detected')
+                self.run()
+                self.publish_data()
 
     def publish_data(self):
         '''Send data to server if asked'''
@@ -113,13 +113,8 @@ class Motion():
 
     def run(self):
         try:
-            directory = os.listdir(self.path)
-            for file in directory:
-                path = '{}/{}'.format(directory, file)
-                os.remove(path)
-            fileName= "img_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
-            cmd = "raspistill -o " + self.path + fileName
-            self.filename = self.path + fileName
+            cmd = "raspistill -o " + self.path + "img.jpg"
+            self.filename = self.path + "img.jpg"
             subprocess.call(cmd, shell=True)
             time.sleep(1)
         except FileNotFoundError:
