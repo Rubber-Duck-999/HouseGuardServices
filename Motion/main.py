@@ -8,12 +8,14 @@ import json
 import requests
 from camera import Camera
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/motion.log'
 
@@ -25,22 +27,25 @@ except OSError as error:
     pass
 
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
-        self.last_detected  = ''
+        self.last_detected = ''
         self.server_address = ''
-        self.send_data      = False
-        self.filename       = ''
+        self.send_data = False
+        self.filename = ''
         self.camera = Camera()
 
     def get_settings(self):
@@ -67,10 +72,11 @@ class Motion():
         if self.send_data:
             try:
                 files = {
-                    'image': ('img.jpg', 
-                             open(self.filename, 'rb'), 
-                             'image/jpg')}
-                response = requests.post(self.server_address, files=files, timeout=5)
+                    'image': ('img.jpg',
+                              open(self.filename, 'rb'),
+                              'image/jpg')}
+                response = requests.post(
+                    self.server_address, files=files, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                     logging.info('Response: {}'.format(response))
@@ -97,6 +103,7 @@ class Motion():
                     time.sleep(20)
         except KeyboardInterrupt:
             logging.info('Quit')
+
 
 if __name__ == "__main__":
     motion = Motion()
