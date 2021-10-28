@@ -54,6 +54,7 @@ class Motion():
         self.server_address = ''
         self.send_data      = False
         self.path           = '/home/pi/Desktop/cam_images/'
+        self.filename       = ''
 
     def get_settings(self):
         '''Get config env var'''
@@ -93,7 +94,11 @@ class Motion():
         '''Send data to server if asked'''
         if self.send_data:
             try:
-                response = requests.post(self.server_address, timeout=5)
+                files = {
+                    'file': (self.filename, 
+                             open(self.filename, 'rb'), 
+                             'image/jpg')}
+                response = requests.post(self.server_address, files=files, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -113,6 +118,7 @@ class Motion():
                 os.remove(pathFile)
             fileName= "img_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
             cmd = "raspistill -o " + self.path + fileName
+            self.filename = self.path + fileName
             subprocess.call(cmd, shell=True)
             time.sleep(1)
         except FileNotFoundError:
