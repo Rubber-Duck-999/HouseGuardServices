@@ -131,7 +131,7 @@ class Motion():
         self.get_settings()
         time.sleep(2)
         try:
-            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion, bouncetime=100)
+            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
             while True:
                 time.sleep(100)
         except KeyboardInterrupt:
