@@ -90,6 +90,10 @@ class Motion():
                 logging.info('New Motion Detected')
                 self.run()
                 self.publish_data()
+        GPIO.remove_event_detect(PIR_PIN)
+        time.sleep(5)
+        GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
+
 
     def publish_data(self):
         '''Send data to server if asked'''
