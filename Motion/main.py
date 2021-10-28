@@ -78,7 +78,6 @@ class Motion():
     def motion(self):
         '''Motion detection'''
         detected = datetime.datetime.now()
-        logging.info('Motion Detected: {}'.format(detected))
         if self.initialised:
             self.last_detected = datetime.datetime.now()
             logging.info('Motion First Detected')
@@ -128,7 +127,7 @@ class Motion():
         logging.info('loop()')
         self.get_settings()
         logging.info('Loading hardware')
-        time.sleep(120)
+        time.sleep(2)
         logging.info('Loading Complete')
         try:
             while True:
