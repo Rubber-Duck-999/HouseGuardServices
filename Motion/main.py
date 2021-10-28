@@ -116,7 +116,7 @@ class Motion():
 
     def run(self):
         try:
-            cmd = "raspistill -o " + self.path + "img.jpg"
+            cmd = "raspistill -rot 180 -o " + self.path + "img.jpg"
             self.filename = self.path + "img.jpg"
             subprocess.call(cmd, shell=True)
             time.sleep(1)
