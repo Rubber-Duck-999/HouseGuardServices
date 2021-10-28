@@ -127,7 +127,9 @@ class Motion():
         '''Loop and wait for event'''
         logging.info('loop()')
         self.get_settings()
+        logging.info('Loading hardware')
         time.sleep(120)
+        logging.info('Loading Complete')
         try:
             while True:
                 if GPIO.input(PIR_PIN):
