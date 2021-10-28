@@ -98,7 +98,7 @@ class Motion():
         if self.send_data:
             try:
                 files = {
-                    'image': (self.filename, 
+                    'image': ('img.jpg', 
                              open(self.filename, 'rb'), 
                              'image/jpg')}
                 response = requests.post(self.server_address, files=files, timeout=5)
