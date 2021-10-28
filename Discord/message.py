@@ -1,7 +1,8 @@
 import random
 
+
 class MessageManager:
-    
+
     def __init__(self, message):
         self.message = message
         self.messages = []
