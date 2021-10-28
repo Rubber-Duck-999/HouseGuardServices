@@ -30,7 +30,7 @@ class Camera:
         self.motion_counter = 0
         self.motion = False
         self.timestamp = None
-        self.last_updated = None
+        self.last_updated = datetime.datetime.now()
 
     def get_base_image(self):
         # initialize the camera and grab a reference to the raw camera capture
