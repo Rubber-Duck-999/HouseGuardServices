@@ -18,7 +18,7 @@ import subprocess
 # Setup global
 GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
-GPIO.setup(PIR_PIN, GPIO.IN)
+GPIO.setup(PIR_PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 def get_user():
     try:
