@@ -114,9 +114,7 @@ class Camera:
                     (x, y, w, h) = cv2.boundingRect(c)
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                     self.motion = True
-            found = self.check_motion(frame)
-            if found:
-                self.camera.close()
+            self.check_motion(frame)
             self.raw_capture.truncate(0)
 
     def run_capture(self):
