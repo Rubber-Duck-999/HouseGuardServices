@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 from exceptions import BadDataError
 
+
 def validate_device(data):
     logging.info('validate_device()')
     device = {}
@@ -18,6 +19,7 @@ def validate_device(data):
         raise BadDataError('Error found on JSON Dictionary')
     return device
 
+
 def validate_file(filename):
     logging.info('validate_file()')
     '''Checks file matches extensions'''
@@ -26,6 +28,7 @@ def validate_file(filename):
         if extension in filename:
             return True
     return False
+
 
 def validate_motion(data):
     logging.info('validate_motion()')
@@ -40,6 +43,7 @@ def validate_motion(data):
         logging.error('Data was not valid on keys: {}'.format(error))
         raise BadDataError('Error found on JSON Dictionary')
     return motion
+
 
 def validate_temperature(data):
     logging.info('validate_temperature()')

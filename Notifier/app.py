@@ -21,8 +21,9 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class Server(Flask):
 
@@ -94,7 +95,8 @@ class Server(Flask):
                         'user': request.remote_addr
                     }
                     if request_data:
-                        self.request_result = self.state.add_motion(request_data)
+                        self.request_result = self.state.add_motion(
+                            request_data)
                 else:
                     logging.info('Invalid file')
             else:
