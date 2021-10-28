@@ -84,12 +84,11 @@ class Motion():
             self.initialised = False
         else:
             delta = detected - self.last_detected
-            if delta.total_seconds() > 60:
+            if delta.total_seconds() > 5:
                 self.last_detected = datetime.datetime.now()
                 logging.info('New Motion Detected')
                 self.run()
                 self.publish_data()
-        time.sleep(5)
 
 
     def publish_data(self):
