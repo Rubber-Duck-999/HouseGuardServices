@@ -130,10 +130,11 @@ class Motion():
         logging.info('loop()')
         self.get_settings()
         try:
-            GPIO.add_event_detect(PIR_PIN, callback=self.motion)
+            # GPIO.add_event_detect(PIR_PIN, callback=self.motion)
             while True:
-                # wait for up to 5 seconds for a rising edge (timeout is in milliseconds)
-                pass
+                if GPIO.input(PIR_PIN):
+                    print('Motion Detected!')
+                time.sleep(1)
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
