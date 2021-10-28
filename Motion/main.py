@@ -85,12 +85,12 @@ class Motion():
             self.initialised = False
         else:
             delta = detected - self.last_detected
-            if delta.total_seconds() > 5:
+            if delta.total_seconds() > 60:
                 self.last_detected = datetime.datetime.now()
                 logging.info('New Motion Detected')
                 self.run()
                 self.publish_data()
-        time.sleep(30)
+        time.sleep(5)
 
 
     def publish_data(self):
@@ -98,7 +98,7 @@ class Motion():
         if self.send_data:
             try:
                 files = {
-                    'file': (self.filename, 
+                    'image': (self.filename, 
                              open(self.filename, 'rb'), 
                              'image/jpg')}
                 response = requests.post(self.server_address, files=files, timeout=5)
