@@ -59,7 +59,7 @@ class Camera:
                 if self.motion_counter >= 8:
                     # check to see if we should take pictures
                     logging.info("Motion detected")
-                    image = "{}/img.jpg".format('/home/pi/Desktop/cam_images/')
+                    image = "{}/img.jpg".format('/home/pi/Desktop/cam_images')
                     logging.info("Creating file: {}".format(image))
                     cv2.imwrite(image, frame)
                     colorImage  = Image.open(image)

@@ -66,6 +66,7 @@ class Motion():
         '''Send data to server if asked'''
         if self.send_data:
             try:
+                self.filename = "{}/img.jpg".format('/home/pi/Desktop/cam_images')
                 files = {
                     'image': ('img.jpg', 
                              open(self.filename, 'rb'), 
