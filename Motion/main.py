@@ -78,6 +78,7 @@ class Motion():
     def motion(self, value):
         '''Motion detection'''
         detected = datetime.datetime.now()
+        logging.info('Motion Detected: {}'.format(detected))
         if self.initialised:
             self.last_detected = datetime.datetime.now()
             logging.info('Motion First Detected: {}'.format(detected))
