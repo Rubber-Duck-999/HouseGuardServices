@@ -132,7 +132,8 @@ class Motion():
         try:
             GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
             while True:
-                pass
+               logging.info(GPIO.input(PIR_PIN))
+               time.sleep(500)
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
