@@ -78,21 +78,21 @@ class Motion():
     def motion(self, value):
         '''Motion detection'''
         detected = datetime.datetime.now()
-        logging.info('Motion Detected: {}'.format(detected))
-        if self.initialised:
-            self.last_detected = datetime.datetime.now()
-            logging.info('Motion First Detected')
-            self.initialised = False
-        else:
-            delta = detected - self.last_detected
-            if delta.total_seconds() > 5:
+        if GPIO.input(value):
+            logging.info('Motion Detected: {}'.format(detected))
+            if self.initialised:
                 self.last_detected = datetime.datetime.now()
-                logging.info('New Motion Detected')
-                self.run()
-                self.publish_data()
-        GPIO.remove_event_detect(PIR_PIN)
-        time.sleep(5)
-        GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
+                logging.info('Motion First Detected')
+                self.initialised = False
+            else:
+                delta = detected - self.last_detected
+                if delta.total_seconds() > 5:
+                    self.last_detected = datetime.datetime.now()
+                    logging.info('New Motion Detected')
+                    self.run()
+                    self.publish_data()
+        else:
+            logging.info('Not correct value')
 
 
     def publish_data(self):
@@ -130,14 +130,10 @@ class Motion():
         logging.info('loop()')
         self.get_settings()
         try:
-            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
+            GPIO.add_event_detect(PIR_PIN, callback=self.motion)
             while True:
                 # wait for up to 5 seconds for a rising edge (timeout is in milliseconds)
-                channel = GPIO.wait_for_edge(PIR_PIN, GPIO.RISING, timeout=5000)
-                if channel is None:
-                    print('Timeout occurred')
-                else:
-                    print('Edge detected on channel', channel)
+                pass
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
