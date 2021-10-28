@@ -20,12 +20,14 @@ GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/motion.log'
 
@@ -37,24 +39,27 @@ except OSError as error:
     pass
 
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
-        self.last_detected  = ''
-        self.initialised    = True
+        self.last_detected = ''
+        self.initialised = True
         self.server_address = ''
-        self.send_data      = False
-        self.path           = '/home/pi/Desktop/cam_images/'
-        self.filename       = ''
+        self.send_data = False
+        self.path = '/home/pi/Desktop/cam_images/'
+        self.filename = ''
 
     def get_settings(self):
         '''Get config env var'''
@@ -94,16 +99,16 @@ class Motion():
         time.sleep(5)
         GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
 
-
     def publish_data(self):
         '''Send data to server if asked'''
         if self.send_data:
             try:
                 files = {
-                    'file': (self.filename, 
-                             open(self.filename, 'rb'), 
+                    'file': (self.filename,
+                             open(self.filename, 'rb'),
                              'image/jpg')}
-                response = requests.post(self.server_address, files=files, timeout=5)
+                response = requests.post(
+                    self.server_address, files=files, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                     logging.info('Response: {}'.format(response))
@@ -132,11 +137,12 @@ class Motion():
         try:
             GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
             while True:
-               logging.info(GPIO.input(PIR_PIN))
-               time.sleep(500)
+                logging.info(GPIO.input(PIR_PIN))
+                time.sleep(500)
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
+
 
 if __name__ == "__main__":
     motion = Motion()
