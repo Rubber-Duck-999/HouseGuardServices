@@ -47,7 +47,6 @@ class Camera:
 
     def check_motion(self, frame):
         '''Calcultes whether a motion has occurred'''
-        logging.info('check_motion()')
         # check to see if the room is occupied
         if self.motion:
             # check to see if enough time has passed between uploads
@@ -72,7 +71,6 @@ class Camera:
                     self.camera.close()
         # otherwise, the room is not occupied
         else:
-            logging.info('Resetting motion counter')
             self.motion_counter = 0
 
     def check_motion_capture(self):
