@@ -21,7 +21,6 @@ class Emailer:
         self.from_email    = ''
         self.to_email      = ''
         self.from_password = ''
-        self.last_temperature = ''
 
     def get_config(self):
         '''Get configuration values'''
@@ -34,7 +33,6 @@ class Emailer:
             self.from_email    = config_data["from_email"]
             self.from_password = config_data["from_password"]
             self.to_email      = config_data["to_email"]
-            self.start_temp    = config_data["start_temp"]
             return True
         except IOError as error:
             logging.error('File not available: {}'.format(error))
