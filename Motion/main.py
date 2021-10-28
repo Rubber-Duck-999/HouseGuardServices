@@ -18,7 +18,7 @@ import subprocess
 # Setup global
 GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
-GPIO.setup(PIR_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(PIR_PIN, GPIO.IN)
 
 def get_user():
     try:
@@ -125,11 +125,10 @@ class Motion():
         '''Loop and wait for event'''
         logging.info('loop()')
         self.get_settings()
-        time.sleep(2)
         try:
             GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
             while True:
-                time.sleep(100)
+                pass
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
