@@ -1,3 +1,4 @@
+from time import time
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from PIL import Image
@@ -5,6 +6,7 @@ import cv2
 import imutils
 import logging
 import datetime
+import time
 
 
 class ImageTaken(Exception):
@@ -39,6 +41,7 @@ class Camera:
             self.camera.resolution = [640, 480]
             self.camera.framerate = 8
             self.raw_capture = PiRGBArray(self.camera, size=[640, 480])
+            time.sleep(10)
         except:
             logging.error("Camera failure")
 
