@@ -1,24 +1,20 @@
 #!/usr/bin/python3
 '''Python script to send emails on server'''
+from datetime import datetime
 import logging
 import logging.handlers
 import os
 from state import State
 from local import Emailer
+from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify
+from validate import validate_file
 
-def get_user():
-    try:
-        username = os.getlogin()
-    except OSError:
-        username = 'pi'
-    return username
+app = Flask(__name__)
 
-filename = '/home/{}/Documents/HouseGuardServices/notifier.log'
+filename = '/home/simon/Documents/HouseGuardServices/notifier.log'
 
 try:
-    name = get_user()
-    filename = filename.format(name)
     os.remove(filename)
 except OSError as error:
     pass
@@ -32,22 +28,28 @@ class Server(Flask):
 
     def __init__(self, import_name):
         super(Server, self).__init__(import_name)
-        self.emailer = Emailer(get_user())
-        self.route('/motion', methods=['POST'])(self.motion)
-        self.route('/alarm/<int:state>', methods=['POST'])(self.alarm)
-        self.route('/weather', methods=['POST', 'GET'])(self.weather)
+        self.emailer = Emailer('simon')
+        self.route('/motion/<int:days>', methods=['GET'])(self.get_motion)
+        self.route('/motion', methods=['POST'])(self.post_motion)
+        self.route('/alarm', methods=['GET'])(self.get_alarm)
+        self.route('/alarm/<string:state>', methods=['POST'])(self.set_alarm)
+        self.route('/temp/<int:days>', methods=['GET'])(self.get_temp)
+        self.route('/temp', methods=['POST'])(self.set_temp)
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
         self.state = State()
-        self.alarm_state = True
-        self.path = '/home/pi/Desktop/cam_images/'
+        self.request_result = False
 
     def check_config(self):
         return self.emailer.get_config()
 
-    def success_post(self):
-        logging.info('# success_post()')
+    def result(self):
+        logging.info('# result()')
+        if self.request_result is True:
+            success = "Success"
+        else:
+            success = "Failure"
         data = {
-            "message": "Success"
+            "message": success
         }
         return data
 
@@ -57,56 +59,86 @@ class Server(Flask):
         if request.method == 'POST':
             request_data = request.get_json()
             if request_data:
-                self.state.set_devices(request_data)
-            data = self.success_post()
+                self.request_result = self.state.add_device(request_data)
+            data = self.result()
+            return jsonify(data)
         else:
-            self.state.get_devices()
-        return jsonify(data)
-
-    def motion(self):
-        logging.info('# motion()')
-        logging.info('Motion received')
-        data = self.success_post()
-        if self.alarm_state:
-            directory = os.listdir(self.path)
-            for file in directory:
-                pathFile = os.path.join(directory, file)
-                self.state.set_motion()
-                self.emailer.email('Motion on Alarm', 'Motion Ocurred', pathFile)
-        else:
-            logging.error('Alarm was offline')
-            data = {
-                'motion': self.state.get_motion()
+            data = self.state.get_devices()
+            devices = {
+                'Count': len(data),
+                'Devices': data
             }
+            return jsonify(devices)
+
+    def get_motion(self, days):
+        logging.info('# get_motion()')
+        data = self.state.get_motion(days)
+        events = {
+            'Count': len(data),
+            'Events': data
+        }
+        return jsonify(events)
+
+    def post_motion(self):
+        logging.info('# post_motion()')
+        try:
+            if request.files:
+                file = request.files['image']
+                logging.info('File: {}'.format(file.filename))
+                if validate_file(file.filename):
+                    now = datetime.now().strftime("%m-%d-%Y:%H-%M-%S") + '.jpg'
+                    destination = "/".join(['/home/simon/Documents/receive', now])
+                    file.save(destination)
+                    request_data = {
+                        'file': destination,
+                        'user': request.remote_addr
+                    }
+                    if request_data:
+                        self.request_result = self.state.add_motion(request_data)
+                else:
+                    logging.info('Invalid file')
+            else:
+                logging.error('No files attached')
+        except Exception as error:
+            logging.error('Error occurred on file post: {}'.format(error))
+        data = self.result()
         return jsonify(data)
 
-    def alarm(self, state):
+    def get_alarm(self):
         logging.info('# alarm()')
         logging.info('Alarm Message received')
-        data = self.success_post()
-        if state == 1:
-            message = 'Alarm is now switched to: {}'.format('ON')
-            self.alarm_state = True
-        else:
-            message = 'Alarm is now switched to: {}'.format('OFF')
-            self.alarm_state = False
-        self.emailer.email('Alarm has Changed', message)
+        state = self.state.get_state()
+        events = {
+            'Alarm': state
+        }
+        return jsonify(events)
+
+    def set_alarm(self, state):
+        logging.info('# set_alarm()')
+        try:
+            self.request_result = self.state.set_state(state)
+        except Exception as error:
+            logging.error('Error occurred on file post: {}'.format(error))
+        data = self.result()
         return jsonify(data)
 
-    def weather(self):
-        logging.info('# weather()')
-        logging.info('Weather Message received')
-        data = "received"
-        if request.method == 'POST':
-            request_data = request.get_json()
-            if request_data:
-                self.state.set_temperature(request_data['temperature'])
-            data = self.success_post()
-        else:
-            data = {
-                'temperature': self.state.get_temperature()
-            }
+    def get_temp(self, days):
+        logging.info('# get_temp()')
+        temperature = self.state.get_temperature(days)
+        events = {
+            'Count': len(temperature),
+            'Records': temperature
+        }
+        return jsonify(events)
+
+    def set_temp(self):
+        logging.info('# devices()')
+        request_data = request.get_json()
+        if request_data:
+            self.request_result = self.state.add_temperature(request_data)
+        data = self.result()
         return jsonify(data)
+
 
 if __name__ == "__main__":
     logging.info("Starting program")

@@ -57,7 +57,8 @@ class Temperature:
         # Default of 10 minutes
         self.wait_time      = 10 * Temperature.SECONDS_PER_MINUTE
         self.server_address = ''
-        self.temperature    = 0
+        self.temperature    = 0.0
+        self.humidity       = 0.0
 
     def get_settings(self):
         '''Get config env var'''
@@ -71,7 +72,7 @@ class Temperature:
             with open(config_name) as file:
                 data = json.load(file)
             self.wait_time      = data["weather_wait_time"]
-            self.server_address = '{}/weather'.format(data["server_address"])
+            self.server_address = '{}/temp'.format(data["server_address"])
             self.factor         = data["temperature_factor"]
             self.send_data = True
         except KeyError:
@@ -109,7 +110,8 @@ class Temperature:
         '''Send data to server if asked'''
         if self.send_data:
             data = {
-                'temperature': self.temperature
+                'temperature': self.temperature,
+                'humidity': self.bme280.get_humidity()
             }
             try:
                 response = requests.post(self.server_address, json=data, timeout=5)
@@ -128,7 +130,7 @@ class Temperature:
         while True:
             self.get_sensor_temperature()
             self.publish_data()
-            time.sleep(4 * 60 * self.wait_time)
+            time.sleep(4 * self.wait_time)
 
 if __name__ == "__main__":
     temp = Temperature()
