@@ -1,24 +1,12 @@
 #!/usr/bin/env python3
-'''
-Motion script
-'''
-try:
-    import RPi.GPIO as GPIO
-except:
-    import Mock.GPIO as GPIO
+'''Motion script'''
 import os
 import time
 import logging
 import logging.handlers
-import datetime
 import json
 import requests
-import subprocess
-
-# Setup global
-GPIO.setmode(GPIO.BCM)
-PIR_PIN = 4
-GPIO.setup(PIR_PIN, GPIO.IN, GPIO.PUD_DOWN)
+from camera import Camera
 
 def get_user():
     try:
@@ -50,11 +38,10 @@ class Motion():
     def __init__(self):
         '''Constructor'''
         self.last_detected  = ''
-        self.initialised    = True
         self.server_address = ''
         self.send_data      = False
-        self.path           = '/home/pi/Desktop/cam_images/'
         self.filename       = ''
+        self.camera = Camera()
 
     def get_settings(self):
         '''Get config env var'''
@@ -74,22 +61,6 @@ class Motion():
             logging.error("Variables not set")
         except FileNotFound:
             logging.error("File is missing")
-
-    def motion(self):
-        '''Motion detection'''
-        detected = datetime.datetime.now()
-        if self.initialised:
-            self.last_detected = datetime.datetime.now()
-            logging.info('Motion First Detected')
-            self.initialised = False
-        else:
-            delta = detected - self.last_detected
-            if delta.total_seconds() > 5:
-                self.last_detected = datetime.datetime.now()
-                logging.info('New Motion Detected')
-                self.run()
-                self.publish_data()
-
 
     def publish_data(self):
         '''Send data to server if asked'''
@@ -112,15 +83,6 @@ class Motion():
         else:
             logging.error('Send data is off')
 
-    def run(self):
-        try:
-            cmd = "raspistill -rot 180 -o " + self.path + "img.jpg"
-            self.filename = self.path + "img.jpg"
-            subprocess.call(cmd, shell=True)
-            time.sleep(1)
-        except FileNotFoundError:
-            logging.error('File not found')
-
     def loop(self):
         '''Loop and wait for event'''
         logging.info('loop()')
@@ -130,12 +92,10 @@ class Motion():
         logging.info('Loading Complete')
         try:
             while True:
-                if GPIO.input(PIR_PIN):
-                    self.motion()
-                time.sleep(1)
+                if self.camera.run_capture():
+                    self.publish_data()
         except KeyboardInterrupt:
             logging.info('Quit')
-            GPIO.cleanup()
 
 if __name__ == "__main__":
     motion = Motion()
