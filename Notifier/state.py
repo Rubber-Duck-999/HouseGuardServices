@@ -35,12 +35,11 @@ class State:
 
     def connect(self):
         logging.info('# connect()')
-        conn_str = 'mongodb://{}:{}@1localhost:27017/house-guard?authSource=admin'.format(self.username, self.password)
+        self.get_settings()
+        conn_str = 'mongodb://{}:{}@192.168.0.15:27017/house-guard?authSource=admin'.format(self.username, self.password)
         try:
             self.client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
             logging.info('Success on connection')
-        except pymongo.errors.ConnectionError as error:
-            logging.error('Pymongo failed: {}'.format(error))
         except pymongo.errors.OperationFailure as error:
             logging.error('Pymongo failed on auth: {}'.format(error))
         except pymongo.errors.ServerSelectionTimeoutError as error:
