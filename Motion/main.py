@@ -20,12 +20,14 @@ GPIO.setmode(GPIO.BCM)
 PIR_PIN = 4
 GPIO.setup(PIR_PIN, GPIO.IN)
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 filename = '/home/{}/Documents/HouseGuardServices/motion.log'
 
@@ -37,24 +39,27 @@ except OSError as error:
     pass
 
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
-        self.last_detected  = ''
-        self.initialised    = True
+        self.last_detected = ''
+        self.initialised = True
         self.server_address = ''
-        self.send_data      = False
-        self.path           = '/home/pi/Desktop/cam_images/'
-        self.filename       = ''
+        self.send_data = False
+        self.path = '/home/pi/Desktop/cam_images/'
+        self.filename = ''
 
     def get_settings(self):
         '''Get config env var'''
@@ -96,10 +101,11 @@ class Motion():
         if self.send_data:
             try:
                 files = {
-                    'file': (self.filename, 
-                             open(self.filename, 'rb'), 
+                    'file': (self.filename,
+                             open(self.filename, 'rb'),
                              'image/jpg')}
-                response = requests.post(self.server_address, files=files, timeout=5)
+                response = requests.post(
+                    self.server_address, files=files, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                 else:
@@ -117,7 +123,7 @@ class Motion():
             for file in directory:
                 pathFile = os.path.join(directory, file)
                 os.remove(pathFile)
-            fileName= "img_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
+            fileName = "img_" + datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"
             cmd = "raspistill -o " + self.path + fileName
             self.filename = self.path + fileName
             subprocess.call(cmd, shell=True)
@@ -131,12 +137,14 @@ class Motion():
         self.get_settings()
         time.sleep(2)
         try:
-            GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion, bouncetime=100)
+            GPIO.add_event_detect(PIR_PIN, GPIO.RISING,
+                                  callback=self.motion, bouncetime=100)
             while True:
                 time.sleep(100)
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
+
 
 if __name__ == "__main__":
     motion = Motion()
