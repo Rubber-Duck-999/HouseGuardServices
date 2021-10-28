@@ -75,24 +75,22 @@ class Motion():
         except FileNotFound:
             logging.error("File is missing")
 
-    def motion(self, value):
+    def motion(self):
         '''Motion detection'''
         detected = datetime.datetime.now()
-        if GPIO.input(value):
-            logging.info('Motion Detected: {}'.format(detected))
-            if self.initialised:
-                self.last_detected = datetime.datetime.now()
-                logging.info('Motion First Detected')
-                self.initialised = False
-            else:
-                delta = detected - self.last_detected
-                if delta.total_seconds() > 5:
-                    self.last_detected = datetime.datetime.now()
-                    logging.info('New Motion Detected')
-                    self.run()
-                    self.publish_data()
+        logging.info('Motion Detected: {}'.format(detected))
+        if self.initialised:
+            self.last_detected = datetime.datetime.now()
+            logging.info('Motion First Detected')
+            self.initialised = False
         else:
-            logging.info('Not correct value')
+            delta = detected - self.last_detected
+            if delta.total_seconds() > 5:
+                self.last_detected = datetime.datetime.now()
+                logging.info('New Motion Detected')
+                self.run()
+                self.publish_data()
+        time.sleep(30)
 
 
     def publish_data(self):
@@ -129,12 +127,11 @@ class Motion():
         '''Loop and wait for event'''
         logging.info('loop()')
         self.get_settings()
+        time.sleep(120)
         try:
-            # GPIO.add_event_detect(PIR_PIN, callback=self.motion)
             while True:
                 if GPIO.input(PIR_PIN):
-                    logging.info('Motion Detected!')
-                    time.sleep(5)
+                    self.motion()
                 time.sleep(1)
         except KeyboardInterrupt:
             logging.info('Quit')
