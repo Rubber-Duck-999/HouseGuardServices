@@ -132,8 +132,12 @@ class Motion():
         try:
             GPIO.add_event_detect(PIR_PIN, GPIO.RISING, callback=self.motion)
             while True:
-               logging.info(GPIO.input(PIR_PIN))
-               time.sleep(1)
+                # wait for up to 5 seconds for a rising edge (timeout is in milliseconds)
+                channel = GPIO.wait_for_edge(PIR_PIN, GPIO.RISING, timeout=5000)
+                if channel is None:
+                    print('Timeout occurred')
+                else:
+                    print('Edge detected on channel', channel)
         except KeyboardInterrupt:
             logging.info('Quit')
             GPIO.cleanup()
