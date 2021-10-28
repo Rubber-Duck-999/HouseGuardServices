@@ -110,7 +110,7 @@ class Temperature:
         '''Send data to server if asked'''
         if self.send_data:
             data = {
-                'temperature': self.temperature,
+                'temp': self.temperature,
                 'humidity': self.bme280.get_humidity()
             }
             try:

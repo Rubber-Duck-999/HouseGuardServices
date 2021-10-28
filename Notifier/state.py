@@ -19,7 +19,7 @@ class State:
 
     def get_settings(self):
         '''Get config env var'''
-        print('get_settings()')
+        logging.info('get_settings()')
         config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         token = ''
         try:
@@ -28,9 +28,9 @@ class State:
             self.username = data["db_username"]
             self.password = data["db_password"]
         except KeyError:
-            print("Variables not set")
+            logging.info("Variables not set")
         except IOError:
-            print('Could not read file')
+            logging.info('Could not read file')
         return token
 
     def connect(self):
