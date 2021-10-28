@@ -94,6 +94,7 @@ class Motion():
             while True:
                 if self.camera.run_capture():
                     self.publish_data()
+                    time.sleep(20)
         except KeyboardInterrupt:
             logging.info('Quit')
 

@@ -116,12 +116,15 @@ class Camera:
             found = self.check_motion(frame)
             if found:
                 self.camera.close()
+            else:
+                self.raw_capture.truncate(0)
 
     def run_capture(self):
         '''Setup for running capture'''
         logging.info('run_capture()')
         try:
             self.reset()
+            self.get_base_image()
             self.check_motion_capture()
         except Exception as error:
             logging.error('Error found on camera capture: {}'.format(error))
