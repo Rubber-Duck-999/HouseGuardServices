@@ -6,6 +6,7 @@ import cv2
 import imutils
 import logging
 import datetime
+from api import Api
 import time
 
 
@@ -13,14 +14,14 @@ class ImageTaken(Exception):
     '''Exception to get out of capture'''
 
 class Camera:
-    def __init__(self):
+    def __init__(self, server):
         self.raw_capture = None
-        self.min_frames = 8
         self.camera = None
         self.motion_counter = 0
         self.motion = False
         self.timestamp = None
         self.last_uploaded = None
+        self.api = Api(server)
 
     def get_base_image(self):
         # initialize the camera and grab a reference to the raw camera capture
@@ -46,17 +47,19 @@ class Camera:
                 self.motion_counter = self.motion_counter + 1
                 # check to see if the number of frames with consistent motion is
                 # high enough
-                if self.motion_counter >= 8:
+                if self.motion_counter >= 5:
                     # check to see if we should take pictures
                     logging.info("Motion detected")
                     current = self.timestamp.strftime("%d:%m:%Y-%H:%M:%S")
-                    image = "{}/{}.jpg".format('/home/pi/Desktop/cam_images', current)
-                    logging.info("Creating file: {}".format(image))
-                    cv2.imwrite(image, frame)
-                    colorImage  = Image.open(image)
+                    filename = "{}/{}.jpg".format('/home/pi/Desktop/cam_images', current)
+                    logging.info("Creating file: {}".format(filename))
+                    cv2.imwrite(filename, frame)
+                    colorImage  = Image.open(filename)
                     transposed  = colorImage.rotate(180)
-                    transposed.save(image)
+                    transposed.save(filename)
                     logging.info("Image created")
+                    # Call other object to send image
+                    self.api.publish_data(filename)
                     self.last_uploaded = self.timestamp
                     self.motion_counter = 0
         # otherwise, the room is not occupied
