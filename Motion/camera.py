@@ -38,9 +38,9 @@ class Camera:
         try:
             logging.info("Starting up camera")
             self.camera = PiCamera()
-            self.camera.resolution = [640, 480]
+            self.camera.resolution = (640, 480)
             self.camera.framerate = 8
-            self.raw_capture = PiRGBArray(self.camera, size=[640, 480])
+            self.raw_capture = PiRGBArray(self.camera, size=(640, 480))
             time.sleep(10)
         except:
             logging.error("Camera failure")
