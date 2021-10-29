@@ -40,6 +40,7 @@ class Camera:
         '''Calcultes whether a motion has occurred'''
         # check to see if the room is occupied
         if self.motion:
+            logging.info("Motion detected Initially")
             # check to see if enough time has passed between uploads
             if (self.timestamp - self.last_updated).seconds >= 3:
                 # increment the motion counter
@@ -59,6 +60,8 @@ class Camera:
                     logging.info("Image created")
                     self.last_uploaded = self.timestamp
                     self.motion_counter = 0
+            else:
+                logging.info("Motion detected too close")
         # otherwise, the room is not occupied
         else:
             self.motion_counter = 0

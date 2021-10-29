@@ -7,22 +7,14 @@ import logging.handlers
 import json
 import requests
 from camera import Camera
+import sys
 
-def get_user():
-    try:
-        username = os.getlogin()
-    except OSError:
-        username = 'pi'
-    return username
-
-filename = '/home/{}/Documents/HouseGuardServices/motion.log'
+filename = '/home/pi/Documents/HouseGuardServices/motion.log'
 
 try:
-    name = get_user()
-    filename = filename.format(name)
     os.remove(filename)
 except OSError as error:
-    pass
+    sys.exit(1)
 
 logging.basicConfig(filename=filename,
                     format='%(asctime)s - %(levelname)s - %(message)s', 
