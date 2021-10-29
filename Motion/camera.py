@@ -12,6 +12,7 @@ import time
 class ImageTaken(Exception):
     '''Exception to get out of capture'''
 
+
 class Camera:
     def __init__(self):
         self.raw_capture = None
@@ -50,11 +51,12 @@ class Camera:
                     # check to see if we should take pictures
                     logging.info("Motion detected")
                     current = self.timestamp.strftime("%d:%m:%Y-%H:%M:%S")
-                    image = "{}/{}.jpg".format('/home/pi/Desktop/cam_images', current)
+                    image = "{}/{}.jpg".format(
+                        '/home/pi/Desktop/cam_images', current)
                     logging.info("Creating file: {}".format(image))
                     cv2.imwrite(image, frame)
-                    colorImage  = Image.open(image)
-                    transposed  = colorImage.rotate(180)
+                    colorImage = Image.open(image)
+                    transposed = colorImage.rotate(180)
                     transposed.save(image)
                     logging.info("Image created")
                     self.last_uploaded = self.timestamp
@@ -76,13 +78,13 @@ class Camera:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (21, 21), 0)
             self.motion = False
-            
+
             # if the average frame is None, initialize it
             if average_frame is None:
                 logging.info("Starting background model")
                 average_frame = gray.copy().astype("float")
                 self.raw_capture.truncate(0)
-            
+
             # accumulate the weighted average between the current frame and
             # previous frames, then compute the difference between the current
             # frame and running average
@@ -93,15 +95,16 @@ class Camera:
             # in holes, then find contours on thresholded image
             thresh = cv2.threshold(frameDelta, 5, 255, cv2.THRESH_BINARY)[1]
             thresh = cv2.dilate(thresh, None, iterations=2)
-            contours = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            contours = cv2.findContours(
+                thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
             contours = imutils.grab_contours(contours)
-            
+
             # loop over the contours
             for c in contours:
                 # if the contour is too small, return to start
                 if cv2.contourArea(c) < 5000:
                     continue
-                
+
                 # compute the bounding box for the contour, draw it on the frame,
                 # and update the text
                 (x, y, w, h) = cv2.boundingRect(c)
@@ -118,5 +121,6 @@ class Camera:
                 self.get_base_image()
                 self.check_motion_capture()
             except Exception as error:
-                logging.error('Error found on camera capture: {}'.format(error))
+                logging.error(
+                    'Error found on camera capture: {}'.format(error))
                 self.camera.close()
