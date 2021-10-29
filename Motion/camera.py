@@ -22,19 +22,10 @@ class Camera:
         self.timestamp = None
         self.last_updated = None
 
-    def reset(self):
-        logging.info('reset()')
-        self.raw_capture = None
-        self.min_frames = 8
-        self.camera = None
-        self.motion_counter = 0
-        self.motion = False
-        self.timestamp = None
-        self.last_updated = datetime.datetime.now()
-
     def get_base_image(self):
         # initialize the camera and grab a reference to the raw camera capture
         logging.info('get_base_image()')
+        self.last_updated = datetime.datetime.now()
         try:
             logging.info("Starting up camera")
             self.camera = PiCamera()
@@ -69,7 +60,6 @@ class Camera:
                     logging.info("Image created")
                     self.last_uploaded = self.timestamp
                     self.motion_counter = 0
-                    self.camera.close()
         # otherwise, the room is not occupied
         else:
             self.motion_counter = 0
@@ -121,9 +111,9 @@ class Camera:
     def run_capture(self):
         '''Setup for running capture'''
         logging.info('run_capture()')
-        try:
-            self.reset()
-            self.get_base_image()
-            self.check_motion_capture()
-        except Exception as error:
-            logging.error('Error found on camera capture: {}'.format(error))
+        while True:
+            try:
+                self.get_base_image()
+                self.check_motion_capture()
+            except Exception as error:
+                logging.error('Error found on camera capture: {}'.format(error))
