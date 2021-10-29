@@ -20,7 +20,7 @@ class Camera:
         self.motion_counter = 0
         self.motion = False
         self.timestamp = None
-        self.last_updated = None
+        self.last_uploaded = None
 
     def get_base_image(self):
         # initialize the camera and grab a reference to the raw camera capture
@@ -32,7 +32,7 @@ class Camera:
             self.camera.framerate = 8
             self.raw_capture = PiRGBArray(self.camera, size=(640, 480))
             time.sleep(10)
-            self.last_updated = datetime.datetime.now()
+            self.last_uploaded = datetime.datetime.now()
         except:
             logging.error("Camera failure")
 
@@ -41,8 +41,7 @@ class Camera:
         # check to see if the room is occupied
         if self.motion:
             # check to see if enough time has passed between uploads
-            if (self.timestamp - self.last_updated).total_seconds() >= 3.0:
-                logging.info('Time Diff: {}'.format((self.timestamp - self.last_updated).total_seconds()))
+            if (self.timestamp - self.last_uploaded).total_seconds() >= 3.0:
                 # increment the motion counter
                 self.motion_counter = self.motion_counter + 1
                 # check to see if the number of frames with consistent motion is
