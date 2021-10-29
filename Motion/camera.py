@@ -44,7 +44,6 @@ class Camera:
             if (self.timestamp - self.last_updated).seconds >= 3:
                 # increment the motion counter
                 self.motion_counter = self.motion_counter + 1
-
                 # check to see if the number of frames with consistent motion is
                 # high enough
                 if self.motion_counter >= 8:
@@ -76,6 +75,7 @@ class Camera:
             frame = imutils.resize(frame, width=500)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (21, 21), 0)
+            self.motion = False
             
             # if the average frame is None, initialize it
             if average_frame is None:
@@ -117,3 +117,4 @@ class Camera:
                 self.check_motion_capture()
             except Exception as error:
                 logging.error('Error found on camera capture: {}'.format(error))
+                self.camera.close()
