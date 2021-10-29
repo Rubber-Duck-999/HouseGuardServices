@@ -5,7 +5,14 @@ import logging
 import json
 from camera import Camera
 
+try:
+	os.remove('/home/pi/Documents/logs/motion.log')
+except:
+	print("The log did not exist")
 
+logging.basicConfig(filename='/home/pi/Documents/logs/motion.log',
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
 logging.info("Starting program")
 
 class FileNotFound(Exception):
