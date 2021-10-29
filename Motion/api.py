@@ -15,7 +15,7 @@ class Api:
                 'image': ('img.jpg', 
                             open(filename, 'rb'), 
                             'image/jpg')}
-            response = requests.post(self.server_address, files=files, timeout=5)
+            response = requests.post(self.server, files=files, timeout=5)
             if response.status_code == 200:
                 logging.info("Requests successful")
                 logging.info('Response: {}'.format(response))
