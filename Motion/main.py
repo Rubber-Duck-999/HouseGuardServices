@@ -4,18 +4,7 @@ import os
 import logging
 import json
 from camera import Camera
-import sys
 
-filename = '/home/pi/Documents/HouseGuardServices/motion.log'
-
-try:
-    os.remove(filename)
-except OSError as error:
-    sys.exit(1)
-
-logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
-                    level=logging.INFO)
 
 logging.info("Starting program")
 
