@@ -25,7 +25,6 @@ class Camera:
     def get_base_image(self):
         # initialize the camera and grab a reference to the raw camera capture
         logging.info('get_base_image()')
-        self.last_updated = datetime.datetime.now()
         try:
             logging.info("Starting up camera")
             self.camera = PiCamera()
@@ -33,6 +32,7 @@ class Camera:
             self.camera.framerate = 8
             self.raw_capture = PiRGBArray(self.camera, size=(640, 480))
             time.sleep(10)
+            self.last_updated = datetime.datetime.now()
         except:
             logging.error("Camera failure")
 
@@ -82,6 +82,7 @@ class Camera:
                 logging.info("Starting background model")
                 average_frame = gray.copy().astype("float")
                 self.raw_capture.truncate(0)
+                continue
             
             # accumulate the weighted average between the current frame and
             # previous frames, then compute the difference between the current
