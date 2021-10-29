@@ -98,13 +98,15 @@ class Camera:
             
             # loop over the contours
             for c in contours:
-                # if the contour is large, use it
-                if cv2.contourArea(c) >= 5000:
-                    # compute the bounding box for the contour, draw it on the frame,
-                    # and update the text
-                    (x, y, w, h) = cv2.boundingRect(c)
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                    self.motion = True
+                # if the contour is too small, return to start
+                if cv2.contourArea(c) < 5000:
+                    continue
+                
+                # compute the bounding box for the contour, draw it on the frame,
+                # and update the text
+                (x, y, w, h) = cv2.boundingRect(c)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                self.motion = True
             self.check_motion(frame)
             self.raw_capture.truncate(0)
 
