@@ -14,16 +14,19 @@ except OSError as error:
     sys.exit(1)
 
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
         self.server_address = ''
@@ -53,6 +56,7 @@ class Motion():
             camera.run_capture()
         except KeyboardInterrupt:
             logging.info('Quit')
+
 
 if __name__ == "__main__":
     motion = Motion()
