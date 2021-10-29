@@ -17,22 +17,25 @@ except OSError as error:
     sys.exit(1)
 
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 logging.info("Starting program")
 
+
 class FileNotFound(Exception):
     '''Exception class for file checking'''
 
+
 class Motion():
     '''Motion class for finding'''
+
     def __init__(self):
         '''Constructor'''
-        self.last_detected  = ''
+        self.last_detected = ''
         self.server_address = ''
-        self.send_data      = False
-        self.filename       = ''
+        self.send_data = False
+        self.filename = ''
         self.camera = Camera()
 
     def get_settings(self):
@@ -56,12 +59,14 @@ class Motion():
         '''Send data to server if asked'''
         if self.send_data:
             try:
-                self.filename = "{}/img.jpg".format('/home/pi/Desktop/cam_images')
+                self.filename = "{}/img.jpg".format(
+                    '/home/pi/Desktop/cam_images')
                 files = {
-                    'image': ('img.jpg', 
-                             open(self.filename, 'rb'), 
-                             'image/jpg')}
-                response = requests.post(self.server_address, files=files, timeout=5)
+                    'image': ('img.jpg',
+                              open(self.filename, 'rb'),
+                              'image/jpg')}
+                response = requests.post(
+                    self.server_address, files=files, timeout=5)
                 if response.status_code == 200:
                     logging.info("Requests successful")
                     logging.info('Response: {}'.format(response))
@@ -87,6 +92,7 @@ class Motion():
                 time.sleep(20)
         except KeyboardInterrupt:
             logging.info('Quit')
+
 
 if __name__ == "__main__":
     motion = Motion()
