@@ -38,9 +38,7 @@ class Motion():
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        name = get_user()
-        config_name = '/home/{}/Documents/HouseGuardServices/config.json'
-        config_name = config_name.format(name)
+        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
         try:
             if not os.path.isfile(config_name):
                 raise FileNotFound('File is missing')
