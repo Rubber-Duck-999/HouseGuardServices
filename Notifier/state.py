@@ -212,28 +212,33 @@ class State:
             logging.error('No data could be retrieved')
         return success
 
-    def get_temperature(self, days):
+    def get_temperature(self, days=None, hours=None, mins=None):
         '''Returns data from up to the last 7 days'''
         logging.info('# get_temperature()')
         self.connect()
         temperature_list = []
+        average = [0.0, 0.0]
         if self.client:
             try:
-                # Ensure wrong days are not entered
-                if days <= 7 and days > 0:
-                    logging.info('Correct days picked range: {}'.format(days))
-                else:
-                    days = 7
                 local_db = self.client['house-guard']
                 events = local_db.temperature
                 count = 0
-                start = dt.datetime.now() -  timedelta(days=days)
+                if mins:
+                    start = dt.datetime.now() -  timedelta(minutes=mins)
+                elif hours:
+                    start = dt.datetime.now() -  timedelta(hours=hours)
+                else:
+                    start = dt.datetime.now() -  timedelta(days=days)
                 # Querying mongo collection for motion within last 7 days
                 query = { "TimeOfTemperature": {'$lt': dt.datetime.now(), '$gte': start}}
                 for event in events.find(query,{ "_id": 0, "Temperature": 1, "TimeOfTemperature": 1, "Humidity": 1 }):
                     event['Id'] = str(count)
+                    average[0] = average[0] + event['Humidity']
+                    average[1] = average[1] + event['Temperature']
                     temperature_list.append(event)
                     count = count + 1
+                average[0] = average[0] / count
+                average[1] = average[1] / count
                 # Temprorary id added for records returned in data dict
                 logging.info('Records found: {}'.format(count))
             except pymongo.errors.OperationFailure as error:
@@ -244,7 +249,7 @@ class State:
                 logging.error("Key didn't exist on record")
         else:
             logging.error('No data could be retrieved')
-        return temperature_list
+        return temperature_list, average
 
     def add_temperature(self, request_data):
         logging.info('# add_temperature()')

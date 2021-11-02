@@ -15,17 +15,19 @@ class View extends Component {
     super(props);
     this.state = {
       messages: [],
+      days: 1,
       viewValue: 0,
+      average_temperature: 0.0,
     };
   }
 
   componentDidMount() {
-    this.getData();
+    this.callTemperature();
   }
 
   componentDidUpdate() {
     if (this.props.viewValue !== this.state.viewValue) {
-      this.getData();
+      this.callTemperature();
       this.setState({
         viewValue: this.props.viewValue,
       });
@@ -33,87 +35,21 @@ class View extends Component {
   }
 
   /**
-   * getData function
+   * callTemperature function
    * @memberof View
    */
-  getData() {
-    const list_messages = [
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 40`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      },
-      {
-        time: 'Yesterday',
-        value: 'Temperature: 30`C'
-      }
-    ];
-    this.setState({
-      messages: list_messages,
-    });
+  async callTemperature() {
+    try {
+      const response = await fetch(`http://192.168.0.21:5000/temp/hours/` + this.state.days);
+      const json = await response.json();
+      console.log(json);
+      this.setState({
+        messages: json.Records,
+        average_temperature: json.AverageTemperature,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -124,16 +60,17 @@ class View extends Component {
    */
   render() {
     //  F8B195   F67280   C06C84   6C5B7B   355C7D
-    console.log(this.state);
     return (
       <div className="DataView">
+        {this.state.show_messages && 
         <List>
-          {this.state.messages.map(({ time, value }, index) => (
+          {this.state.messages.map(({ TimeOfTemperature, Temperature }, index) => (
           <ListItem button key={index}>
-            <ListItemText primary={time} secondary={value} />
+            <ListItemText primary={TimeOfTemperature} secondary={Temperature} />
           </ListItem>
           ))}
-        </List>
+        </List>}
+        {this.state.average_temperature}
       </div>
     );
   }

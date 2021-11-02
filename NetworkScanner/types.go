@@ -1,20 +1,16 @@
 package main
 
-type ConfigTypes struct {
-	Devices []Device `yaml:"devices"`
-}
-
 type Device struct {
-	Name    string `yaml:"name"`
-	Mac     string `yaml:"mac"`
-	Ip      string `json:"ip"`
-	Alive   bool   `json:"alive"`
-	Allowed int    `json:"allowed"`
+	Name    string `json:"Name"`
+	Mac     string `json:"Mac"`
+	Ip      string `json:"Ip"`
+	Alive   bool   `json:"Alive"`
+	Allowed int    `json:"Allowed"`
 }
 
 type Scan struct {
-	Devices []Device
-	File    string
+	Devices []Device `json:"Devices"`
+	Count   int      `json:"Count"`
 }
 
 const ALLOWED int = 1

@@ -33,7 +33,9 @@ class Server(Flask):
         self.route('/motion', methods=['POST'])(self.post_motion)
         self.route('/alarm', methods=['GET'])(self.get_alarm)
         self.route('/alarm/<string:state>', methods=['POST'])(self.set_alarm)
-        self.route('/temp/<int:days>', methods=['GET'])(self.get_temp)
+        self.route('/temp/days/<int:days>', methods=['GET'])(self.get_temp_days)
+        self.route('/temp/hours/<int:hours>', methods=['GET'])(self.get_temp_hours)
+        self.route('/temp/minutes/<int:minutes>', methods=['GET'])(self.get_temp_minutes)
         self.route('/temp', methods=['POST'])(self.set_temp)
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
         self.state = State()
@@ -122,12 +124,51 @@ class Server(Flask):
         data = self.result()
         return jsonify(data)
 
-    def get_temp(self, days):
-        logging.info('# get_temp()')
-        temperature = self.state.get_temperature(days)
+    def get_temp_days(self, days):
+        logging.info('# get_temp_days()')
+        # Ensure wrong days are not entered
+        if days <= 7 and days > 0:
+            logging.info('Correct days picked range: {}'.format(days))
+        else:
+            days = 7
+        temperature, average = self.state.get_temperature(days=days)
         events = {
             'Count': len(temperature),
-            'Records': temperature
+            'Records': temperature,
+            'AverageHumidity': average[0],
+            'AverageTemperature': average[1]
+        }
+        return jsonify(events)
+
+    def get_temp_hours(self, hours):
+        logging.info('# get_temp_hours()')
+        # Ensure wrong hours are not entered
+        if hours <= 23 and hours > 0:
+            logging.info('Correct hours picked range: {}'.format(hours))
+        else:
+            hours = 23
+        temperature, average = self.state.get_temperature(hours=hours)
+        events = {
+            'Count': len(temperature),
+            'Records': temperature,
+            'AverageHumidity': average[0],
+            'AverageTemperature': average[1]
+        }
+        return jsonify(events)
+
+    def get_temp_minutes(self, minutes):
+        logging.info('# get_temp_minutes()')
+        # Ensure wrong days are not entered
+        if minutes <= 59 and minutes > 0:
+            logging.info('Correct minutes picked range: {}'.format(minutes))
+        else:
+            minutes = 59
+        temperature, average = self.state.get_temperature(mins=minutes)
+        events = {
+            'Count': len(temperature),
+            'Records': temperature,
+            'AverageHumidity': average[0],
+            'AverageTemperature': average[1]
         }
         return jsonify(events)
 

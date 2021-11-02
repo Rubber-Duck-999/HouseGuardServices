@@ -13,7 +13,6 @@ import (
 
 	"github.com/Ullaakut/nmap"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -110,15 +109,6 @@ func (scan *Scan) checkDevices() {
 		log.Warn("### Devices ###")
 		log.Warn("Number of devices - ", len(scan.Devices))
 		log.Debug("### End of ARP ###")
-		data, err := yaml.Marshal(&scan)
-		if err != nil {
-			log.Fatal(err)
-		}
-		err = ioutil.WriteFile(scan.File, data, 0)
-		if err != nil {
-
-			log.Fatal(err)
-		}
-		time.Sleep(30 * time.Second)
+		time.Sleep(5 * time.Minute)
 	}
 }

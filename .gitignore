@@ -131,3 +131,4 @@ config.json
 credentials
 
 *node_modules*
+NetworkScanner/exeNetworkScanner
