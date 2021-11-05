@@ -23,7 +23,6 @@ const (
 var ListenAddr = "0.0.0.0"
 
 func (scan *Scan) runARP() {
-	log.Debug("### Running ARP ###")
 	data, err := exec.Command("arp", "-a").Output()
 	if err != nil {
 		log.Error(err)
@@ -45,33 +44,49 @@ func (scan *Scan) runARP() {
 		new_device := true
 		mac := fields[3]
 		for id := range scan.Devices {
-			if scan.Devices[id].Ip == ip {
+			if scan.Devices[id].Mac == mac {
 				new_device = false
 				log.Trace("Device found in Arp table")
+				scan.Devices[id].Ip = ip
 				scan.Devices[id].Alive = true
+				time.Sleep(1 * time.Second)
 			}
 		}
 		if new_device {
 			if mac != "<incomplete>" {
-				log.Warn("Adding device ip: ", ip)
-				response, _ := http.Get("https://api.macvendors.com/" + mac)
-
-				defer response.Body.Close()
-
-				data, _ := ioutil.ReadAll(response.Body)
-
-				if response.StatusCode != 200 {
-					log.Error("Error on Name")
-					data = []byte("Name not Found")
+				log.Trace("Adding device ip: ", ip)
+				response, err := http.Get("https://api.macvendors.com/" + mac)
+				if err != nil {
+					log.Error("Set back to start on MAC")
 				} else {
-					log.Debug("Vendor Name: ", string(data))
-				}
+					defer response.Body.Close()
+					data, _ := ioutil.ReadAll(response.Body)
 
-				device := Device{string(data), mac, ip, true, UNKNOWN}
-				scan.Devices = append(scan.Devices, device)
-				time.Sleep(1 * time.Second)
+					if response.StatusCode != 200 {
+						log.Error("Error on Name")
+						data = []byte("Name not Found")
+					}
+
+					device := Device{string(data), mac, ip, true, UNKNOWN}
+					scan.Devices = append(scan.Devices, device)
+					scan.sendNewDevice(device)
+					time.Sleep(1 * time.Second)
+				}
 			}
 		}
+	}
+	for id := range scan.Devices {
+		log.Debug("Device: ",
+			scan.Devices[id].Ip, ", ",
+			scan.Devices[id].Name, ", ",
+			scan.Devices[id].Mac, ", ",
+			scan.Devices[id].Alive)
+		if scan.Devices[id].Alive == true {
+			scan.updateDevice(scan.Devices[id].Name, "1")
+		} else {
+			scan.updateDevice(scan.Devices[id].Name, "0")
+		}
+		time.Sleep(1 * time.Second)
 	}
 }
 
@@ -83,7 +98,7 @@ func (scan *Scan) nmap_scan() {
 	// with a 2 minute timeout.
 	scanner, err := nmap.NewScanner(
 		nmap.WithTargets("192.168.0.0-255"),
-		nmap.WithPorts("80,443,843"),
+		nmap.WithPorts("80,443,843,32400"),
 		nmap.WithContext(ctx),
 	)
 	if err != nil {
@@ -99,16 +114,23 @@ func (scan *Scan) nmap_scan() {
 		log.Error("Warnings: ", warnings)
 	}
 
-	log.Debug("Nmap done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
+	log.Debug("Nmap scan done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
 }
 
 func (scan *Scan) checkDevices() {
 	for {
+		log.Debug("### Start of Scan ###")
 		scan.nmap_scan()
 		scan.runARP()
-		log.Warn("### Devices ###")
-		log.Warn("Number of devices - ", len(scan.Devices))
-		log.Debug("### End of ARP ###")
-		time.Sleep(5 * time.Minute)
+		log.Warn("Number of devices: ", len(scan.Devices))
+		alive := 0
+		for id := range scan.Devices {
+			if scan.Devices[id].Alive {
+				alive = alive + 1
+			}
+		}
+		log.Warn("Number of devices Alive: ", alive)
+		log.Debug("### End of Scan ###")
+		time.Sleep(10 * time.Second)
 	}
 }

@@ -38,6 +38,7 @@ class Server(Flask):
         self.route('/temp/minutes/<int:minutes>', methods=['GET'])(self.get_temp_minutes)
         self.route('/temp', methods=['POST'])(self.set_temp)
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
+        self.route('/devices/<string:alive>', methods=['PUT'])(self.devices_update)
         self.state = State()
         self.request_result = False
 
@@ -60,17 +61,28 @@ class Server(Flask):
         logging.info('Devices received')
         if request.method == 'POST':
             request_data = request.get_json()
-            if request_data:
-                self.request_result = self.state.add_device(request_data)
-            data = self.result()
-            return jsonify(data)
-        else:
+            logging.info(request_data)
+            # if request_data:
+            #    self.request_result = self.state.add_device(request_data)
+            return jsonify(self.result())
+        elif request.method == 'GET':
             data = self.state.get_devices()
             devices = {
                 'Count': len(data),
                 'Devices': data
             }
             return jsonify(devices)
+        else:
+            request_data = request.get_json()
+            logging.info(request_data)
+            return jsonify(self.result())
+
+    def devices_update(self, alive):
+        logging.info('# devices_update()')
+        logging.info('Device received')
+        request_data = request.get_json()
+        logging.info(request_data)
+        return jsonify(self.result())
 
     def get_motion(self, days):
         logging.info('# get_motion()')

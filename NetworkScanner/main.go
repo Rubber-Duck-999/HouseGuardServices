@@ -11,12 +11,15 @@ func main() {
 	log.SetFormatter(customFormatter)
 	customFormatter.FullTimestamp = true
 	log.Warn("NAC - Beginning to run Network Scanner Program")
-	/* a := make([]Device, 0)
+	a := make([]Device, 0)
 	scan := Scan{
 		Devices: a,
 		Count:   0,
-	}*/
-	err := getDevices()
-	log.Debug(err)
-	// scan.checkDevices()
+	}
+	err := scan.getDevices()
+	if err != nil {
+		log.Error("Error found on api GET")
+	} else {
+		scan.checkDevices()
+	}
 }
