@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/Ullaakut/nmap"
+	"github.com/go-ping/ping"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,14 +23,72 @@ const (
 // Default to listen on all IPv4 interfaces
 var ListenAddr = "0.0.0.0"
 
+func (scan *Scan) resetDevices() {
+	for id := range scan.Devices {
+		scan.Devices[id].Alive = false
+	}
+}
+
+func (scan *Scan) nmapScan() {
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
+	defer cancel()
+
+	// Equivalent to `/usr/local/bin/nmap -p 80,443,843 google.com facebook.com youtube.com`,
+	// with a 2 minute timeout.
+	scanner, err := nmap.NewScanner(
+		nmap.WithTargets("192.168.0.0/24"),
+		nmap.WithPorts("22,80,443,843,32400"),
+		nmap.WithContext(ctx),
+	)
+	if err != nil {
+		log.Error("Unable to create nmap scanner: ", err)
+	}
+
+	result, warnings, err := scanner.Run()
+	if err != nil {
+		log.Error("Unable to run nmap scan: ", err)
+	}
+
+	if warnings != nil {
+		log.Error("Warnings: ", warnings)
+	}
+
+	log.Debug("Nmap scan done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
+	// Use the results to print an example output
+	for _, host := range result.Hosts {
+		for id := range scan.Devices {
+			if host.Addresses[0].Addr == scan.Devices[id].Ip {
+				scan.Devices[id].Alive = true
+			}
+		}
+	}
+}
+
+func (scan *Scan) ping() {
+	for index := 0; index < len(scan.Devices); index++ {
+		pinger, err := ping.NewPinger(scan.Devices[index].Ip)
+		if err != nil {
+			log.Error(err)
+		}
+		pinger.Timeout = 1 * time.Second
+		pinger.Count = 1
+		err = pinger.Run() // Blocks until finished.
+		if err != nil {
+			log.Error(err)
+		}
+		stats := pinger.Statistics()
+		if stats.PacketLoss != 0 {
+			log.Debug("Ping Result: ", scan.Devices[index].Name, ", Loss: ", stats.PacketLoss)
+		} else {
+			scan.Devices[index].Alive = true
+		}
+	}
+}
+
 func (scan *Scan) runARP() {
 	data, err := exec.Command("arp", "-a").Output()
 	if err != nil {
 		log.Error(err)
-	}
-
-	for id := range scan.Devices {
-		scan.Devices[id].Alive = false
 	}
 
 	for _, line := range strings.Split(string(data), "\n") {
@@ -90,37 +149,12 @@ func (scan *Scan) runARP() {
 	}
 }
 
-func (scan *Scan) nmap_scan() {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-	defer cancel()
-
-	// Equivalent to `/usr/local/bin/nmap -p 80,443,843 google.com facebook.com youtube.com`,
-	// with a 2 minute timeout.
-	scanner, err := nmap.NewScanner(
-		nmap.WithTargets("192.168.0.0-255"),
-		nmap.WithPorts("80,443,843,32400"),
-		nmap.WithContext(ctx),
-	)
-	if err != nil {
-		log.Error("Unable to create nmap scanner: ", err)
-	}
-
-	result, warnings, err := scanner.Run()
-	if err != nil {
-		log.Error("Unable to run nmap scan: ", err)
-	}
-
-	if warnings != nil {
-		log.Error("Warnings: ", warnings)
-	}
-
-	log.Debug("Nmap scan done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
-}
-
 func (scan *Scan) checkDevices() {
 	for {
 		log.Debug("### Start of Scan ###")
-		scan.nmap_scan()
+		scan.resetDevices()
+		scan.nmapScan()
+		scan.ping()
 		scan.runARP()
 		log.Warn("Number of devices: ", len(scan.Devices))
 		alive := 0
@@ -131,6 +165,6 @@ func (scan *Scan) checkDevices() {
 		}
 		log.Warn("Number of devices Alive: ", alive)
 		log.Debug("### End of Scan ###")
-		time.Sleep(10 * time.Second)
+		time.Sleep(30 * time.Second)
 	}
 }
