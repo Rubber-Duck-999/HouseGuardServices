@@ -42,7 +42,7 @@ class Emailer:
             logging.error('Type not available: {}'.format(error))
         return False
 
-    def email(self, subject, text, filename):
+    def email_attach(self, subject, text, filename):
         '''Set up message for email from stores'''
         logging.info('# email()')
         try:
@@ -66,7 +66,32 @@ class Emailer:
             server.sendmail(self.from_email, self.to_email, message.as_string())
             server.close()
             logging.info('Remove file')
-            os.remove(filename)
+        except smtplib.SMTPAuthenticationError as error:
+            logging.error('Error occured on auth: {}'.format(error))
+        except smtplib.SMTPException as error:
+            logging.error('Error occured on SMTP: {}'.format(error))
+        except TypeError as error:
+            logging.error('Type error: {}'.format(error))
+
+    def email(self, subject, text):
+        '''Set up message for email from stores'''
+        logging.info('# email()')
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.ehlo()
+            server.starttls()
+            server.ehlo()
+            # Text change
+            text = text + " has joined the network"
+            message = MIMEMultipart()
+            message['Subject'] = subject
+            message['From'] = self.from_email
+            message['To'] = ", ".join(self.to_email)
+            message.attach(MIMEText(text, 'plain'))
+            server.login(self.from_email, self.from_password)
+            server.sendmail(self.from_email, self.to_email, message.as_string())
+            server.close()
+            logging.info('Remove file')
         except smtplib.SMTPAuthenticationError as error:
             logging.error('Error occured on auth: {}'.format(error))
         except smtplib.SMTPException as error:

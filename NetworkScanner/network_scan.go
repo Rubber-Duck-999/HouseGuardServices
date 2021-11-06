@@ -55,13 +55,6 @@ func (scan *Scan) nmapScan() {
 
 	log.Debug("Nmap scan done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
 	// Use the results to print an example output
-	for _, host := range result.Hosts {
-		for id := range scan.Devices {
-			if host.Addresses[0].Addr == scan.Devices[id].Ip {
-				scan.Devices[id].Alive = true
-			}
-		}
-	}
 }
 
 func (scan *Scan) ping() {
@@ -75,12 +68,6 @@ func (scan *Scan) ping() {
 		err = pinger.Run() // Blocks until finished.
 		if err != nil {
 			log.Error(err)
-		}
-		stats := pinger.Statistics()
-		if stats.PacketLoss != 0 {
-			log.Debug("Ping Result: ", scan.Devices[index].Name, ", Loss: ", stats.PacketLoss)
-		} else {
-			scan.Devices[index].Alive = true
 		}
 	}
 }
@@ -153,8 +140,8 @@ func (scan *Scan) checkDevices() {
 	for {
 		log.Debug("### Start of Scan ###")
 		scan.resetDevices()
-		scan.nmapScan()
 		scan.ping()
+		scan.nmapScan()
 		scan.runARP()
 		log.Warn("Number of devices: ", len(scan.Devices))
 		alive := 0

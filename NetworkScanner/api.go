@@ -68,10 +68,10 @@ func (scan *Scan) updateDevice(name string, alive string) {
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Debug(err)
-	}
-
-	if resp.StatusCode != 200 {
-		log.Error("Status code for response is invalid")
+		log.Error(err)
+	} else {
+		if resp.StatusCode != 200 {
+			log.Error("Status code for response is invalid")
+		}
 	}
 }

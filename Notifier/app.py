@@ -62,8 +62,9 @@ class Server(Flask):
         if request.method == 'POST':
             request_data = request.get_json()
             logging.info(request_data)
-            # if request_data:
-            #    self.request_result = self.state.add_device(request_data)
+            if request_data:
+                self.request_result = self.state.add_device(request_data)
+                self.emailer.email("New Unknown Device", request_data["Name"])
             return jsonify(self.result())
         elif request.method == 'GET':
             data = self.state.get_devices()
@@ -72,16 +73,14 @@ class Server(Flask):
                 'Devices': data
             }
             return jsonify(devices)
-        else:
-            request_data = request.get_json()
-            logging.info(request_data)
-            return jsonify(self.result())
 
     def devices_update(self, alive):
         logging.info('# devices_update()')
         logging.info('Device received')
         request_data = request.get_json()
         logging.info(request_data)
+        if request_data:
+            self.request_result = self.state.edit_device(request_data, alive)
         return jsonify(self.result())
 
     def get_motion(self, days):

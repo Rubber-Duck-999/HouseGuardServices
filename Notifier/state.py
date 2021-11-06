@@ -93,6 +93,30 @@ class State:
             logging.error('No data could be retrieved')
         return success
 
+    def edit_device(self, request_data, alive):
+        logging.info('# edit_device()')
+        self.connect()
+        success = False
+        if self.client:
+            try:
+                local_db = self.client['house-guard']
+                devices = local_db.devices
+                query = { "Name": request_data }
+                newvalues = { "$set": { "Alive": alive } }
+                devices.update_one(query, newvalues)
+                success = True
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except BadDataError as error:
+                logging.error('Data was invalid')
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return success
+
     def get_motion(self, days):
         '''Returns data from up to the last 7 days'''
         logging.info('# get_motion()')
