@@ -21,7 +21,6 @@ class State:
         '''Get config env var'''
         logging.info('get_settings()')
         config_name = '/home/simon/Documents/HouseGuardServices/config.json'
-        token = ''
         try:
             with open(config_name) as file:
                 data = json.load(file)
@@ -31,7 +30,6 @@ class State:
             logging.info("Variables not set")
         except IOError:
             logging.info('Could not read file')
-        return token
 
     def connect(self):
         logging.info('# connect()')
