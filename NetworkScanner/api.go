@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-const url = "http://192.168.0.21:5000/devices"
+const url = "http://192.168.0.15:5000/devices"
 
 func (scan *Scan) getDevices() (err error) {
 	log.Debug("Starting the application")
