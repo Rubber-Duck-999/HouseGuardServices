@@ -21,8 +21,9 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class Server(Flask):
 
@@ -33,12 +34,16 @@ class Server(Flask):
         self.route('/motion', methods=['POST'])(self.post_motion)
         self.route('/alarm', methods=['GET'])(self.get_alarm)
         self.route('/alarm/<string:state>', methods=['POST'])(self.set_alarm)
-        self.route('/temp/days/<int:days>', methods=['GET'])(self.get_temp_days)
-        self.route('/temp/hours/<int:hours>', methods=['GET'])(self.get_temp_hours)
-        self.route('/temp/minutes/<int:minutes>', methods=['GET'])(self.get_temp_minutes)
+        self.route('/temp/days/<int:days>',
+                   methods=['GET'])(self.get_temp_days)
+        self.route('/temp/hours/<int:hours>',
+                   methods=['GET'])(self.get_temp_hours)
+        self.route('/temp/minutes/<int:minutes>',
+                   methods=['GET'])(self.get_temp_minutes)
         self.route('/temp', methods=['POST'])(self.set_temp)
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
-        self.route('/devices/<string:alive>', methods=['PUT'])(self.devices_update)
+        self.route('/devices/<string:alive>',
+                   methods=['PUT'])(self.devices_update)
         self.state = State()
         self.request_result = False
 
@@ -107,7 +112,8 @@ class Server(Flask):
                         'user': request.remote_addr
                     }
                     if request_data:
-                        self.request_result = self.state.add_motion(request_data)
+                        self.request_result = self.state.add_motion(
+                            request_data)
                 else:
                     logging.info('Invalid file')
             else:
