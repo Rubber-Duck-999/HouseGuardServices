@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/Ullaakut/nmap"
-	"github.com/go-ping/ping"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -55,21 +54,6 @@ func (scan *Scan) nmapScan() {
 
 	log.Debug("Nmap scan done: ", len(result.Hosts), " hosts up scanned in seconds ", result.Stats.Finished.Elapsed)
 	// Use the results to print an example output
-}
-
-func (scan *Scan) ping() {
-	for index := 0; index < len(scan.Devices); index++ {
-		pinger, err := ping.NewPinger(scan.Devices[index].Ip)
-		if err != nil {
-			log.Error(err)
-		}
-		pinger.Timeout = 1 * time.Second
-		pinger.Count = 1
-		err = pinger.Run() // Blocks until finished.
-		if err != nil {
-			log.Error(err)
-		}
-	}
 }
 
 func (scan *Scan) runARP() {
@@ -140,7 +124,6 @@ func (scan *Scan) checkDevices() {
 	for {
 		log.Debug("### Start of Scan ###")
 		scan.resetDevices()
-		scan.ping()
 		scan.nmapScan()
 		scan.runARP()
 		log.Warn("Number of devices: ", len(scan.Devices))
