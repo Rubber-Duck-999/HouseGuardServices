@@ -3,6 +3,7 @@
 import speedtest
 from datetime import datetime
 import enum
+import logging
 
 class Colours(enum.Enum):
     Red    = 1
@@ -30,9 +31,9 @@ class NetworkTest:
             down_speed = self.speed.download() / 1048576
             down = round(down_speed)
         except speedtest.SpeedtestException as error:
-            print('Error occurred')
+            logging.error('Error occurred: {}'.format(error))
         if self.down != down:
-            print('Speed changed: {}'.format(down))
+            logging.info('Speed changed: {}'.format(down))
             self.down = down
         if self.down <= self.red:
             return Colours.Red

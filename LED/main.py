@@ -4,9 +4,19 @@ import blinkt
 from threading import Thread
 import queue
 import time
-import colorsys
+import logging
+import os
 from network_test import NetworkTest, Colours
 
+try:
+	os.remove('/home/pi/Documents/HouseGuardServices/led.log')
+except:
+	print("The log did not exist")
+
+logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/led.log',
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
+logging.info("Starting program")
 
 class Led:
 
@@ -32,7 +42,7 @@ class Led:
         green = 0
         red = 0
         if colour is None:
-            print('Colour is None')
+            logging.info('Colour is None')
             red = 255
             green = 192
             blue = 203
@@ -65,7 +75,7 @@ class Led:
             last_colour = colour
             try:
                 colour = q.get(False)
-                print('New Colour: {}'.format(colour))
+                logging.info('New Colour: {}'.format(colour))
             except queue.Empty:
                 colour = last_colour
             while pixel < self.pixels:
@@ -84,7 +94,7 @@ def check_network(q):
 
 
 if __name__ == "__main__":
-    print('Starting Program')
+    logging.info('Starting Program')
     while True:
         try:
             q = queue.Queue()
@@ -95,4 +105,4 @@ if __name__ == "__main__":
             T1.join()
             T2.join()
         except:
-            print('Error occurred on threads')
+            logging.error('Error occurred on threads')
