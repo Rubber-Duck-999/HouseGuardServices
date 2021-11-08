@@ -1,5 +1,4 @@
 #!/bin/sh
 
-echo 'Starting'
-sleep 30
+sleep 60
 python3 /home/pi/Documents/HouseGuardServices/LED/main.py &
