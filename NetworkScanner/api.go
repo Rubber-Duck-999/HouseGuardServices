@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -26,6 +27,7 @@ func (scan *Scan) getDevices() (err error) {
 			scan.Devices = append(scan.Devices, device)
 		}
 	}
+	response.Body.Close()
 	return err
 }
 
@@ -47,6 +49,7 @@ func (scan *Scan) sendNewDevice(device Device) {
 			log.Debug(device)
 		}
 	}
+	response.Body.Close()
 }
 
 func (scan *Scan) updateDevice(name string, alive string) {
@@ -58,6 +61,7 @@ func (scan *Scan) updateDevice(name string, alive string) {
 	}
 	// initialize http client
 	client := &http.Client{}
+	client.Timeout = time.Second * 10
 	// set the HTTP method, url, and request body
 	req, err := http.NewRequest(http.MethodPut, url+"/"+alive, bytes.NewBuffer(json))
 	if err != nil {
@@ -66,12 +70,13 @@ func (scan *Scan) updateDevice(name string, alive string) {
 
 	// set the request header Content-Type for json
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
-	resp, err := client.Do(req)
+	response, err := client.Do(req)
 	if err != nil {
 		log.Error(err)
 	} else {
-		if resp.StatusCode != 200 {
+		if response.StatusCode != 200 {
 			log.Error("Status code for response is invalid")
 		}
 	}
+	response.Body.Close()
 }
