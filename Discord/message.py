@@ -2,8 +2,9 @@ import logging
 import json
 from api import Api
 
+
 class MessageManager:
-    
+
     def __init__(self):
         logging.info('MessageManager')
         self.messages = []
