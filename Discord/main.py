@@ -1,6 +1,11 @@
 import discord
 import json
 from message import MessageManager
+import logging
+from discord.ext import tasks
+
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
 
 class HouseClient(discord.Client):
 
@@ -8,10 +13,11 @@ class HouseClient(discord.Client):
         '''Sub constructor'''
         self.guild = ''
         super().__init__(*args, **kwargs)
+        self.channel = 'general'
 
     def get_settings(self):
         '''Get config env var'''
-        print('get_settings()')
+        logging.info('get_settings()')
         config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         token = ''
         try:
@@ -19,42 +25,49 @@ class HouseClient(discord.Client):
                 data = json.load(file)
             self.guild = data["guild"]
             token = data["token"]
+            self.message_manager = MessageManager()
+            self.message_manager.get_env()
+            self.message_manager.get_status()
         except KeyError:
-            print("Variables not set")
+            logging.error("Variables not set")
         except IOError:
-            print('Could not read file')
+            logging.error('Could not read file')
         return token
 
-    async def on_ready(self):
-        for guild in client.guilds:
-            if guild.name == self.guild:
-                print('Same guild')
-                self.guild = guild
-                break
-
-        print(
-            f'{client.user} is connected to the following guild:\n'
-            f'{self.guild.name}(id: {self.guild.id})'
-        )
-
-        general = None
+    @tasks.loop(minutes = 30)
+    async def task(self):
+        logging.info("task()")
         for guild in client.guilds:
             for channel in guild.channels:
                 if channel.name == 'general':
-                    general = channel
-                    await general.send('$Starting Server')
+                    await channel.send('Checking service status')
+
+    async def on_ready(self):
+        self.task.start()
+        for guild in client.guilds:
+            if guild.name == self.guild:
+                logging.debug('Same guild on join')
+                self.guild = guild
+                break
+
+        logging.info('{} is connected to the following guild: {}'.format(client.user, self.guild))
+
+        for guild in client.guilds:
+            for channel in guild.channels:
+                if channel.name == 'general':
+                    await channel.send('Starting Server')
 
     async def on_message(self, message):
         if message.author == client.user:
             return
 
-        message_manager = MessageManager(message.content)
-        
-        sentence = message_manager.get_message()
+        sentence = self.message_manager.get_message(message.content)
 
         await message.channel.send(sentence)
 
-client = HouseClient()
-token = client.get_settings()
 
-client.run(token)
+if __name__ == "__main__":
+    logging.info('Starting Program')
+    client = HouseClient()
+    token = client.get_settings()
+    client.run(token)
