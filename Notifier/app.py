@@ -12,21 +12,22 @@ from validate import validate_file
 
 app = Flask(__name__)
 
-filename = '/home/simon/Documents/HouseGuardServices/notifier.log'
+file = '/home/simon/Documents/HouseGuardServices/notifier.log'
 
 try:
-    os.remove(filename)
+    os.remove(file)
 except OSError as error:
     pass
 
 # Add the log message handler to the logger
-logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+logging.basicConfig(filename=file,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
 class Server(Flask):
 
     def __init__(self, import_name):
+        '''Constructor for flask API methods'''
         super(Server, self).__init__(import_name)
         self.emailer = Emailer('simon')
         self.route('/motion/<int:days>', methods=['GET'])(self.get_motion)
@@ -43,9 +44,11 @@ class Server(Flask):
         self.request_result = False
 
     def check_config(self):
+        '''REturns object email config'''
         return self.emailer.get_config()
 
     def result(self):
+        '''Converts bool to string'''
         logging.info('# result()')
         if self.request_result is True:
             success = "Success"
@@ -57,24 +60,27 @@ class Server(Flask):
         return data
 
     def devices(self):
+        '''Devices for GET and POST'''
         logging.info('# devices()')
         logging.info('Devices received')
+        result = {}
         if request.method == 'POST':
             request_data = request.get_json()
             logging.info(request_data)
             if request_data:
                 self.request_result = self.state.add_device(request_data)
                 self.emailer.email("New Unknown Device", request_data["Name"])
-            return jsonify(self.result())
+            result = self.result()
         elif request.method == 'GET':
             data = self.state.get_devices()
-            devices = {
+            result = {
                 'Count': len(data),
                 'Devices': data
             }
-            return jsonify(devices)
+        return jsonify(result)
 
     def devices_update(self, alive):
+        '''Edit a current device'''
         logging.info('# devices_update()')
         logging.info('Device received')
         request_data = request.get_json()
@@ -84,6 +90,7 @@ class Server(Flask):
         return jsonify(self.result())
 
     def get_motion(self, days):
+        '''Motion list'''
         logging.info('# get_motion()')
         data = self.state.get_motion(days)
         events = {
@@ -93,6 +100,7 @@ class Server(Flask):
         return jsonify(events)
 
     def post_motion(self):
+        '''Create a new motion'''
         logging.info('# post_motion()')
         try:
             if request.files:
@@ -118,6 +126,7 @@ class Server(Flask):
         return jsonify(data)
 
     def get_alarm(self):
+        '''Gte a alarm message state'''
         logging.info('# alarm()')
         logging.info('Alarm Message received')
         state = self.state.get_state()
