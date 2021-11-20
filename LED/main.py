@@ -16,7 +16,6 @@ except:
 logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/led.log',
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
-logging.info("Starting program")
 
 class Led:
 
@@ -88,7 +87,7 @@ class Led:
 def check_network(q):
     while True:
         network_test = NetworkTest()
-        if network_test.check_config():
+        if network_test.get_settings():
             colour = network_test.check_speed()
         q.put(colour)
         time.sleep(30)

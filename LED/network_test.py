@@ -29,16 +29,19 @@ class NetworkTest:
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
+        success = False
         config_name = '/home/pi/Documents/HouseGuardServices/config.json'
         try:
             with open(config_name) as file:
                 data = json.load(file)
             self.server = '{}/network'.format(data["server_address"])
-            logging.info(self.server_address)
+            logging.info(self.server)
+            success = True
         except KeyError:
             logging.error("Variables not set")
         except IOError:
             logging.error("File is missing")
+        return success
 
     def send_speed(self, down, up):
         '''Send speed to rest server'''
