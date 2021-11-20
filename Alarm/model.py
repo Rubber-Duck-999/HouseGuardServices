@@ -13,12 +13,13 @@ class FileNotFound(Exception):
 
 class Model:
     '''Class for managing requests'''
+
     def __init__(self, name):
         '''Constructor'''
         logging.info('init()')
         self.server_address = ''
-        self.auth           = ''
-        self.time_changed   = datetime.now()
+        self.auth = ''
+        self.time_changed = datetime.now()
         self.state = 'ON'
         self.name = name
 

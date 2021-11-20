@@ -4,12 +4,14 @@ import controller
 import logging
 import os
 
+
 def get_user():
     try:
         username = os.getlogin()
     except OSError:
         username = 'pi'
     return username
+
 
 if __name__ == '__main__':
     filename = '/home/{}/Documents/HouseGuardServices/alarm.log'
@@ -22,7 +24,7 @@ if __name__ == '__main__':
 
     # Add the log message handler to the logger
     logging.basicConfig(filename=filename,
-                        format='%(asctime)s - %(levelname)s - %(message)s', 
+                        format='%(asctime)s - %(levelname)s - %(message)s',
                         level=logging.INFO)
 
     logging.info("Starting program")
