@@ -87,10 +87,11 @@ class Led:
 def check_network(q):
     while True:
         network_test = NetworkTest()
+        colour = Colours.Red
         if network_test.get_settings():
             colour = network_test.check_speed()
         q.put(colour)
-        time.sleep(30)
+        time.sleep(300)
 
 
 if __name__ == "__main__":

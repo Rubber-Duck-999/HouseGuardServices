@@ -205,6 +205,8 @@ class Server(Flask):
         logging.info('# set_speed()')
         request_data = request.get_json()
         if request_data:
+            if request_data['down'] < 50:
+                self.emailer.email("Network Speed", request_data["down"])
             self.request_result = self.state.add_speed(request_data)
         data = self.result()
         return jsonify(data)
