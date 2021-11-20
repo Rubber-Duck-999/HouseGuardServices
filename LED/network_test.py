@@ -68,7 +68,7 @@ class NetworkTest:
             up_speed = self.speed.upload() / 1048576
             down = round(down_speed)
             up = round(up_speed)
-            # self.send_speed(down, up)
+            self.send_speed(down, up)
         except speedtest.SpeedtestException as error:
             logging.error('Error occurred: {}'.format(error))
         if self.down != down:
