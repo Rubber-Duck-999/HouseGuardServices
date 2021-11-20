@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 '''To set up the led array'''
 import blinkt
-from threading import Thread
+from threading import Thread, ThreadError
 import queue
 import time
 import logging
@@ -95,7 +95,8 @@ def check_network(q):
 
 if __name__ == "__main__":
     logging.info('Starting Program')
-    while True:
+    keyboard = False
+    while not keyboard:
         try:
             q = queue.Queue()
             T1 = Thread(target=Led().run_lights, args=(q,))
@@ -104,5 +105,8 @@ if __name__ == "__main__":
             T2.start()
             T1.join()
             T2.join()
-        except:
+        except KeyboardInterrupt:
+            logging.error('Error occurred on keyboard')
+            keyboard = True
+        except ThreadError:
             logging.error('Error occurred on threads')
