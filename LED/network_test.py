@@ -6,12 +6,13 @@ import logging
 import json
 import requests
 
+
 class Colours(enum.Enum):
-    Red    = 1
+    Red = 1
     Orange = 2
     Purple = 3
-    Green  = 4
-    Blue   = 5
+    Green = 4
+    Blue = 5
 
 
 class NetworkTest:
@@ -19,11 +20,11 @@ class NetworkTest:
     def __init__(self):
         '''Constructor for class'''
         self.speed = speedtest.Speedtest()
-        self.down   = 0
-        self.red    = 60
+        self.down = 0
+        self.red = 60
         self.orange = 90
         self.purple = 120
-        self.green  = 150
+        self.green = 150
         self.server = ''
 
     def get_settings(self):
@@ -86,6 +87,7 @@ class NetworkTest:
         if self.down <= self.green:
             return Colours.Green
         return Colours.Blue
+
 
 if __name__ == "__main__":
     network_test = NetworkTest()
