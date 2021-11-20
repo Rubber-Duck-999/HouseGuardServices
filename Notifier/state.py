@@ -6,7 +6,8 @@ import json
 from exceptions import BadDataError
 from validate import (validate_device,
                       validate_motion,
-                      validate_temperature)
+                      validate_temperature,
+                      validate_speed)
 
 class State:
 
@@ -283,6 +284,30 @@ class State:
                 local_db = self.client['house-guard']
                 temp = local_db.temperature
                 record = temp.insert_one(data)
+                logging.info('Record Id: {}'.format(record.inserted_id))
+                success = True
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except BadDataError as error:
+                logging.error('Data was invalid')
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return success
+
+    def add_speed(self, request_data):
+        logging.info('# add_speed()')
+        self.connect()
+        success = False
+        if self.client:
+            try:
+                data = validate_speed(request_data)
+                local_db = self.client['house-guard']
+                network = local_db.network
+                record = network.insert_one(data)
                 logging.info('Record Id: {}'.format(record.inserted_id))
                 success = True
             except pymongo.errors.OperationFailure as error:

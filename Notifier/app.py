@@ -40,6 +40,7 @@ class Server(Flask):
         self.route('/temp', methods=['POST'])(self.set_temp)
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
         self.route('/devices/<string:alive>', methods=['PUT'])(self.devices_update)
+        self.route('/network', methods=['POST'])(self.set_speed)
         self.state = State()
         self.request_result = False
 
@@ -193,10 +194,18 @@ class Server(Flask):
         return jsonify(events)
 
     def set_temp(self):
-        logging.info('# devices()')
+        logging.info('# set_temp()')
         request_data = request.get_json()
         if request_data:
             self.request_result = self.state.add_temperature(request_data)
+        data = self.result()
+        return jsonify(data)
+
+    def set_speed(self):
+        logging.info('# set_speed()')
+        request_data = request.get_json()
+        if request_data:
+            self.request_result = self.state.add_speed(request_data)
         data = self.result()
         return jsonify(data)
 
