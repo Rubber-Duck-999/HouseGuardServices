@@ -3,8 +3,15 @@ import json
 from message import MessageManager
 import logging
 from discord.ext import tasks
+import os
 
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', 
+try:
+	os.remove('/home/pi/Documents/logs/discord.log')
+except:
+	print("The log did not exist")
+
+logging.basicConfig(filename='/home/pi/Documents/logs/discord.log',
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 
 class HouseClient(discord.Client):
