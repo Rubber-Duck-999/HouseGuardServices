@@ -46,14 +46,14 @@ class HouseClient(discord.Client):
         return token
 
     def check_author(self, sender):
-        '''Get config env var'''
+        '''Check message author'''
         logging.info('check_author()')
-        valid = False
+        logging.info(sender)
         for author in self.authors:
+            logging.info(author)
             if author == sender:
-                valid = True
-                return valid
-        return valid
+                return True
+        return False
 
     @tasks.loop(minutes = 60)
     async def task(self):
