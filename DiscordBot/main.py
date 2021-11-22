@@ -71,9 +71,9 @@ class HouseClient(discord.Client):
         if message.author == client.user:
             return
 
-        sentence = self.message_manager.get_message(message.content)
-
-        await message.channel.send(sentence)
+        responses = self.message_manager.get_message(message.content)
+        for response in responses:
+            await message.channel.send(response)
 
 
 if __name__ == "__main__":

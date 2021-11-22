@@ -22,11 +22,11 @@ class MessageManager:
         except IOError:
             logging.error('Could not read file')
 
-    def create_dict(self, name, message):
+    def create_dict(self, name, messages):
         '''Creates the template message format'''
         data = {
             'name': name,
-            'message': '{}'.format(message)
+            'messages': messages
         }
         return data
 
@@ -38,6 +38,7 @@ class MessageManager:
         self.get_temperature()
         self.get_motion()
         self.get_speed()
+        self.get_help()
         return status
 
     def get_devices(self):
@@ -55,12 +56,12 @@ class MessageManager:
                         blocked = blocked + 1
                     elif device['Allowed'] == 1:
                         allowed = allowed + 1
-            message = '''
-                Alive: {}
-                Allowed: {}
-                Blocked: {}
-            '''
-            data = self.create_dict('$Devices',message)
+            messages = [
+                'Devices Alive: {}'.format(alive),
+                'Allowed: {}'.format(allowed),
+                'Blocked: {}'.format(blocked)
+            ]
+            data = self.create_dict('$Devices',messages)
             self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
@@ -69,11 +70,11 @@ class MessageManager:
         logging.info('get_temperature()')
         try:
             sensor = self.api.get_temperature()
-            data = self.create_dict('$Temperature',
-                                    'Last Hour Temp Now: {}'.format(sensor['AverageTemperature']))
-            self.messages.append(data)
-            data = self.create_dict('$Humidity',
-                                    'Last Hour Humidity Now: {}'.format(sensor['AverageHumidity']))
+            messages = [
+                'Last Hour Temp Now: {}'.format(sensor['AverageTemperature']),
+                'Last Hour Humidity Now: {}'.format(sensor['AverageHumidity'])
+            ]
+            data = self.create_dict('$Sensor', messages)
             self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
@@ -84,11 +85,11 @@ class MessageManager:
         try:
             sensor = self.api.get_motion()
             last = sensor['Events'][sensor['Count'] - 1]['TimeOfMotion']
-            message = '''
-                Last Days Total Movement: {}
-                Last Time of Movement: {}
-            '''.format(sensor['Count'], last)
-            data = self.create_dict('$Movement', message)
+            messages = [
+                'Last Days Total Movement: {}'.format(sensor['Count']),
+                'Last Time of Movement: {}'.format(last)
+            ]
+            data = self.create_dict('$Movement', messages)
             self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
@@ -99,11 +100,24 @@ class MessageManager:
         logging.info('get_speed()')
         try:
             sensor = self.api.get_motion()
-            message = '''
-                Average Download: {}
-                Average Upload: {}
-            '''.format(sensor['AverageDownload'], sensor['AverageUpload'])
-            data = self.create_dict('$Movement', message)
+            messages = [
+                'Average Download: {}'.format(sensor['AverageDownload']),
+                'Average Upload: {}'.format(sensor['AverageUpload'])
+            ]
+            data = self.create_dict('$Speed', messages)
+            self.messages.append(data)
+        except KeyError as error:
+            logging.error('Key error on api: {}'.format(error))
+        except IndexError as error:
+            logging.error('Index error on api: {}'.format(error))
+
+    def get_help(self):
+        logging.info('get_help()')
+        try:
+            messages = []
+            for message in self.messages:
+                messages.append(message['name'])
+            data = self.create_dict('$Help', messages)
             self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
@@ -111,8 +125,9 @@ class MessageManager:
             logging.error('Index error on api: {}'.format(error))
 
     def get_message(self, content):
+        '''Returns list of messages'''
         logging.info('get_message()')
         for message in self.messages:
             if message['name'] == content:
-                return message['message']
-        return 'Not a valid request'
+                return message['messages']
+        return ['Not a valid request']
