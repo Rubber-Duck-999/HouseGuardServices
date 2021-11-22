@@ -45,7 +45,7 @@ class Server(Flask):
         self.request_result = False
 
     def check_config(self):
-        '''REturns object email config'''
+        '''Returns object email config'''
         return self.emailer.get_config()
 
     def result(self):
@@ -117,6 +117,7 @@ class Server(Flask):
                     }
                     if request_data:
                         self.request_result = self.state.add_motion(request_data)
+                        if 
                 else:
                     logging.info('Invalid file')
             else:
@@ -128,7 +129,7 @@ class Server(Flask):
 
     def get_alarm(self):
         '''Gte a alarm message state'''
-        logging.info('# alarm()')
+        logging.info('# get_alarm()')
         logging.info('Alarm Message received')
         state = self.state.get_state()
         events = {

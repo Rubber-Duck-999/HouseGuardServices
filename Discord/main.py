@@ -18,7 +18,7 @@ class HouseClient(discord.Client):
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
+        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
         token = ''
         try:
             with open(config_name) as file:
@@ -70,4 +70,5 @@ if __name__ == "__main__":
     logging.info('Starting Program')
     client = HouseClient()
     token = client.get_settings()
-    client.run(token)
+    if len(token) > 1:
+        client.run(token)
