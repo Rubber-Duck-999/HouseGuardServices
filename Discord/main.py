@@ -6,11 +6,11 @@ from discord.ext import tasks
 import os
 
 try:
-	os.remove('/home/pi/Documents/logs/discord.log')
+	os.remove('/home/pi/Documents/HouseGuardServices/discord.log')
 except:
 	print("The log did not exist")
 
-logging.basicConfig(filename='/home/pi/Documents/logs/discord.log',
+logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/discord.log',
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 
