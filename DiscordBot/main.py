@@ -75,7 +75,7 @@ class HouseClient(discord.Client):
 
         for guild in client.guilds:
             for channel in guild.channels:
-                if channel.name == 'general':
+                if channel.name == 'status':
                     await channel.send('Starting Server')
 
     async def on_message(self, message):
