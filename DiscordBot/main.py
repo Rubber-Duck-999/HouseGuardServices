@@ -80,6 +80,7 @@ class HouseClient(discord.Client):
                     await channel.send('Starting Server')
 
     async def on_message(self, message):
+        logging.info('Message Recieved')
         if message.author == client.user:
             return
 
@@ -88,6 +89,7 @@ class HouseClient(discord.Client):
             return
 
         if self.check_author(message.author):
+            logging.info('Correct user')
             await message.channel.send('### Beep - Calculating ###')
             responses = self.message_manager.get_message(message.content)
             for response in responses:
