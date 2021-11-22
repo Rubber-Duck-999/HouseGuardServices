@@ -61,7 +61,7 @@ class MessageManager:
                 Blocked: {}
             '''
             data = self.create_dict('$Devices',message)
-            self.messages.push(data)
+            self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
 
@@ -71,10 +71,10 @@ class MessageManager:
             sensor = self.api.get_temperature()
             data = self.create_dict('$Temperature',
                                     'Last Hour Temp Now: {}'.format(sensor['AverageTemperature']))
-            self.messages.push(data)
+            self.messages.append(data)
             data = self.create_dict('$Humidity',
                                     'Last Hour Humidity Now: {}'.format(sensor['AverageHumidity']))
-            self.messages.push(data)
+            self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
 
@@ -89,7 +89,7 @@ class MessageManager:
                 Last Time of Movement: {}
             '''.format(sensor['Count'], last)
             data = self.create_dict('$Movement', message)
-            self.messages.push(data)
+            self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
         except IndexError as error:
@@ -104,7 +104,7 @@ class MessageManager:
                 Average Upload: {}
             '''.format(sensor['AverageDownload'], sensor['AverageUpload'])
             data = self.create_dict('$Movement', message)
-            self.messages.push(data)
+            self.messages.append(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
         except IndexError as error:
