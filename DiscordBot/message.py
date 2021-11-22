@@ -22,8 +22,26 @@ class MessageManager:
         except IOError:
             logging.error('Could not read file')
 
+    def create_dict(self, name, message):
+        '''Creates the template message format'''
+        data = {
+            'name': name,
+            'message': '{}'.format(message)
+        }
+        return data
+
     def get_status(self):
         logging.info('get_status()')
+        status = 'Available'
+        self.messages = []
+        self.get_devices()
+        self.get_temperature()
+        self.get_motion()
+        self.get_speed()
+        return status
+
+    def get_devices(self):
+        logging.info('get_devices()')
         try:
             devices = self.api.get_devices()
             allowed = 0
@@ -37,35 +55,60 @@ class MessageManager:
                         blocked = blocked + 1
                     elif device['Allowed'] == 1:
                         allowed = allowed + 1
-            # Get sensor values
-            sensor = self.api.get_temperature()
-            temperature = sensor['AverageTemperature']
-            humidity = sensor['AverageHumidity']
-            self.messages = [
-                {
-                    'name': '$Devices',
-                    'message': 'Devices online: {}'.format(alive)
-                },
-                {
-                    'name': '$Allowed',
-                    'message': 'Allowed online: {}'.format(allowed)
-                },
-                {
-                    'name': '$Blocked',
-                    'message': 'Blocked online: {}'.format(blocked)
-                },
-                {
-                    'name': '$Temperature',
-                    'message': 'Last Hour Temp Now: {}'.format(temperature)
-                },
-                {
-                    'name': '$Humidity',
-                    'message': 'Last Hour Humidity Now: {}'.format(humidity)
-                },
-            ]
-            logging.info(self.messages)
+            message = '''
+                Alive: {}
+                Allowed: {}
+                Blocked: {}
+            '''
+            data = self.create_dict('$Devices',message)
+            self.messages.push(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))
+
+    def get_temperature(self):
+        logging.info('get_temperature()')
+        try:
+            sensor = self.api.get_temperature()
+            data = self.create_dict('$Temperature',
+                                    'Last Hour Temp Now: {}'.format(sensor['AverageTemperature']))
+            self.messages.push(data)
+            data = self.create_dict('$Humidity',
+                                    'Last Hour Humidity Now: {}'.format(sensor['AverageHumidity']))
+            self.messages.push(data)
+        except KeyError as error:
+            logging.error('Key error on api: {}'.format(error))
+
+    def get_motion(self):
+        logging.info('get_motion()')
+        status = 'Available'
+        try:
+            sensor = self.api.get_motion()
+            last = sensor['Events'][sensor['Count'] - 1]['TimeOfMotion']
+            message = '''
+                Last Days Total Movement: {}
+                Last Time of Movement: {}
+            '''.format(sensor['Count'], last)
+            data = self.create_dict('$Movement', message)
+            self.messages.push(data)
+        except KeyError as error:
+            logging.error('Key error on api: {}'.format(error))
+        except IndexError as error:
+            logging.error('Index error on api: {}'.format(error))
+
+    def get_speed(self):
+        logging.info('get_speed()')
+        try:
+            sensor = self.api.get_motion()
+            message = '''
+                Average Download: {}
+                Average Upload: {}
+            '''.format(sensor['AverageDownload'], sensor['AverageUpload'])
+            data = self.create_dict('$Movement', message)
+            self.messages.push(data)
+        except KeyError as error:
+            logging.error('Key error on api: {}'.format(error))
+        except IndexError as error:
+            logging.error('Index error on api: {}'.format(error))
 
     def get_message(self, content):
         logging.info('get_message()')

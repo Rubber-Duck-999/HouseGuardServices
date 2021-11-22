@@ -6,7 +6,6 @@ import logging.handlers
 import os
 from state import State
 from local import Emailer
-from werkzeug.utils import secure_filename
 from flask import Flask, request, jsonify
 from validate import validate_file
 
@@ -41,6 +40,7 @@ class Server(Flask):
         self.route('/devices', methods=['POST', 'GET'])(self.devices)
         self.route('/devices/<string:alive>', methods=['PUT'])(self.devices_update)
         self.route('/network', methods=['POST'])(self.set_speed)
+        self.route('/network/days/<int:days>', methods=['GET'])(self.get_speed)
         self.state = State()
         self.request_result = False
 
@@ -117,7 +117,6 @@ class Server(Flask):
                     }
                     if request_data:
                         self.request_result = self.state.add_motion(request_data)
-                        if 
                 else:
                     logging.info('Invalid file')
             else:
@@ -211,6 +210,22 @@ class Server(Flask):
             self.request_result = self.state.add_speed(request_data)
         data = self.result()
         return jsonify(data)
+
+    def get_speed(self, days):
+        logging.info('# get_speed_days()')
+        # Ensure wrong days are not entered
+        if days <= 7 and days > 0:
+            logging.info('Correct days picked range: {}'.format(days))
+        else:
+            days = 7
+        speed, average = self.state.get_speed(days=days)
+        events = {
+            'Count': len(speed),
+            'Records': speed,
+            'AverageUpload': average[0],
+            'AverageDownload': average[1]
+        }
+        return jsonify(events)
 
 
 if __name__ == "__main__":

@@ -321,3 +321,37 @@ class State:
         else:
             logging.error('No data could be retrieved')
         return success
+
+    def get_speed(self, days=None):
+        '''Returns data from up to the last 7 days'''
+        logging.info('# get_speed()')
+        self.connect()
+        speed_list = []
+        average = [0.0, 0.0]
+        if self.client:
+            try:
+                local_db = self.client['house-guard']
+                events = local_db.network
+                count = 0
+                start = dt.datetime.now() -  timedelta(days=days)
+                # Querying mongo collection for motion within last 7 days
+                query = { "TimeOfTest": {'$lt': dt.datetime.now(), '$gte': start}}
+                for event in events.find(query,{ "_id": 0, "Download": 1, "TimeOfTest": 1, "Upload": 1 }):
+                    event['Id'] = str(count)
+                    average[0] = average[0] + event['Upload']
+                    average[1] = average[1] + event['Download']
+                    speed_list.append(event)
+                    count = count + 1
+                average[0] = average[0] / count
+                average[1] = average[1] / count
+                # Temporary id added for records returned in data dict
+                logging.info('Records found: {}'.format(count))
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return speed_list, average

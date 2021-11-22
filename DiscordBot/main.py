@@ -43,14 +43,14 @@ class HouseClient(discord.Client):
             logging.error('Could not read file')
         return token
 
-    @tasks.loop(minutes = 30)
+    @tasks.loop(minutes = 60)
     async def task(self):
         logging.info("task()")
-        self.message_manager.get_status()
+        status = self.message_manager.get_status()
         for guild in client.guilds:
             for channel in guild.channels:
-                if channel.name == 'general':
-                    await channel.send('Checking service status')
+                if channel.name == 'status':
+                    await channel.send('Checking service status: {}'.format(status))
 
     async def on_ready(self):
         self.task.start()
