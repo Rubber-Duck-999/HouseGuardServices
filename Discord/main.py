@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+'''Discord script'''
 import discord
 import json
 from message import MessageManager
