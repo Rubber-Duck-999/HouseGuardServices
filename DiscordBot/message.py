@@ -2,8 +2,9 @@ import logging
 import json
 from api import Api
 
+
 class MessageManager:
-    
+
     def __init__(self):
         logging.info('MessageManager')
         self.messages = []
@@ -60,7 +61,7 @@ class MessageManager:
                 Allowed: {}
                 Blocked: {}
             '''
-            data = self.create_dict('$Devices',message)
+            data = self.create_dict('$Devices', message)
             self.messages.push(data)
         except KeyError as error:
             logging.error('Key error on api: {}'.format(error))

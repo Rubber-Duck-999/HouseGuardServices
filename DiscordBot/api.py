@@ -1,8 +1,9 @@
 import requests
 import logging
 
+
 class Api:
-    
+
     def __init__(self, server):
         '''Constructor for API'''
         self.server = server
