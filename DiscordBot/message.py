@@ -101,8 +101,8 @@ class MessageManager:
         try:
             sensor = self.api.get_speed()
             messages = [
-                'Average Download: {}'.format(sensor['AverageDownload']),
-                'Average Upload: {}'.format(sensor['AverageUpload'])
+                'Average Download: {}MB/s'.format(sensor['AverageDownload']),
+                'Average Upload: {}MB/s'.format(sensor['AverageUpload'])
             ]
             data = self.create_dict('$Speed', messages)
             self.messages.append(data)

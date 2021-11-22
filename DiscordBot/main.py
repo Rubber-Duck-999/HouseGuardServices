@@ -22,7 +22,8 @@ class HouseClient(discord.Client):
         '''Sub constructor'''
         self.guild = ''
         super().__init__(*args, **kwargs)
-        self.channel = 'general'
+        self.message_channel = 'general'
+        self.authors = []
 
     def get_settings(self):
         '''Get config env var'''
@@ -34,6 +35,7 @@ class HouseClient(discord.Client):
                 data = json.load(file)
             self.guild = data["guild"]
             token = data["token"]
+            self.authors = data["authors"]
             self.message_manager = MessageManager()
             self.message_manager.get_env()
             self.message_manager.get_status()
@@ -42,6 +44,15 @@ class HouseClient(discord.Client):
         except IOError:
             logging.error('Could not read file')
         return token
+
+    def check_author(self, sender):
+        '''Get config env var'''
+        logging.info('check_author()')
+        valid = False
+        for author in self.authors:
+            if author == sender:
+                valid = True
+        return valid
 
     @tasks.loop(minutes = 60)
     async def task(self):
@@ -71,9 +82,17 @@ class HouseClient(discord.Client):
         if message.author == client.user:
             return
 
-        responses = self.message_manager.get_message(message.content)
-        for response in responses:
-            await message.channel.send(response)
+        if message.channel == self.message_channel:
+            logging.info('Wrong channel: {}'.format(message.channel))
+            return
+
+        if self.check_author(message.author):
+            await message.channel.send('### Beep - Calculating ###')
+            responses = self.message_manager.get_message(message.content)
+            for response in responses:
+                await message.channel.send(response)
+        else:
+            logging.error('Someone unexpected talked to us, run!')
 
 
 if __name__ == "__main__":
