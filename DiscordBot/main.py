@@ -8,13 +8,14 @@ from discord.ext import tasks
 import os
 
 try:
-	os.remove('/home/pi/Documents/HouseGuardServices/discord.log')
+    os.remove('/home/pi/Documents/HouseGuardServices/discord.log')
 except:
-	print("The log did not exist")
+    print("The log did not exist")
 
 logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/discord.log',
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class HouseClient(discord.Client):
 
@@ -43,7 +44,7 @@ class HouseClient(discord.Client):
             logging.error('Could not read file')
         return token
 
-    @tasks.loop(minutes = 60)
+    @tasks.loop(minutes=60)
     async def task(self):
         logging.info("task()")
         status = self.message_manager.get_status()
@@ -60,7 +61,8 @@ class HouseClient(discord.Client):
                 self.guild = guild
                 break
 
-        logging.info('{} is connected to the following guild: {}'.format(client.user, self.guild))
+        logging.info('{} is connected to the following guild: {}'.format(
+            client.user, self.guild))
 
         for guild in client.guilds:
             for channel in guild.channels:
