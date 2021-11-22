@@ -48,9 +48,8 @@ class HouseClient(discord.Client):
     def check_author(self, sender):
         '''Check message author'''
         logging.info('check_author()')
-        logging.info(sender + '.')
+        sender = sender.strip().replace(" ","")
         for author in self.authors:
-            logging.info(author + '.')
             if author == sender:
                 return True
         return False
