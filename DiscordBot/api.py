@@ -14,7 +14,7 @@ class Api:
             response = requests.get(self.server + endpoint, timeout=5)
             if response.status_code == 200:
                 logging.info("Requests successful")
-                devices = response.json()
+                data = response.json()
             else:
                 logging.error('Requests unsuccessful')
         except requests.ConnectionError as error:
