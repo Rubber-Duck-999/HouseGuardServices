@@ -1,18 +1,15 @@
 #!/usr/bin/python3
-'''Discord script'''
-import discord
+'''WordMaker script'''
 import json
-from message import MessageManager
 import logging
-from discord.ext import tasks
 import os
 
 try:
-	os.remove('/home/pi/Documents/HouseGuardServices/discord.log')
+	os.remove('/home/pi/Documents/HouseGuardServices/wordmaker.log')
 except:
 	print("The log did not exist")
 
-logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/discord.log',
+logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/wordmaker.log',
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 
@@ -46,7 +43,6 @@ class HouseClient(discord.Client):
     @tasks.loop(minutes = 30)
     async def task(self):
         logging.info("task()")
-        self.message_manager.get_status()
         for guild in client.guilds:
             for channel in guild.channels:
                 if channel.name == 'general':
