@@ -52,6 +52,7 @@ class HouseClient(discord.Client):
         for author in self.authors:
             if author == sender:
                 valid = True
+                return valid
         return valid
 
     @tasks.loop(minutes = 60)
