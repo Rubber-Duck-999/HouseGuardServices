@@ -9,6 +9,7 @@ from validate import (validate_device,
                       validate_temperature,
                       validate_speed)
 
+
 class State:
 
     def __init__(self):
@@ -35,9 +36,11 @@ class State:
     def connect(self):
         logging.info('# connect()')
         self.get_settings()
-        conn_str = 'mongodb://{}:{}@192.168.0.15:27017/house-guard?authSource=admin'.format(self.username, self.password)
+        conn_str = 'mongodb://{}:{}@192.168.0.15:27017/house-guard?authSource=admin'.format(
+            self.username, self.password)
         try:
-            self.client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
+            self.client = pymongo.MongoClient(
+                conn_str, serverSelectionTimeoutMS=5000)
             logging.info('Success on connection')
         except pymongo.errors.OperationFailure as error:
             logging.error('Pymongo failed on auth: {}'.format(error))
@@ -53,7 +56,7 @@ class State:
                 local_db = self.client['house-guard']
                 devices = local_db.devices
                 count = 0
-                for device in devices.find({},{ "_id": 0, "Name": 1, "Mac": 1, "Ip": 1, "Alive": 1, "Allowed": 1 }):
+                for device in devices.find({}, {"_id": 0, "Name": 1, "Mac": 1, "Ip": 1, "Alive": 1, "Allowed": 1}):
                     device['Id'] = str(count)
                     device_list.append(device)
                     count = count + 1
@@ -100,8 +103,8 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 devices = local_db.devices
-                query = { "Name": request_data }
-                newvalues = { "$set": { "Alive": alive } }
+                query = {"Name": request_data}
+                newvalues = {"$set": {"Alive": alive}}
                 devices.update_one(query, newvalues)
                 success = True
             except pymongo.errors.OperationFailure as error:
@@ -131,10 +134,11 @@ class State:
                 local_db = self.client['house-guard']
                 events = local_db.motion
                 count = 0
-                start = dt.datetime.now() -  timedelta(days=days)
+                start = dt.datetime.now() - timedelta(days=days)
                 # Querying mongo collection for motion within last 7 days
-                query = { "TimeOfMotion": {'$lt': dt.datetime.now(), '$gte': start}}
-                for event in events.find(query,{ "_id": 0, "User": 1, "TimeOfMotion": 1, "File": 1 }):
+                query = {"TimeOfMotion": {
+                    '$lt': dt.datetime.now(), '$gte': start}}
+                for event in events.find(query, {"_id": 0, "User": 1, "TimeOfMotion": 1, "File": 1}):
                     event['Id'] = str(count)
                     motion_list.append(event)
                     count = count + 1
@@ -184,7 +188,7 @@ class State:
                 local_db = self.client['house-guard']
                 events = local_db.alarm
                 count = 0
-                for event in events.find({},{ "_id": 0, "State": 1 }):
+                for event in events.find({}, {"_id": 0, "State": 1}):
                     event['Id'] = str(count)
                     state = event['State']
                     count = count + 1
@@ -212,12 +216,12 @@ class State:
                 alarm = local_db.alarm
                 count = 0
                 id = None
-                for event in alarm.find({},{ "_id": 1, "State": 0 }):
+                for event in alarm.find({}, {"_id": 1, "State": 0}):
                     if count == 0:
                         id = event['_id']
                     count = count + 1
-                query = { "_id": id }
-                new_values = { "$set": {
+                query = {"_id": id}
+                new_values = {"$set": {
                     "State": state
                 }}
                 record = alarm.update_one(query, new_values)
@@ -247,14 +251,15 @@ class State:
                 events = local_db.temperature
                 count = 0
                 if mins:
-                    start = dt.datetime.now() -  timedelta(minutes=mins)
+                    start = dt.datetime.now() - timedelta(minutes=mins)
                 elif hours:
-                    start = dt.datetime.now() -  timedelta(hours=hours)
+                    start = dt.datetime.now() - timedelta(hours=hours)
                 else:
-                    start = dt.datetime.now() -  timedelta(days=days)
+                    start = dt.datetime.now() - timedelta(days=days)
                 # Querying mongo collection for motion within last 7 days
-                query = { "TimeOfTemperature": {'$lt': dt.datetime.now(), '$gte': start}}
-                for event in events.find(query,{ "_id": 0, "Temperature": 1, "TimeOfTemperature": 1, "Humidity": 1 }):
+                query = {"TimeOfTemperature": {
+                    '$lt': dt.datetime.now(), '$gte': start}}
+                for event in events.find(query, {"_id": 0, "Temperature": 1, "TimeOfTemperature": 1, "Humidity": 1}):
                     event['Id'] = str(count)
                     average[0] = average[0] + event['Humidity']
                     average[1] = average[1] + event['Temperature']
@@ -333,10 +338,11 @@ class State:
                 local_db = self.client['house-guard']
                 events = local_db.network
                 count = 0
-                start = dt.datetime.now() -  timedelta(days=days)
+                start = dt.datetime.now() - timedelta(days=days)
                 # Querying mongo collection for motion within last 7 days
-                query = { "TimeOfTest": {'$lt': dt.datetime.now(), '$gte': start}}
-                for event in events.find(query,{ "_id": 0, "Download": 1, "TimeOfTest": 1, "Upload": 1 }):
+                query = {"TimeOfTest": {
+                    '$lt': dt.datetime.now(), '$gte': start}}
+                for event in events.find(query, {"_id": 0, "Download": 1, "TimeOfTest": 1, "Upload": 1}):
                     event['Id'] = str(count)
                     average[0] = average[0] + event['Upload']
                     average[1] = average[1] + event['Download']
