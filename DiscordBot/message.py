@@ -99,7 +99,7 @@ class MessageManager:
     def get_speed(self):
         logging.info('get_speed()')
         try:
-            sensor = self.api.get_motion()
+            sensor = self.api.get_speed()
             messages = [
                 'Average Download: {}'.format(sensor['AverageDownload']),
                 'Average Upload: {}'.format(sensor['AverageUpload'])
