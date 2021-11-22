@@ -92,7 +92,7 @@ class HouseClient(discord.Client):
             for response in responses:
                 await message.channel.send(response)
         else:
-            logging.error('Someone unexpected talked to us, run!')
+            logging.error('Someone unexpected talked to us, run!: {}'.format(message.author))
 
 
 if __name__ == "__main__":
