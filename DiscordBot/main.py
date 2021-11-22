@@ -48,11 +48,7 @@ class HouseClient(discord.Client):
     def check_author(self, sender):
         '''Check message author'''
         logging.info('check_author()')
-        logging.info(len(sender))
-        for author in self.authors:
-            logging.info(len(author))
-            if author == sender:
-                return True
+        logging.info('Sender: {}.'.format(sender))
         return False
 
     @tasks.loop(minutes = 60)
