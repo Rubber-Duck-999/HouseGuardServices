@@ -5,13 +5,14 @@ import logging
 import os
 
 try:
-	os.remove('/home/pi/Documents/HouseGuardServices/wordmaker.log')
+    os.remove('/home/pi/Documents/HouseGuardServices/wordmaker.log')
 except:
-	print("The log did not exist")
+    print("The log did not exist")
 
 logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/wordmaker.log',
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class HouseClient(discord.Client):
 
@@ -40,7 +41,7 @@ class HouseClient(discord.Client):
             logging.error('Could not read file')
         return token
 
-    @tasks.loop(minutes = 30)
+    @tasks.loop(minutes=30)
     async def task(self):
         logging.info("task()")
         for guild in client.guilds:
@@ -56,7 +57,8 @@ class HouseClient(discord.Client):
                 self.guild = guild
                 break
 
-        logging.info('{} is connected to the following guild: {}'.format(client.user, self.guild))
+        logging.info('{} is connected to the following guild: {}'.format(
+            client.user, self.guild))
 
         for guild in client.guilds:
             for channel in guild.channels:

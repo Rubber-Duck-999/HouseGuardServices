@@ -1,8 +1,9 @@
 import requests
 import logging
 
+
 class Api:
-    
+
     def __init__(self, server):
         '''Constructor for API'''
         self.server = server
@@ -11,7 +12,8 @@ class Api:
         '''Get data from server if asked'''
         word = {}
         try:
-            response = requests.get('https://random-word-api.herokuapp.com/word?number=5&swear=0', timeout=5)
+            response = requests.get(
+                'https://random-word-api.herokuapp.com/word?number=5&swear=0', timeout=5)
             if response.status_code == 200:
                 logging.info("Requests successful")
                 words = response.json()
@@ -29,7 +31,8 @@ class Api:
         '''Send data to server if asked'''
         data = {}
         try:
-            address = 'https://api.dictionaryapi.dev/api/v2/entries/en/{}'.format(word)
+            address = 'https://api.dictionaryapi.dev/api/v2/entries/en/{}'.format(
+                word)
             response = requests.get(address, timeout=5)
             if response.status_code == 200:
                 logging.info("Requests successful")
