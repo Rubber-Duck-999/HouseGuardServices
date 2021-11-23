@@ -25,7 +25,6 @@ class HouseClient(discord.Client):
         super().__init__(*args, **kwargs)
         self.message_channel = 'general'
         self.authors = []
-        self.channels = []
 
     def get_settings(self):
         '''Get config env var'''
@@ -61,14 +60,10 @@ class HouseClient(discord.Client):
     async def task(self):
         logging.info("task()")
         status = self.message_manager.get_status()
-        notifications = self.message_manager.get_notifications()
         for guild in client.guilds:
             for channel in guild.channels:
                 if channel.name == 'status' and status == 'Unavailable':
                     await channel.send('Checking service status: {}'.format(status))
-                    notifications = []
-        for message in notifications:
-            await channel.send(message)
 
     async def on_ready(self):
         self.task.start()
@@ -84,7 +79,6 @@ class HouseClient(discord.Client):
             for channel in guild.channels:
                 if channel.name == 'status':
                     await channel.send('Starting Server')
-                self.channels.append(channel)
 
     async def on_message(self, message):
         logging.info('Message Recieved')

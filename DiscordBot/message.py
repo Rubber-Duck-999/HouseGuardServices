@@ -60,15 +60,10 @@ class MessageManager:
                 alive = alive + 1
                 if device['Allowed'] == 2:
                     blocked = blocked + 1
-                    self.notifications.extend(
-                        notify(Notifications.Blocked, device))
+                    '''self.notifications.extend(
+                        notify(Notifications.Blocked, device))'''
                 elif device['Allowed'] == 1:
                     allowed = allowed + 1
-                    self.notifications.extend(
-                        notify(Notifications.Blocked, device))
-                else:
-                    self.notifications.extend(
-                        notify(Notifications.Unknown, device))
         messages = [
             'Devices Alive: {}'.format(alive),
             'Allowed: {}'.format(allowed),
