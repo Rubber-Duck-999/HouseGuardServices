@@ -8,11 +8,11 @@ from discord.ext import tasks
 import os
 
 try:
-	os.remove('/home/pi/Documents/HouseGuardServices/discord.log')
+	os.remove('/home/simon/Documents/HouseGuardServices/discord.log')
 except:
 	print("The log did not exist")
 
-logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/discord.log',
+logging.basicConfig(filename='/home/simon/Documents/HouseGuardServices/discord.log',
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 
@@ -28,7 +28,7 @@ class HouseClient(discord.Client):
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         token = ''
         try:
             with open(config_name) as file:
@@ -49,15 +49,19 @@ class HouseClient(discord.Client):
         '''Check message author'''
         logging.info('check_author()')
         logging.info('Sender: {}.'.format(sender))
+        for author in self.authors:
+            logging.info('Check matches: {}.'.format(author))
+            if author == sender:
+                return True
         return False
 
-    @tasks.loop(minutes = 60)
+    @tasks.loop(minutes = 30)
     async def task(self):
         logging.info("task()")
         status = self.message_manager.get_status()
         for guild in client.guilds:
             for channel in guild.channels:
-                if channel.name == 'status':
+                if channel.name == 'status' and status == 'Unavailable':
                     await channel.send('Checking service status: {}'.format(status))
 
     async def on_ready(self):
@@ -84,9 +88,9 @@ class HouseClient(discord.Client):
             logging.info('Wrong channel: {}'.format(message.channel))
             return
 
-        if self.check_author(message.author):
+        if self.check_author(message.author.name):
             logging.info('Correct user')
-            await message.channel.send('### Beep - Calculating ###')
+            await message.channel.send('### Beep Boop Pop - Calculating ###')
             responses = self.message_manager.get_message(message.content)
             for response in responses:
                 await message.channel.send(response)

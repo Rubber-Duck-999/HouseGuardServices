@@ -11,7 +11,7 @@ class MessageManager:
 
     def get_env(self):
         logging.info('get_env()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         try:
             with open(config_name) as file:
                 data = json.load(file)
@@ -81,7 +81,6 @@ class MessageManager:
 
     def get_motion(self):
         logging.info('get_motion()')
-        status = 'Available'
         try:
             sensor = self.api.get_motion()
             last = sensor['Events'][sensor['Count'] - 1]['TimeOfMotion']
