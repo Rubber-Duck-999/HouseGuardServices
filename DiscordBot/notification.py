@@ -1,9 +1,11 @@
 import logging
 import enum
 
+
 class Notifications(enum.Enum):
     Blocked = 1
     Unknown = 2
+
 
 def notify(notification, data):
     logging.info('notify()')
