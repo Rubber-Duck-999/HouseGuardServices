@@ -5,7 +5,6 @@ import logging
 import logging.handlers
 import os
 from state import State
-from local import Emailer
 from flask import Flask, request, jsonify
 from validate import validate_file
 
@@ -28,7 +27,6 @@ class Server(Flask):
     def __init__(self, import_name):
         '''Constructor for flask API methods'''
         super(Server, self).__init__(import_name)
-        self.emailer = Emailer('simon')
         self.route('/motion/<int:days>', methods=['GET'])(self.get_motion)
         self.route('/motion', methods=['POST'])(self.post_motion)
         self.route('/alarm', methods=['GET'])(self.get_alarm)
@@ -70,7 +68,6 @@ class Server(Flask):
             logging.info(request_data)
             if request_data:
                 self.request_result = self.state.add_device(request_data)
-                self.emailer.email("New Unknown Device", request_data["Name"])
             result = self.result()
         elif request.method == 'GET':
             data = self.state.get_devices()
@@ -205,8 +202,6 @@ class Server(Flask):
         logging.info('# set_speed()')
         request_data = request.get_json()
         if request_data:
-            if request_data['down'] < 50:
-                self.emailer.email("Network Speed", request_data["down"])
             self.request_result = self.state.add_speed(request_data)
         data = self.result()
         return jsonify(data)
