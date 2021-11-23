@@ -1,7 +1,6 @@
 import logging
 import json
 from api import Api
-from notification import Notifications, notify
 
 class MessageManager:
     

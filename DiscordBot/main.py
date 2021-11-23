@@ -2,7 +2,6 @@
 '''Discord script'''
 import discord
 import json
-from DiscordBot.notification import notify
 from message import MessageManager
 import logging
 from discord.ext import tasks
