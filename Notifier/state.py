@@ -342,8 +342,9 @@ class State:
                     average[1] = average[1] + event['Download']
                     speed_list.append(event)
                     count = count + 1
-                average[0] = average[0] / count
-                average[1] = average[1] / count
+                if average[0] > 0 and average[1] > 0:
+                    average[0] = average[0] / count
+                    average[1] = average[1] / count
                 # Temporary id added for records returned in data dict
                 logging.info('Records found: {}'.format(count))
             except pymongo.errors.OperationFailure as error:
