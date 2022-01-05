@@ -14,8 +14,9 @@ except OSError as error:
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class State:
 
@@ -43,9 +44,11 @@ class State:
     def connect(self):
         logging.info('# connect()')
         self.get_settings()
-        conn_str = 'mongodb://{}:{}@192.168.0.15:27017/house-guard?authSource=admin'.format(self.username, self.password)
+        conn_str = 'mongodb://{}:{}@192.168.0.15:27017/house-guard?authSource=admin'.format(
+            self.username, self.password)
         try:
-            self.client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
+            self.client = pymongo.MongoClient(
+                conn_str, serverSelectionTimeoutMS=5000)
             logging.info('Success on connection')
         except pymongo.errors.OperationFailure as error:
             logging.error('Pymongo failed on auth: {}'.format(error))
@@ -61,9 +64,9 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.motion
-                start = dt.datetime.now() -  timedelta(days=5)
+                start = dt.datetime.now() - timedelta(days=5)
                 # Querying mongo collection for motion within last 5 days
-                query = { "TimeOfMotion": {'$lt': start}}
+                query = {"TimeOfMotion": {'$lt': start}}
                 result = events.delete_many(query)
                 # Temprorary id added for records returned in data dict
                 logging.info('Records found: {}'.format(result))
@@ -87,9 +90,9 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.temperature
-                start = dt.datetime.now() -  timedelta(days=5)
+                start = dt.datetime.now() - timedelta(days=5)
                 # Querying mongo collection for temperature within last 5 days
-                query = { "TimeOfTemperature": {'$lt': start}}
+                query = {"TimeOfTemperature": {'$lt': start}}
                 result = events.delete_many(query)
                 # Temprorary id added for records returned in data dict
                 logging.info('Records found: {}'.format(result))
@@ -113,9 +116,9 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.network
-                start = dt.datetime.now() -  timedelta(days=5)
+                start = dt.datetime.now() - timedelta(days=5)
                 # Querying mongo collection for speed within last 5 days
-                query = { "TimeOfTest": {'$lt': start}}
+                query = {"TimeOfTest": {'$lt': start}}
                 result = events.delete_many(query)
                 # Temporary id added for records returned in data dict
                 logging.info('Records found: {}'.format(result))
@@ -129,6 +132,7 @@ class State:
         else:
             logging.error('No data could be retrieved')
         return success
+
 
 if __name__ == "__main__":
     logging.info('Starting scheduler service')
