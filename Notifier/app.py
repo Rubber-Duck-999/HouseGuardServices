@@ -42,10 +42,6 @@ class Server(Flask):
         self.state = State()
         self.request_result = False
 
-    def check_config(self):
-        '''Returns object email config'''
-        return self.emailer.get_config()
-
     def result(self):
         '''Converts bool to string'''
         logging.info('# result()')
@@ -226,5 +222,4 @@ class Server(Flask):
 if __name__ == "__main__":
     logging.info("Starting program")
     server = Server(__name__)
-    if server.check_config():
-        server.run(debug=True, host='0.0.0.0')
+    server.run(debug=True, host='0.0.0.0')
