@@ -54,7 +54,7 @@ class State:
 
     def remove_motion(self):
         '''Returns data from up to the last 5 days'''
-        logging.info('# get_motion()')
+        logging.info('# remove_motion()')
         self.connect()
         success = False
         if self.client:
@@ -80,7 +80,7 @@ class State:
 
     def remove_temperature(self):
         '''Returns data from up to the last 5 days'''
-        logging.info('# get_temperature()')
+        logging.info('# remove_temperature()')
         self.connect()
         success = False
         if self.client:
@@ -104,8 +104,35 @@ class State:
             logging.error('No data could be retrieved')
         return success
 
+    def remove_network(self):
+        '''Returns data from up to the last 5 days'''
+        logging.info('# remove_network()')
+        self.connect()
+        success = False
+        if self.client:
+            try:
+                local_db = self.client['house-guard']
+                events = local_db.network
+                start = dt.datetime.now() -  timedelta(days=5)
+                # Querying mongo collection for speed within last 5 days
+                query = { "TimeOfTest": {'$lt': start}}
+                result = events.delete_many(query)
+                # Temporary id added for records returned in data dict
+                logging.info('Records found: {}'.format(result))
+                success = True
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return success
+
 if __name__ == "__main__":
     logging.info('Starting scheduler service')
     db = State()
     db.remove_motion()
     db.remove_temperature()
+    db.remove_network()
