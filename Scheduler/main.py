@@ -61,7 +61,7 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.motion
-                start = dt.datetime.now() -  timedelta(days=5)
+                start = dt.datetime.now() -  timedelta(days=2)
                 # Querying mongo collection for motion within last 5 days
                 query = { "TimeOfMotion": {'$lt': start}}
                 result = events.delete_many(query)
@@ -87,7 +87,7 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.temperature
-                start = dt.datetime.now() -  timedelta(days=5)
+                start = dt.datetime.now() -  timedelta(days=2)
                 # Querying mongo collection for temperature within last 5 days
                 query = { "TimeOfTemperature": {'$lt': start}}
                 result = events.delete_many(query)
@@ -113,7 +113,7 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.network
-                start = dt.datetime.now() - timedelta(hours=1)
+                start = dt.datetime.now() - timedelta(days=2)
                 # Querying mongo collection for speed within last 5 days
                 query = { "TimeOfTest": {'$lt': start}}
                 result = events.delete_many(query)

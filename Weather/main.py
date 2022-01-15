@@ -43,8 +43,6 @@ class FileNotFound(Exception):
 
 class Temperature:
     '''Class for managing system and node temp'''
-    SECONDS_PER_MINUTE = 60
-
     def __init__(self):
         '''Constructor'''
         logging.info('init()')
@@ -55,7 +53,7 @@ class Temperature:
         self.bme280     = BME280()
         self.send_data  = False
         # Default of 10 minutes
-        self.wait_time      = 10 * Temperature.SECONDS_PER_MINUTE
+        self.wait_time      = 60
         self.server_address = ''
         self.temperature    = 0.0
         self.humidity       = 0.0
@@ -130,7 +128,7 @@ class Temperature:
         while True:
             self.get_sensor_temperature()
             self.publish_data()
-            time.sleep(4 * self.wait_time)
+            time.sleep(60 * self.wait_time)
 
 if __name__ == "__main__":
     temp = Temperature()

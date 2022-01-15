@@ -134,3 +134,5 @@ credentials
 *exeNetworkScanner*
 NetworkScanner/network_scan.go
 NetworkScanner/exeNetworkScanner
+Graph/Download Speed.png
+Graph/Temperature.png
