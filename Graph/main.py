@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import figure
-import numpy as np
 import db
 import logging
 import datetime
+import time
 
 class Image:
     def __init__(self):
@@ -19,13 +19,11 @@ class Image:
         self.y = []
 
     def create_images(self):
-        figure(figsize = (20, 12), dpi = 80)
-        ypoints = np.array(self.y)
-        xpoints = np.array(self.x)
+        figure(figsize = (14, 9), dpi = 60)
         plt.title(self.title)
         plt.xlabel(self.xLabel)
         plt.ylabel(self.yLabel)
-        plt.plot(xpoints, ypoints)
+        plt.plot(self.x, self.y)
         plt.savefig('{}.png'.format(self.title), dpi = 1000)
 
     def get_speed(self):
@@ -35,7 +33,8 @@ class Image:
             for record in records:
                 self.y.append(record['Download'])
                 date = datetime.datetime.strptime(record['TimeOfTest'], "%a, %d %b %Y %H:%M:%S %Z")
-                self.x.append(date.strftime("%H"))
+                self.x.append(date.strftime("%H:%M"))
+                time.sleep(0.5)
             self.title = "Download Speed"
             self.xLabel = "Time (Hours)"
             self.yLabel = "Download MB/s"
@@ -48,9 +47,10 @@ class Image:
         try:
             records = speed['Records']
             for record in records:
-                self.y.append(record['Download'])
-                date = datetime.datetime.strptime(record['TimeOfTest'], "%a, %d %b %Y %H:%M:%S %Z")
-                self.x.append(date.strftime("%H"))
+                self.y.append(record['Temperature'])
+                date = datetime.datetime.strptime(record['TimeOfTemperature'], "%a, %d %b %Y %H:%M:%S %Z")
+                self.x.append(date.strftime("%H:%M"))
+                time.sleep(0.5)
             self.title = "Temperature"
             self.xLabel = "Time (Hours)"
             self.yLabel = "Celsius"
@@ -63,5 +63,6 @@ if __name__ == "__main__":
     image = Image()
     image.clear()
     image.get_speed()
+    time.sleep(4)
     image.clear()
     image.get_temp()
