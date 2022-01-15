@@ -9,13 +9,14 @@ import os
 from network_test import NetworkTest, Colours
 
 try:
-	os.remove('/home/pi/Documents/HouseGuardServices/led.log')
+    os.remove('/home/pi/Documents/HouseGuardServices/led.log')
 except:
-	print("The log did not exist")
+    print("The log did not exist")
 
 logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/led.log',
-                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
+
 
 class Led:
 
