@@ -24,7 +24,7 @@ class Image:
         plt.xlabel(self.xLabel)
         plt.ylabel(self.yLabel)
         plt.plot(self.x, self.y)
-        plt.savefig('{}.png'.format(self.title), dpi = 1000)
+        plt.savefig('/home/pi/Documents/HouseGuardServices/{}.png'.format(self.title), dpi = 1000)
 
     def get_speed(self):
         speed = self.service.get_speed()
