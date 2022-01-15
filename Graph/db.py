@@ -2,8 +2,9 @@ import requests
 import logging
 import json
 
+
 class Api:
-    
+
     def __init__(self):
         '''Constructor for API'''
         self.server = 'server'
