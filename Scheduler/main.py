@@ -113,7 +113,7 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.network
-                start = dt.datetime.now() -  timedelta(days=5)
+                start = dt.datetime.now() - timedelta(hours=1)
                 # Querying mongo collection for speed within last 5 days
                 query = { "TimeOfTest": {'$lt': start}}
                 result = events.delete_many(query)
