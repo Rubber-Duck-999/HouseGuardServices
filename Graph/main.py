@@ -4,6 +4,7 @@ import db
 import logging
 import datetime
 import time
+from emailer import Emailer
 
 class Image:
     def __init__(self):
@@ -24,7 +25,7 @@ class Image:
         plt.xlabel(self.xLabel)
         plt.ylabel(self.yLabel)
         plt.plot(self.x, self.y)
-        plt.savefig('/home/pi/Documents/HouseGuardServices/{}.png'.format(self.title), dpi = 1000)
+        plt.savefig('/home/simon/Documents/HouseGuardServices/{}.png'.format(self.title), dpi = 1000)
 
     def get_speed(self):
         speed = self.service.get_speed()
@@ -35,7 +36,7 @@ class Image:
                 date = datetime.datetime.strptime(record['TimeOfTest'], "%a, %d %b %Y %H:%M:%S %Z")
                 self.x.append(date.strftime("%H:%M"))
                 time.sleep(0.5)
-            self.title = "Download Speed"
+            self.title = "Download-Speed"
             self.xLabel = "Time (Hours)"
             self.yLabel = "Download MB/s"
             self.create_images()
@@ -66,3 +67,6 @@ if __name__ == "__main__":
     time.sleep(4)
     image.clear()
     image.get_temp()
+    email = Emailer()
+    email.get_config()
+    email.send()

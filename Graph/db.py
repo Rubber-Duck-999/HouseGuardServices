@@ -11,7 +11,7 @@ class Api:
 
     def get_env(self):
         logging.info('get_env()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         try:
             with open(config_name) as file:
                 data = json.load(file)
@@ -39,7 +39,7 @@ class Api:
 
     def get_temperature(self):
         '''Send data to server if asked'''
-        return self.get('/temp/hours/1')
+        return self.get('/temp/days/1')
 
     def get_motion(self):
         '''Get data to server if asked'''
