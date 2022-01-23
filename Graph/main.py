@@ -6,11 +6,12 @@ import datetime
 import time
 from emailer import Emailer
 
+
 class Image:
     def __init__(self):
         self.xLabel = ''
         self.yLabel = ''
-        self.title  = ''
+        self.title = ''
         self.service = db.Api()
         self.x = []
         self.y = []
@@ -20,12 +21,13 @@ class Image:
         self.y = []
 
     def create_images(self):
-        figure(figsize = (14, 9), dpi = 60)
+        figure(figsize=(14, 9), dpi=60)
         plt.title(self.title)
         plt.xlabel(self.xLabel)
         plt.ylabel(self.yLabel)
         plt.plot(self.x, self.y)
-        plt.savefig('/home/pi/Documents/HouseGuardServices/{}.png'.format(self.title), dpi = 1000)
+        plt.savefig(
+            '/home/pi/Documents/HouseGuardServices/{}.png'.format(self.title), dpi=1000)
 
     def get_speed(self):
         speed = self.service.get_speed()
@@ -33,7 +35,8 @@ class Image:
             records = speed['Records']
             for record in records:
                 self.y.append(record['Download'])
-                date = datetime.datetime.strptime(record['TimeOfTest'], "%a, %d %b %Y %H:%M:%S %Z")
+                date = datetime.datetime.strptime(
+                    record['TimeOfTest'], "%a, %d %b %Y %H:%M:%S %Z")
                 self.x.append(date.strftime("%H:%M"))
                 time.sleep(0.5)
             self.title = "Download-Speed"
@@ -49,7 +52,8 @@ class Image:
             records = speed['Records']
             for record in records:
                 self.y.append(record['Temperature'])
-                date = datetime.datetime.strptime(record['TimeOfTemperature'], "%a, %d %b %Y %H:%M:%S %Z")
+                date = datetime.datetime.strptime(
+                    record['TimeOfTemperature'], "%a, %d %b %Y %H:%M:%S %Z")
                 self.x.append(date.strftime("%H:%M"))
                 time.sleep(0.5)
             self.title = "Temperature"
@@ -58,6 +62,7 @@ class Image:
             self.create_images()
         except KeyError as error:
             logging.error('Records do not look correct: {}'.format(error))
+
 
 if __name__ == "__main__":
     logging.info('Starting Program')
