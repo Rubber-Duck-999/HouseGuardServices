@@ -2,8 +2,9 @@ import logging
 import json
 from api import Api
 
+
 class MessageManager:
-    
+
     def __init__(self):
         logging.info('MessageManager')
         self.messages = []
@@ -68,15 +69,17 @@ class MessageManager:
             'Allowed: {}'.format(allowed),
             'Blocked: {}'.format(blocked)
         ]
-        data = self.create_dict('$Devices',messages)
+        data = self.create_dict('$Devices', messages)
         self.messages.append(data)
 
     def get_temperature(self):
         logging.info('get_temperature()')
         sensor = self.api.get_temperature()
         messages = [
-            "Last Hour Temp Now: {}'C".format(round(sensor['AverageTemperature'], 2)),
-            'Last Hour Humidity Now: {}%'.format(round(sensor['AverageHumidity'], 2))
+            "Last Hour Temp Now: {}'C".format(
+                round(sensor['AverageTemperature'], 2)),
+            'Last Hour Humidity Now: {}%'.format(
+                round(sensor['AverageHumidity'], 2))
         ]
         data = self.create_dict('$Sensor', messages)
         self.messages.append(data)
