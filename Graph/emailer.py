@@ -15,7 +15,7 @@ class Emailer:
 
     def __init__(self):
         '''Constructor for class'''
-        self.config_file   = '/home/simon/Documents/HouseGuardServices/config.json'
+        self.config_file   = '/home/pi/Documents/HouseGuardServices/config.json'
         self.from_email    = ''
         self.from_password = ''
         self.html = ''
@@ -84,8 +84,8 @@ class Emailer:
             message['From'] = self.from_email
             message['To'] = self.to
             message.attach(MIMEText(self.html_message(), 'html'))
-            speed = MIMEImage(open('/home/simon/Documents/HouseGuardServices/Download-Speed.png', 'rb').read())
-            temp = MIMEImage(open('/home/simon/Documents/HouseGuardServices/Temperature.png', 'rb').read())
+            speed = MIMEImage(open('/home/pi/Documents/HouseGuardServices/Download-Speed.png', 'rb').read())
+            temp = MIMEImage(open('/home/pi/Documents/HouseGuardServices/Temperature.png', 'rb').read())
             speed.add_header("Content-ID", "<speed>")
             temp.add_header("Content-ID", "<temp>")
             message.attach(speed)
