@@ -8,11 +8,11 @@ from discord.ext import tasks
 import os
 
 try:
-	os.remove('/home/pi/Documents/HouseGuardServices/discord.log')
+	os.remove('/home/simon/Documents/HouseGuardServices/discord.log')
 except:
 	print("The log did not exist")
 
-logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/discord.log',
+logging.basicConfig(filename='/home/simon/Documents/HouseGuardServices/discord.log',
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 
@@ -28,7 +28,7 @@ class HouseClient(discord.Client):
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         token = ''
         try:
             with open(config_name) as file:

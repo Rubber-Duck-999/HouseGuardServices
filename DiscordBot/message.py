@@ -12,7 +12,7 @@ class MessageManager:
 
     def get_env(self):
         logging.info('get_env()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
         try:
             with open(config_name) as file:
                 data = json.load(file)
