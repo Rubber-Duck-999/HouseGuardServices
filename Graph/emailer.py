@@ -10,13 +10,14 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from datetime import date
 
+
 class Emailer:
     '''Emailer for sending users their result'''
 
     def __init__(self):
         '''Constructor for class'''
-        self.config_file   = '/home/pi/Documents/HouseGuardServices/config.json'
-        self.from_email    = ''
+        self.config_file = '/home/pi/Documents/HouseGuardServices/config.json'
+        self.from_email = ''
         self.from_password = ''
         self.html = ''
 
@@ -26,11 +27,11 @@ class Emailer:
         try:
             if not os.path.isfile(self.config_file):
                 return False
-            config_file        = open(self.config_file, "r")
-            config_data        = json.load(config_file)
-            self.from_email    = config_data["from_email"]
+            config_file = open(self.config_file, "r")
+            config_data = json.load(config_file)
+            self.from_email = config_data["from_email"]
             self.from_password = config_data["from_password"]
-            self.to            = config_data["to_email"]
+            self.to = config_data["to_email"]
             return True
         except IOError as error:
             logging.error('File not available: {}'.format(error))
@@ -84,8 +85,10 @@ class Emailer:
             message['From'] = self.from_email
             message['To'] = self.to
             message.attach(MIMEText(self.html_message(), 'html'))
-            speed = MIMEImage(open('/home/pi/Documents/HouseGuardServices/Download-Speed.png', 'rb').read())
-            temp = MIMEImage(open('/home/pi/Documents/HouseGuardServices/Temperature.png', 'rb').read())
+            speed = MIMEImage(
+                open('/home/pi/Documents/HouseGuardServices/Download-Speed.png', 'rb').read())
+            temp = MIMEImage(
+                open('/home/pi/Documents/HouseGuardServices/Temperature.png', 'rb').read())
             speed.add_header("Content-ID", "<speed>")
             temp.add_header("Content-ID", "<temp>")
             message.attach(speed)
