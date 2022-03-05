@@ -6,7 +6,7 @@ import os
 import pin
 import time
 
-file = '/home/simon/Documents/HouseGuardServices/alarm.log'
+file = '/home/pi/Documents/HouseGuardServices/alarm.log'
 
 try:
     os.remove(file)
