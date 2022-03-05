@@ -35,7 +35,7 @@ layout = [
 	[sg.ReadButton('Clear', size=(x, y), font=font), sg.ReadButton('9', size=(x, y), font=font), sg.ReadButton('Enter', size=(x, y), font=font)],
 	[sg.Text(size=(40, 1), font=font, key='-ERROR-')],
 ]
-window = sg.Window('House Guard', layout, no_titlebar=True, size=(800, 400))
+window = sg.Window('House Guard', layout, no_titlebar=True, size=(800, 460))
 
 
 # Event Loop to process "events" and get the "values" of the inputs
