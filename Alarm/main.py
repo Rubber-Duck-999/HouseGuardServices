@@ -28,11 +28,12 @@ entry = pin.Pin()
 x = 10
 y = 5
 font = ("Helvetica", 20)
+text_font = ("Helvetica", 10)
 layout = [
-	[sg.Text('Enter your Pin: ', size=(40, 1), font=font), sg.Text(size=(40,1), font=font, key='-OUTPUT-')],
+	[sg.Text('Enter your Pin: ', size=(40, 1), font=text_font), sg.Text(size=(40,1), font=text_font, key='-OUTPUT-')],
 	[sg.ReadButton('1', size=(x, y), font=font), sg.ReadButton('2', size=(x, y), font=font), sg.ReadButton('3', size=(x, y), font=font)],
 	[sg.ReadButton('4', size=(x, y), font=font), sg.ReadButton('5', size=(x, y), font=font), sg.ReadButton('6', size=(x, y), font=font)],
-	[sg.ReadButton('Clear', size=(x, y), font=font), sg.ReadButton('9', size=(x, y), font=font), sg.ReadButton('Enter', size=(x, y), font=font)],
+	[sg.ReadButton('Clear', size=(x, y), font=text_font), sg.ReadButton('9', size=(x, y), font=font), sg.ReadButton('Enter', size=(x, y), font=text_font)],
 	[sg.Text(size=(40, 1), font=font, key='-ERROR-')],
 ]
 window = sg.Window('House Guard', layout, no_titlebar=True, size=(800, 480))
