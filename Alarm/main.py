@@ -25,7 +25,7 @@ def my_long_operation():
 
 sg.theme('DarkAmber')   # Add a touch of color
 entry = pin.Pin()
-x = 18
+x = 20
 y = 5
 font = ("Helvetica", 13)
 layout = [
