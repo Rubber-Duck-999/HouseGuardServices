@@ -1,30 +1,23 @@
 #!/usr/bin/python3
 
-import controller
-import logging
-import os
+import PySimpleGUI as sg
 
-def get_user():
-    try:
-        username = os.getlogin()
-    except OSError:
-        username = 'pi'
-    return username
+sg.theme('DarkAmber')   # Add a touch of color
+layout = [
+	[sg.Text('Welcome to the Rocket Simulator Console (2D)', size=(40, 1), font=("Helvetica", 25))],
+	[sg.Text('Please enter the data from the mission to begin')],
+	[sg.Text('Enter the Planet Terrain Details:', font=("Helvetica", 15))],
+	[sg.Text('_' * 80)],
+	[sg.ReadButton('Back', button_color=('white', 'blue')),
+	sg.ReadButton('Next')]]
+window = sg.Window('Rocket Simulator Console', default_element_size=(40, 1), grab_anywhere=False)
+window = sg.Window('Window Title', layout, size=(800, 480))
 
-if __name__ == '__main__':
-    filename = '/home/{}/Documents/HouseGuardServices/alarm.log'
-    name = get_user()
-    try:
-        filename = filename.format(name)
-        os.remove(filename)
-    except OSError as error:
-        pass
+# Event Loop to process "events" and get the "values" of the inputs
+while True:
+	event, values = window.read()
+	if event == sg.WIN_CLOSED or event == 'Cancel': # if user closes window or clicks cancel
+		break
+	print('You entered ', event)
 
-    # Add the log message handler to the logger
-    logging.basicConfig(filename=filename,
-                        format='%(asctime)s - %(levelname)s - %(message)s', 
-                        level=logging.INFO)
-
-    logging.info("Starting program")
-    controller = controller.GUIController(name)
-    controller.run()
+window.close()
