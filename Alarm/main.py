@@ -25,7 +25,7 @@ def my_long_operation():
 
 sg.theme('DarkAmber')   # Add a touch of color
 entry = pin.Pin()
-x = 10
+x = 18
 y = 5
 font = ("Helvetica", 13)
 layout = [
@@ -35,7 +35,7 @@ layout = [
 	[sg.ReadButton('Clear', size=(x, y), font=font), sg.ReadButton('9', size=(x, y), font=font), sg.ReadButton('Enter', size=(x, y), font=font)],
 	[sg.Text(size=(40, 1), font=font, key='-ERROR-')],
 ]
-window = sg.Window('House Guard', layout, no_titlebar=True, size=(800, 460))
+window = sg.Window('House Guard', layout, no_titlebar=True, size=(800, 480))
 
 
 # Event Loop to process "events" and get the "values" of the inputs
