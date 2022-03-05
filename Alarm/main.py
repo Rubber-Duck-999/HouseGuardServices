@@ -27,7 +27,7 @@ sg.theme('DarkAmber')   # Add a touch of color
 entry = pin.Pin()
 x = 12
 y = 5
-font = ("Helvetica", 40)
+font = ("Helvetica", 20)
 layout = [
 	[sg.Text('Enter your Pin: ', size=(40, 1), font=font), sg.Text(size=(40,1), font=font, key='-OUTPUT-')],
 	[sg.ReadButton('1', size=(x, y), font=font), sg.ReadButton('2', size=(x, y), font=font), sg.ReadButton('3', size=(x, y), font=font)],
