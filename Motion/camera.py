@@ -29,7 +29,7 @@ class Camera:
             logging.info("Starting up camera")
             self.camera = PiCamera()
             self.camera.resolution = (640, 480)
-            self.camera.framerate = 8
+            self.camera.framerate = 6
             self.raw_capture = PiRGBArray(self.camera, size=(640, 480))
             time.sleep(10)
             self.last_uploaded = datetime.datetime.now()
