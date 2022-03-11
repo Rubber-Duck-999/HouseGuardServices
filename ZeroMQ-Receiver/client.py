@@ -9,7 +9,7 @@ import zmq
 import os
 import logging
 
-file = '/home/simon/Documents/HouseGuardServices/zeromq.log'
+file = '/home/pi/Documents/HouseGuardServices/zeromq.log'
 
 try:
     os.remove(file)
