@@ -22,6 +22,7 @@ logging.basicConfig(filename=file,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
+
 class Server(Flask):
 
     def __init__(self, import_name):
@@ -31,7 +32,8 @@ class Server(Flask):
         self.route('/motion', methods=['POST'])(self.post_motion)
         self.route('/alarm', methods=['GET'])(self.get_alarm)
         self.route('/alarm/<int:state>', methods=['POST'])(self.set_alarm)
-        self.route('/temp/days/<int:days>', methods=['GET'])(self.get_temp_days)
+        self.route('/temp/days/<int:days>',
+                   methods=['GET'])(self.get_temp_days)
         self.route('/temp', methods=['POST'])(self.set_temp)
         self.route('/network', methods=['POST'])(self.set_speed)
         self.route('/network/days/<int:days>', methods=['GET'])(self.get_speed)
@@ -76,7 +78,8 @@ class Server(Flask):
                         'user': request.remote_addr
                     }
                     if request_data:
-                        self.request_result = self.state.add_motion(request_data)
+                        self.request_result = self.state.add_motion(
+                            request_data)
                 else:
                     logging.info('Invalid file')
             else:
