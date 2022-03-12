@@ -10,7 +10,7 @@ from validate import validate_file
 
 app = Flask(__name__)
 
-file = '/home/simon/Documents/HouseGuardServices/notifier.log'
+file = './notifier.log'
 
 try:
     os.remove(file)

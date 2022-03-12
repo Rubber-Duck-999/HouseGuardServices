@@ -12,8 +12,8 @@ Services for the houseguard system in one place
     * Notifier for the whole project
 * Motion
     * Notifies of motion on sensor
-* Status GUI
-    * Displays data on weather, motion and others
+* Scheduler
+    * Clears the database
 * Weather
     * Sensor for temperature
 
