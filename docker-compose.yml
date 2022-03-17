@@ -8,8 +8,14 @@ services:
     ports:
       - 27017:27017
   api:
-    build: Notifier
+    build: Notifier-Api
     ports:
       - 5000:5000
+    depends_on:
+      - mongo
+  graph-api:
+    build: Graph-Api
+    ports:
+      - 10000:10000
     depends_on:
       - mongo

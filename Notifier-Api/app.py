@@ -10,7 +10,9 @@ from validate import validate_file
 
 app = Flask(__name__)
 
-file = './notifier.log'
+# using getlogin() returning username
+user = os.getlogin()
+file = '/home/{}/notifier.log'
 
 try:
     os.remove(file)
