@@ -11,9 +11,14 @@ services:
       - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       - ./db-output:/data/db
   api:
-    build: Notifier
+    build: Notifier-Api
     ports:
       - 5000:5000
     depends_on:
       - mongo
-
+  graph-api:
+    build: Graph-Api
+    ports:
+      - 10000:10000
+    depends_on:
+      - mongo
