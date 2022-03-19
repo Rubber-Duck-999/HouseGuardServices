@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 services:
   mongo:
     image: mongo:latest
@@ -7,9 +7,13 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
     ports:
       - 27017:27017
+    volumes:
+      - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./db-output:/data/db
   api:
     build: Notifier
     ports:
       - 5000:5000
     depends_on:
       - mongo
+
