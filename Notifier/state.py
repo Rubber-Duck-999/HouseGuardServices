@@ -8,6 +8,7 @@ from exceptions import BadDataError
 from validate import (validate_temperature,
                       validate_network)
 
+
 class State:
 
     def __init__(self):
@@ -16,8 +17,8 @@ class State:
         self.client = None
         self.username = ''
         self.password = ''
-        self.db       = None
-        self.host     = ''
+        self.db = None
+        self.host = ''
 
     def get_settings(self):
         '''Get config env var'''
@@ -29,7 +30,7 @@ class State:
                 data = json.load(file)
             self.username = data["db_username"]
             self.password = data["db_password"]
-            self.host     = data["db_host"]
+            self.host = data["db_host"]
         except KeyError:
             logging.info("Variables not set")
         except IOError:
@@ -44,7 +45,8 @@ class State:
         conn_str = conn_str.format(self.username, self.password, self.host)
         success = False
         try:
-            self.client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
+            self.client = pymongo.MongoClient(
+                conn_str, serverSelectionTimeoutMS=5000)
             self.db = self.client['house-guard']
             success = True
             logging.info('Success on connection')
@@ -64,10 +66,10 @@ class State:
         if self.client:
             try:
                 count = 0
-                start = dt.datetime.now() -  timedelta(days=1)
+                start = dt.datetime.now() - timedelta(days=1)
                 # Querying mongo collection for data within period
-                query = { field_time: {'$lt': dt.datetime.now(), '$gte': start}}
-                for event in collection.find(query, { "_id": 0, field_one: 1, field_time: 1, field_two: 1 }):
+                query = {field_time: {'$lt': dt.datetime.now(), '$gte': start}}
+                for event in collection.find(query, {"_id": 0, field_one: 1, field_time: 1, field_two: 1}):
                     event['Id'] = str(count)
                     average[0] = average[0] + event[field_one]
                     average[1] = average[1] + event[field_two]
@@ -133,9 +135,9 @@ class State:
             field_one = "Temperature"
             field_two = "Humidity"
             data_list, average = self.get(collection,
-                                        time,
-                                        field_one,
-                                        field_two)
+                                          time,
+                                          field_one,
+                                          field_two)
             return True, data_list, average
         else:
             return False, [], [0.0, 0.0]
@@ -149,9 +151,9 @@ class State:
             field_one = "Download"
             field_two = "Upload"
             data_list, average = self.get(collection,
-                                        time,
-                                        field_one,
-                                        field_two)
+                                          time,
+                                          field_one,
+                                          field_two)
             return data_list, average
         else:
             return False, [], [0.0, 0.0]
