@@ -32,10 +32,10 @@ class State:
             self.host     = data["db_host"]
         except KeyError:
             logging.info("Variables not set")
-        except IOError:
-            logging.info('Could not read file')
         except FileNotFoundError:
             logging.info('File not found')
+        except IOError:
+            logging.info('Could not read file')
 
     def connect(self):
         logging.info('# connect()')
