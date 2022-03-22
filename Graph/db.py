@@ -1,6 +1,7 @@
 import requests
 import logging
 import json
+import utilities
 
 class Api:
     
@@ -11,7 +12,7 @@ class Api:
 
     def get_env(self):
         logging.info('get_env()')
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config_name = '/home/{}/sync/config.json'.format(utilities.get_user())
         try:
             with open(config_name) as file:
                 data = json.load(file)
@@ -43,4 +44,4 @@ class Api:
 
     def get_speed(self):
         '''Get data to server if asked'''
-        return self.get('/network/days/1')
+        return self.get('/network')

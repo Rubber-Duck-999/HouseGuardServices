@@ -24,7 +24,7 @@ class State:
         logging.info('get_settings()')
         try:
             username = os.getlogin()
-            config_name = '/{}/sync/config.json'.format(username)
+            config_name = '/home/{}/sync/config.json'.format(username)
             with open(config_name) as file:
                 data = json.load(file)
             self.username = data["db_username"]

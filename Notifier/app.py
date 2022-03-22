@@ -14,7 +14,7 @@ app = Flask(__name__)
 file = ''
 try:
     user = os.getlogin()
-    file = '/{}/sync/notifier.log'.format(user)
+    file = '/home/{}/sync/notifier.log'.format(user)
     os.remove(file)
 except OSError as error:
     pass

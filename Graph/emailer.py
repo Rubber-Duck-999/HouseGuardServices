@@ -5,6 +5,7 @@ import smtplib
 import json
 import logging
 import os
+import utilities
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
@@ -15,10 +16,11 @@ class Emailer:
 
     def __init__(self):
         '''Constructor for class'''
-        self.config_file   = '/home/{}/sync/config.json'.format(get_user())
         self.from_email    = ''
         self.from_password = ''
         self.html = ''
+        self.user = utilities.get_user()
+        self.config_file   = '/home/{}/sync/config.json'.format(self.user)
 
     def get_config(self):
         '''Get configuration values'''
@@ -84,8 +86,8 @@ class Emailer:
             message['From'] = self.from_email
             message['To'] = self.to
             message.attach(MIMEText(self.html_message(), 'html'))
-            speed = MIMEImage(open('/home/pi/Documents/HouseGuardServices/Download-Speed.png', 'rb').read())
-            temp = MIMEImage(open('/home/pi/Documents/HouseGuardServices/Temperature.png', 'rb').read())
+            speed = MIMEImage(open('/home/{}/sync/Download-Speed.png'.format(self.user), 'rb').read())
+            temp = MIMEImage(open('/home/{}/sync/Temperature.png'.format(self.user), 'rb').read())
             speed.add_header("Content-ID", "<speed>")
             temp.add_header("Content-ID", "<temp>")
             message.attach(speed)
