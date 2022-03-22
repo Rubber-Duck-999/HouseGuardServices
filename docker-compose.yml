@@ -2,6 +2,9 @@ version: '3.8'
 services:
   mongo:
     image: mongo:latest
+    networks:
+      backend:
+        ipv4_address: 172.20.1.5
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
@@ -12,6 +15,9 @@ services:
       - ./db-output:/data/db
   api:
     build: Notifier-Api
+    networks:
+      backend:
+        ipv4_address: 172.20.1.4
     ports:
       - 5000:5000
     depends_on:
@@ -20,5 +26,23 @@ services:
     build: Graph-Api
     ports:
       - 10000:10000
+    networks:
+      backend:
+        ipv4_address: 172.20.1.3
+
     depends_on:
       - mongo
+  network-scanner:
+    build: NetworkScanner
+    networks:
+      backend:
+        ipv4_address: 172.20.1.2
+
+
+
+networks:
+  backend:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.1.0/24

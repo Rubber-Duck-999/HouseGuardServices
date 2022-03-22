@@ -11,6 +11,7 @@ type Device struct {
 type Scan struct {
 	Devices []Device `json:"Devices"`
 	Count   int      `json:"Count"`
+	Url     string   `json:"url"`
 }
 
 const ALLOWED int = 1
