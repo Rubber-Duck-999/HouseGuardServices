@@ -1,7 +1,7 @@
 db.createUser(
     {
-        user: "<user for database which shall be created>",
-        pwd: "<password of user>",
+        user: "root",
+        pwd: "<password",
         roles: [
             {
                 role: "readWrite",
@@ -10,3 +10,6 @@ db.createUser(
         ]
     }
 );
+
+db.createCollection('temperature', { capped: false });
+db.createCollection('network', { capped: false });
