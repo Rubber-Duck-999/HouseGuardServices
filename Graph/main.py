@@ -4,7 +4,24 @@ import db
 import logging
 import datetime
 import time
+import os
+import utilities
 from emailer import Emailer
+
+filename = '/home/{}/sync/graph.log'
+
+try:
+    name = utilities.get_user()
+    filename = filename.format(name)
+    os.remove(filename)
+except OSError as error:
+    pass
+
+
+# Add the log message handler to the logger
+logging.basicConfig(filename=filename,
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
 
 class Image:
     def __init__(self):
@@ -25,7 +42,7 @@ class Image:
         plt.xlabel(self.xLabel)
         plt.ylabel(self.yLabel)
         plt.plot(self.x, self.y)
-        plt.savefig('/home/pi/Documents/HouseGuardServices/{}.png'.format(self.title), dpi = 1000)
+        plt.savefig('/home/{}/sync/{}.png'.format(utilities.get_user(), self.title), dpi = 1000)
 
     def get_speed(self):
         speed = self.service.get_speed()

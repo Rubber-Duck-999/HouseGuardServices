@@ -6,6 +6,7 @@ import enum
 import logging
 import json
 import requests
+import utilities
 
 class Colours(enum.Enum):
     Red    = 1
@@ -33,7 +34,7 @@ class NetworkTest:
         success = False
         config = '/home/{}/sync/config.json'
         try:
-            config_name = config.format(os.getlogin())
+            config_name = config.format(utilities.get_user())
             with open(config_name) as file:
                 data = json.load(file)
             self.server = '{}/network'.format(data["server_address"])

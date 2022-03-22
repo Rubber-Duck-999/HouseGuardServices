@@ -1,11 +1,12 @@
 import logging
 import os
+import getpass
 import requests
 import json
 
 def get_user():
     try:
-        username = os.getlogin()
+        username = getpass.get_user()
     except OSError:
         username = 'pi'
     return username
@@ -36,7 +37,7 @@ class State:
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        config_name = '/home/{}/sync/config.json'
+        config_name = '/home/{}/sync/config.json'.format(get_user())
         try:
             with open(config_name) as file:
                 data = json.load(file)

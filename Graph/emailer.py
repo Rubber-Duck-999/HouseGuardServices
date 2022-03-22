@@ -15,7 +15,7 @@ class Emailer:
 
     def __init__(self):
         '''Constructor for class'''
-        self.config_file   = '/home/pi/Documents/HouseGuardServices/config.json'
+        self.config_file   = '/home/{}/sync/config.json'.format(get_user())
         self.from_email    = ''
         self.from_password = ''
         self.html = ''

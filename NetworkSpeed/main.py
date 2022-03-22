@@ -8,21 +8,14 @@ from threading import Thread, ThreadError
 import queue
 import time
 import logging
-import getpass
 import os
+import utilities
 from network_test import NetworkTest, Colours
-
-def get_user():
-    try:
-        username = getpass.getuser()
-    except OSError:
-        username = 'pi'
-    return username
 
 filename = '/{}/sync/network-speed.log'
 
 try:
-    name = get_user()
+    name = utilities.get_user()
     filename = filename.format(name)
     os.remove(filename)
 except OSError as error:

@@ -4,14 +4,12 @@ Services for the houseguard system in one place
 
 ## Services
 
-* Alarm GUI
-    * GUI for displaying alarm status and switching on and off
-* Build LED
-    * Shows LED lights
-* Emailer
-    * Notifier for the whole project
-* Motion
-    * Notifies of motion on sensor
+* Graph
+    * Generates graph for the temperature and speed
+* Network Speed
+    * Shows LED lights for speed
+* Notifier
+    * API for service
 * Scheduler
     * Clears the database
 * Weather
