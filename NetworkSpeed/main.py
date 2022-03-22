@@ -12,7 +12,7 @@ import os
 import utilities
 from network_test import NetworkTest, Colours
 
-filename = '/{}/sync/network-speed.log'
+filename = '/home/{}/sync/network-speed.log'
 
 try:
     name = utilities.get_user()
