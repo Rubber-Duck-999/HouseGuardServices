@@ -108,6 +108,29 @@ class State:
             logging.error('No data could be retrieved')
         return success
 
+    def delete(self, collection, field_time):
+        '''Removes data from up to the last 2 days'''
+        logging.info('# delete()')
+        success = False
+        if self.client:
+            try:
+                start = dt.datetime.now() -  timedelta(days=2)
+                # Querying mongo collection for temperature over 2 days
+                query = { field_time: {'$lt': start}}
+                result = collection.delete_many(query)
+                # Temprorary id added for records returned in data dict
+                logging.info('Records found: {}'.format(result))
+                success = True
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return success
+
     def add_temperature(self, request_data):
         logging.info('# add_temperature()')
         if self.connect():
@@ -155,3 +178,21 @@ class State:
             return data_list, average
         else:
             return False, [], [0.0, 0.0]
+
+    def remove_network(self):
+        '''Returns data from up to the last 5 days'''
+        logging.info('# remove_network()')
+        success = False
+        if self.connect():
+            collection = self.db.temperature
+            success = self.remove(collection, 'TimeOfTemperature')
+        return success
+
+    def remove_speed(self):
+        '''Returns data from up to the last 5 days'''
+        logging.info('# remove_speed()')
+        success = False
+        if self.connect():
+            collection = self.db.network
+            success = self.remove(collection, 'TimeOfTest')
+        return success

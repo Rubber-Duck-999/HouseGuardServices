@@ -1,13 +1,20 @@
-import datetime as dt
-from datetime import timedelta
 import logging
 import os
-import pymongo
+import requests
 import json
 
-filename = '/home/simon/Documents/HouseGuardServices/scheduler.log'
+def get_user():
+    try:
+        username = os.getlogin()
+    except OSError:
+        username = 'pi'
+    return username
+
+filename = '/home/{}/sync/scheduler.log'
 
 try:
+    name = get_user()
+    filename = filename.format(name)
     os.remove(filename)
 except OSError as error:
     pass
@@ -29,7 +36,7 @@ class State:
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_settings()')
-        config_name = '/home/simon/Documents/HouseGuardServices/config.json'
+        config_name = '/home/{}/sync/config.json'
         try:
             with open(config_name) as file:
                 data = json.load(file)
@@ -40,99 +47,25 @@ class State:
         except IOError:
             logging.info('Could not read file')
 
-    def connect(self):
-        logging.info('# connect()')
-        self.get_settings()
-        conn_str = 'mongodb://{}:{}@192.168.0.15:27017/house-guard?authSource=admin'.format(self.username, self.password)
+    def send(self, path):
+        '''Send speed to rest server'''
         try:
-            self.client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
-            logging.info('Success on connection')
-        except pymongo.errors.OperationFailure as error:
-            logging.error('Pymongo failed on auth: {}'.format(error))
-        except pymongo.errors.ServerSelectionTimeoutError as error:
-            logging.error('Pymongo failed on timeout: {}'.format(error))
-
-    def remove_motion(self):
-        '''Returns data from up to the last 5 days'''
-        logging.info('# remove_motion()')
-        self.connect()
-        success = False
-        if self.client:
-            try:
-                local_db = self.client['house-guard']
-                events = local_db.motion
-                start = dt.datetime.now() -  timedelta(days=2)
-                # Querying mongo collection for motion within last 5 days
-                query = { "TimeOfMotion": {'$lt': start}}
-                result = events.delete_many(query)
-                # Temprorary id added for records returned in data dict
-                logging.info('Records found: {}'.format(result))
-                success = True
-            except pymongo.errors.OperationFailure as error:
-                logging.error('Pymongo failed on auth: {}'.format(error))
-            except pymongo.errors.ServerSelectionTimeoutError as error:
-                logging.error('Pymongo failed on timeout: {}'.format(error))
-            except KeyError as error:
-                logging.error("Key didn't exist on record")
-        else:
-            logging.error('No data could be retrieved')
-        return success
-
-    def remove_temperature(self):
-        '''Returns data from up to the last 5 days'''
-        logging.info('# remove_temperature()')
-        self.connect()
-        success = False
-        if self.client:
-            try:
-                local_db = self.client['house-guard']
-                events = local_db.temperature
-                start = dt.datetime.now() -  timedelta(days=2)
-                # Querying mongo collection for temperature within last 5 days
-                query = { "TimeOfTemperature": {'$lt': start}}
-                result = events.delete_many(query)
-                # Temprorary id added for records returned in data dict
-                logging.info('Records found: {}'.format(result))
-                success = True
-            except pymongo.errors.OperationFailure as error:
-                logging.error('Pymongo failed on auth: {}'.format(error))
-            except pymongo.errors.ServerSelectionTimeoutError as error:
-                logging.error('Pymongo failed on timeout: {}'.format(error))
-            except KeyError as error:
-                logging.error("Key didn't exist on record")
-        else:
-            logging.error('No data could be retrieved')
-        return success
-
-    def remove_network(self):
-        '''Returns data from up to the last 5 days'''
-        logging.info('# remove_network()')
-        self.connect()
-        success = False
-        if self.client:
-            try:
-                local_db = self.client['house-guard']
-                events = local_db.network
-                start = dt.datetime.now() - timedelta(days=2)
-                # Querying mongo collection for speed within last 5 days
-                query = { "TimeOfTest": {'$lt': start}}
-                result = events.delete_many(query)
-                # Temporary id added for records returned in data dict
-                logging.info('Records found: {}'.format(result))
-                success = True
-            except pymongo.errors.OperationFailure as error:
-                logging.error('Pymongo failed on auth: {}'.format(error))
-            except pymongo.errors.ServerSelectionTimeoutError as error:
-                logging.error('Pymongo failed on timeout: {}'.format(error))
-            except KeyError as error:
-                logging.error("Key didn't exist on record")
-        else:
-            logging.error('No data could be retrieved')
-        return success
+            url = self.server.format(path)
+            response = requests.delete(url, timeout=5)
+            if response.status_code == 200:
+                logging.info("Requests successful")
+                logging.info('Response: {}'.format(response))
+            else:
+                logging.error('Requests unsuccessful')
+        except requests.ConnectionError as error:
+            logging.error("Connection error: {}".format(error))
+        except requests.Timeout as error:
+            logging.error("Timeout on server: {}".format(error))
+        except OSError:
+            logging.error("File couldn't be removed")
 
 if __name__ == "__main__":
     logging.info('Starting scheduler service')
     db = State()
-    db.remove_motion()
     db.remove_temperature()
     db.remove_network()

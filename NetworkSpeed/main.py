@@ -1,19 +1,36 @@
 #!/usr/bin/python3
 '''To set up the led array'''
-import blinkt
+try:
+    import blinkt
+except ImportError:
+    import mock_blinkt as blinkt
 from threading import Thread, ThreadError
 import queue
 import time
 import logging
+import getpass
 import os
 from network_test import NetworkTest, Colours
 
-try:
-	os.remove('/home/pi/Documents/HouseGuardServices/led.log')
-except:
-	print("The log did not exist")
+def get_user():
+    try:
+        username = getpass.getuser()
+    except OSError:
+        username = 'pi'
+    return username
 
-logging.basicConfig(filename='/home/pi/Documents/HouseGuardServices/led.log',
+filename = '/{}/sync/network-speed.log'
+
+try:
+    name = get_user()
+    filename = filename.format(name)
+    os.remove(filename)
+except OSError as error:
+    pass
+
+
+# Add the log message handler to the logger
+logging.basicConfig(filename=filename,
                     format='%(asctime)s - %(levelname)s - %(message)s', 
                     level=logging.INFO)
 

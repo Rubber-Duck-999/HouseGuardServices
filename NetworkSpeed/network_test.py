@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import speedtest
+import os
 import enum
 import logging
 import json
@@ -30,8 +31,9 @@ class NetworkTest:
         '''Get config env var'''
         logging.info('get_settings()')
         success = False
-        config_name = '/home/pi/Documents/HouseGuardServices/config.json'
+        config = '/home/{}/sync/config.json'
         try:
+            config_name = config.format(os.getlogin())
             with open(config_name) as file:
                 data = json.load(file)
             self.server = '{}/network'.format(data["server_address"])
@@ -39,8 +41,8 @@ class NetworkTest:
             success = True
         except KeyError:
             logging.error("Variables not set")
-        except IOError:
-            logging.error("File is missing")
+        except OSError:
+            logging.error('Issue getting username')
         return success
 
     def send_speed(self, down, up):

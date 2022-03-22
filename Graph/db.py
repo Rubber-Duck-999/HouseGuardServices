@@ -39,11 +39,7 @@ class Api:
 
     def get_temperature(self):
         '''Send data to server if asked'''
-        return self.get('/temp/days/1')
-
-    def get_motion(self):
-        '''Get data to server if asked'''
-        return self.get('/motion/1')
+        return self.get('/temp')
 
     def get_speed(self):
         '''Get data to server if asked'''

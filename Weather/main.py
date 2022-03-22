@@ -21,7 +21,7 @@ def get_user():
         username = 'pi'
     return username
 
-filename = '/home/{}/Documents/HouseGuardServices/weather.log'
+filename = '/home/{}/sync/weather.log'
 
 try:
     name = get_user()
@@ -62,7 +62,7 @@ class Temperature:
         '''Get config env var'''
         logging.info('get_cpu_temperature()')
         name = get_user()
-        config_name = '/home/{}/Documents/HouseGuardServices/config.json'
+        config_name = '/home/{}/sync/config.json'
         config_name = config_name.format(name)
         try:
             if not os.path.isfile(config_name):
