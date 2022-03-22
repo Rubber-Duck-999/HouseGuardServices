@@ -175,7 +175,7 @@ class State:
                                         time,
                                         field_one,
                                         field_two)
-            return data_list, average
+            return True, data_list, average
         else:
             return False, [], [0.0, 0.0]
 
