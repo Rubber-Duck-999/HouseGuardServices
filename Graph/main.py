@@ -47,7 +47,8 @@ class Image:
     def get_speed(self):
         speed = self.service.get_speed()
         try:
-            records = speed['Records']
+            data = speed['data']
+            records = data['Records']
             for record in records:
                 self.y.append(record['Download'])
                 date = datetime.datetime.strptime(record['TimeOfTest'], "%a, %d %b %Y %H:%M:%S %Z")
@@ -61,9 +62,10 @@ class Image:
             logging.error('Records do not look correct: {}'.format(error))
 
     def get_temp(self):
-        speed = self.service.get_temperature()
+        temp = self.service.get_temperature()
         try:
-            records = speed['Records']
+            data = temp['data']
+            records = data['Records']
             for record in records:
                 self.y.append(record['Temperature'])
                 date = datetime.datetime.strptime(record['TimeOfTemperature'], "%a, %d %b %Y %H:%M:%S %Z")

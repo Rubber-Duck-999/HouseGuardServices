@@ -2,7 +2,7 @@ import datetime as dt
 from datetime import timedelta
 import logging
 import pymongo
-import os
+import utilities
 import json
 from exceptions import BadDataError
 from validate import (validate_temperature,
@@ -23,8 +23,7 @@ class State:
         '''Get config env var'''
         logging.info('get_settings()')
         try:
-            username = os.getlogin()
-            config_name = '/home/{}/sync/config.json'.format(username)
+            config_name = '/home/{}/sync/config.json'.format(utilities.get_user())
             with open(config_name) as file:
                 data = json.load(file)
             self.username = data["db_username"]

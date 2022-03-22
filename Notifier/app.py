@@ -4,23 +4,24 @@ from datetime import datetime
 import logging
 import logging.handlers
 import os
+import utilities
 from state import State
 from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# using getlogin() returning username
 
-file = ''
+filename = '/home/{}/sync/notifier.log'
+
 try:
-    user = os.getlogin()
-    file = '/home/{}/sync/notifier.log'.format(user)
-    os.remove(file)
+    name = utilities.get_user()
+    filename = filename.format(name)
+    os.remove(filename)
 except OSError as error:
     pass
 
 # Add the log message handler to the logger
-logging.basicConfig(filename=file,
+logging.basicConfig(filename=filename,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
