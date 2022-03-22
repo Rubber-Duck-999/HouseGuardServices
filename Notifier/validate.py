@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 from exceptions import BadDataError
 
+
 def validate_temperature(data):
     logging.info('validate_temperature()')
     temp = {}
@@ -15,6 +16,7 @@ def validate_temperature(data):
         logging.error('Data was not valid on keys: {}'.format(error))
         raise BadDataError('Error found on JSON Dictionary')
     return temp
+
 
 def validate_network(data):
     logging.info('validate_speed()')

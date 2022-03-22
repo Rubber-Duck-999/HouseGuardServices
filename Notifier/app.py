@@ -24,6 +24,7 @@ logging.basicConfig(filename=file,
                     format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 
+
 class Server(Flask):
 
     def __init__(self, import_name):
@@ -110,4 +111,3 @@ if __name__ == "__main__":
     logging.info("Starting program")
     server = Server(__name__)
     server.run(debug=True, host='0.0.0.0')
-	
