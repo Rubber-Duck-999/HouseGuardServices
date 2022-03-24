@@ -14,13 +14,14 @@ from datetime import date
 class Emailer:
     '''Emailer for sending users their result'''
 
-    def __init__(self):
+    def __init__(self, data):
         '''Constructor for class'''
         self.from_email    = ''
         self.from_password = ''
         self.html = ''
         self.user = utilities.get_user()
         self.config_file   = '/home/{}/sync/config.json'.format(self.user)
+        self.data = data
 
     def get_config(self):
         '''Get configuration values'''
@@ -45,6 +46,11 @@ class Emailer:
     def html_message(self):
         logging.info('html_message()')
         today = date.today()
+        temp = 'N/A'
+        speed = 'N/A'
+        if len(self.data) == 2:
+            speed = self.data[0]
+            temp  = self.data[1]
         html = '''<!DOCTYPE html>
             <html>
                 <header>
@@ -55,6 +61,11 @@ class Emailer:
                 <body>
                     <div style="padding:20px 0px">
                         <div>
+                            <h3>Statistics</h3>
+                            <ul>
+                                <li>Download Average - {}MB/s</li>
+                                <li>Temperature Average - {}'C</li>
+                            </ul>
                             <h3>Images</h3>
                             <ul>
                                 <li>Network Speed - <img src="cid:speed"/></li>
@@ -70,7 +81,7 @@ class Emailer:
                     </div>
                 </footer>
             </html>
-            '''.format(today)
+            '''.format(today, speed, temp)
         return html
 
     def send(self):

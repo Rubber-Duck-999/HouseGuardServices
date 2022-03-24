@@ -31,6 +31,7 @@ class Image:
         self.service = db.Api()
         self.x = []
         self.y = []
+        self.data = []
 
     def clear(self):
         self.x = []
@@ -57,6 +58,7 @@ class Image:
             self.title = "Download-Speed"
             self.xLabel = "Time (Hours)"
             self.yLabel = "Download MB/s"
+            self.data.append(data['AverageDownload'])
             self.create_images()
         except KeyError as error:
             logging.error('Records do not look correct: {}'.format(error))
@@ -74,6 +76,7 @@ class Image:
             self.title = "Temperature"
             self.xLabel = "Time (Hours)"
             self.yLabel = "Celsius"
+            self.data.append(data['AverageTemperature'])
             self.create_images()
         except KeyError as error:
             logging.error('Records do not look correct: {}'.format(error))
@@ -86,6 +89,7 @@ if __name__ == "__main__":
     time.sleep(4)
     image.clear()
     image.get_temp()
-    email = Emailer()
+    data = image.get_data()
+    email = Emailer(data)
     email.get_config()
     email.send()
