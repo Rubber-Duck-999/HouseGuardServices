@@ -100,8 +100,8 @@ class Server(Flask):
         results = {
             'Count': len(speed),
             'Records': speed,
-            'AverageUpload': average[0],
-            'AverageDownload': average[1]
+            'AverageDownload': average[0],
+            'AverageUpload': average[1]
         }
         data = self.result(results)
         return jsonify(data)
