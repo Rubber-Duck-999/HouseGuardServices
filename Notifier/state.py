@@ -72,8 +72,8 @@ class State:
                     average[1] = average[1] + event[field_two]
                     data_list.append(event)
                     count = count + 1
-                average[0] = average[0] / count
-                average[1] = average[1] / count
+                average[0] = round(average[0] / count, 2)
+                average[1] = round(average[1] / count, 2)
                 # Temprorary id added for records returned in data dict
                 logging.info('Records found: {}'.format(count))
             except pymongo.errors.OperationFailure as error:
