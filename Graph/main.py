@@ -89,7 +89,6 @@ if __name__ == "__main__":
     time.sleep(4)
     image.clear()
     image.get_temp()
-    data = image.get_data()
-    email = Emailer(data)
+    email = Emailer(image.data)
     email.get_config()
     email.send()
