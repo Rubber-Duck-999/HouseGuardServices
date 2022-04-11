@@ -14,6 +14,7 @@ except ImportError:
     from mock_bme280 import BME280
 import requests
 from emailer import Emailer
+import utilities
 
 filename = '/home/{}/sync/weather.log'
 
