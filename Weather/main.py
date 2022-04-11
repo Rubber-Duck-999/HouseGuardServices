@@ -13,6 +13,7 @@ try:
 except ImportError:
     from mock_bme280 import BME280
 import requests
+from emailer import Emailer
 
 def get_user():
     try:
@@ -121,6 +122,10 @@ class Temperature:
                 logging.error("Connection error: {}".format(error))
             except requests.Timeout as error:
                 logging.error("Timeout on server: {}".format(error))
+        if self.temperature < 18:
+            email = Emailer(self.temperature)
+            email.get_config()
+            email.send()
 
     def loop(self):
         '''Loop through sensor and publish'''
