@@ -58,7 +58,7 @@ class Temperature:
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_cpu_temperature()')
-        name = get_user()
+        name = utilities.get_user()
         config_name = '/home/{}/sync/config.json'
         config_name = config_name.format(name)
         try:
