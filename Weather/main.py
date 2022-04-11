@@ -15,21 +15,16 @@ except ImportError:
 import requests
 from emailer import Emailer
 
-def get_user():
-    try:
-        username = os.getlogin()
-    except OSError:
-        username = 'pi'
-    return username
-
 filename = '/home/{}/sync/weather.log'
 
 try:
-    name = get_user()
+    name = utilities.get_user()
     filename = filename.format(name)
     os.remove(filename)
 except OSError as error:
     pass
+
+
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
