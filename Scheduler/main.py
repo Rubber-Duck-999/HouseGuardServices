@@ -72,8 +72,8 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.temperature
-                start = dt.datetime.now() -  timedelta(days=1)
-                # Querying mongo collection for temperature within last 5 days
+                start = dt.datetime.now() -  timedelta(days=2)
+                # Querying mongo collection for temperature within last 2 days
                 query = { "TimeOfTemperature": {'$lt': start}}
                 result = events.delete_many(query)
                 # Temprorary id added for records returned in data dict
@@ -98,8 +98,8 @@ class State:
             try:
                 local_db = self.client['house-guard']
                 events = local_db.network
-                start = dt.datetime.now() -  timedelta(days=1)
-                # Querying mongo collection for speed within last 5 days
+                start = dt.datetime.now() -  timedelta(days=2)
+                # Querying mongo collection for speed within last 2 days
                 query = { "TimeOfTest": {'$lt': start}}
                 result = events.delete_many(query)
                 # Temporary id added for records returned in data dict
