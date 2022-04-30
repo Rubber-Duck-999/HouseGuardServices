@@ -13,22 +13,19 @@ try:
 except ImportError:
     from mock_bme280 import BME280
 import requests
-
-def get_user():
-    try:
-        username = os.getlogin()
-    except OSError:
-        username = 'pi'
-    return username
+from emailer import Emailer
+import utilities
 
 filename = '/home/{}/sync/weather.log'
 
 try:
-    name = get_user()
+    name = utilities.get_user()
     filename = filename.format(name)
     os.remove(filename)
 except OSError as error:
     pass
+
+
 
 # Add the log message handler to the logger
 logging.basicConfig(filename=filename,
@@ -61,7 +58,7 @@ class Temperature:
     def get_settings(self):
         '''Get config env var'''
         logging.info('get_cpu_temperature()')
-        name = get_user()
+        name = utilities.get_user()
         config_name = '/home/{}/sync/config.json'
         config_name = config_name.format(name)
         try:
@@ -121,6 +118,10 @@ class Temperature:
                 logging.error("Connection error: {}".format(error))
             except requests.Timeout as error:
                 logging.error("Timeout on server: {}".format(error))
+        if self.temperature < 18:
+            email = Emailer(self.temperature)
+            email.get_config()
+            email.send()
 
     def loop(self):
         '''Loop through sensor and publish'''
