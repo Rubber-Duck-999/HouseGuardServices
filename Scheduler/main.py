@@ -1,12 +1,14 @@
 import logging
 import os
 import getpass
-import requests
+import datetime as dt
+from datetime import timedelta
 import json
+import pymongo
 
 def get_user():
     try:
-        username = getpass.get_user()
+        username = getpass.getuser()
     except OSError:
         username = 'pi'
     return username
@@ -43,27 +45,75 @@ class State:
                 data = json.load(file)
             self.username = data["db_username"]
             self.password = data["db_password"]
+            self.db_host  = data["db_host"]
         except KeyError:
             logging.info("Variables not set")
         except IOError:
             logging.info('Could not read file')
 
-    def send(self, path):
-        '''Send speed to rest server'''
+    def connect(self):
+        logging.info('# connect()')
+        self.get_settings()
+        conn_str = 'mongodb://{}:{}@{}:27017/house-guard?authSource=admin'.format(self.username, self.password, self.db_host)
         try:
-            url = self.server.format(path)
-            response = requests.delete(url, timeout=5)
-            if response.status_code == 200:
-                logging.info("Requests successful")
-                logging.info('Response: {}'.format(response))
-            else:
-                logging.error('Requests unsuccessful')
-        except requests.ConnectionError as error:
-            logging.error("Connection error: {}".format(error))
-        except requests.Timeout as error:
-            logging.error("Timeout on server: {}".format(error))
-        except OSError:
-            logging.error("File couldn't be removed")
+            self.client = pymongo.MongoClient(conn_str, serverSelectionTimeoutMS=5000)
+            logging.info('Success on connection')
+        except pymongo.errors.OperationFailure as error:
+            logging.error('Pymongo failed on auth: {}'.format(error))
+        except pymongo.errors.ServerSelectionTimeoutError as error:
+            logging.error('Pymongo failed on timeout: {}'.format(error))
+
+    def remove_temperature(self):
+        '''Returns data from up to the last 5 days'''
+        logging.info('# remove_temperature()')
+        self.connect()
+        success = False
+        if self.client:
+            try:
+                local_db = self.client['house-guard']
+                events = local_db.temperature
+                start = dt.datetime.now() -  timedelta(days=2)
+                # Querying mongo collection for temperature within last 2 days
+                query = { "TimeOfTemperature": {'$lt': start}}
+                result = events.delete_many(query)
+                # Temprorary id added for records returned in data dict
+                logging.info('Records found: {}'.format(result))
+                success = True
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return success
+
+    def remove_network(self):
+        '''Returns data from up to the last 5 days'''
+        logging.info('# remove_network()')
+        self.connect()
+        success = False
+        if self.client:
+            try:
+                local_db = self.client['house-guard']
+                events = local_db.network
+                start = dt.datetime.now() -  timedelta(days=2)
+                # Querying mongo collection for speed within last 2 days
+                query = { "TimeOfTest": {'$lt': start}}
+                result = events.delete_many(query)
+                # Temporary id added for records returned in data dict
+                logging.info('Records found: {}'.format(result))
+                success = True
+            except pymongo.errors.OperationFailure as error:
+                logging.error('Pymongo failed on auth: {}'.format(error))
+            except pymongo.errors.ServerSelectionTimeoutError as error:
+                logging.error('Pymongo failed on timeout: {}'.format(error))
+            except KeyError as error:
+                logging.error("Key didn't exist on record")
+        else:
+            logging.error('No data could be retrieved')
+        return success
 
 if __name__ == "__main__":
     logging.info('Starting scheduler service')
