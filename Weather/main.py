@@ -101,6 +101,13 @@ class Temperature:
         logging.info("Temperature: {:.2f}'C".format(self.temperature))
         self.temperature = round(self.temperature, 1)
 
+    def check_temperature(self):
+        if self.temperature > 30 or self.temperature < 5:
+            logging.info('High/Low Temperature found')
+            self.get_sensor_temperature()
+        else:
+            logging.info('temperature is okay')
+
     def publish_data(self):
         '''Send data to server if asked'''
         if self.send_data:
@@ -128,6 +135,7 @@ class Temperature:
         self.get_settings()
         while True:
             self.get_sensor_temperature()
+            self.check_temperature()
             self.publish_data()
             time.sleep(60 * self.wait_time)
 
