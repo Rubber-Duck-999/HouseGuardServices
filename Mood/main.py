@@ -36,8 +36,8 @@ longitude = -2.2411648453595343
 sun = Sun(latitude, longitude)
 
 # Get today's sunrise and sunset in UTC
-today_sr = sun.get_sunrise_time()
-today_ss = sun.get_sunset_time()
+today_sr = sun.get_local_sunrise_time()
+today_ss = sun.get_local_sunset_time()
 logging.info('Today at GB the sun raised at {} and get down at {} UTC'.format(today_sr.strftime('%H:%M'), today_ss.strftime('%H:%M')))
 
 while True:
