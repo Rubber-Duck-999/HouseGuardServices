@@ -10,6 +10,8 @@ Services for the houseguard system in one place
 
 * Graph
     * Generates graph for the temperature and speed
+* Mood
+    * Mood light for weather and time
 * Network Speed
     * Shows LED lights for speed
 * Notifier

@@ -1,16 +1,27 @@
 #!/usr/bin/env python3
 
 import time
+import os
 from colorsys import hsv_to_rgb
 from unicornhatmini import UnicornHATMini
+import utilities
+import logging
 
-print("""Unicorn HAT Mini: colour-cycle.py
+filename = '/home/{}/sync/mood.log'
 
-Cycles through colour hues across all of Unicorn HAT Mini's pixels.
+try:
+    name = utilities.get_user()
+    filename = filename.format(name)
+    os.remove(filename)
+except OSError as error:
+    pass
 
-Press Ctrl+C to exit!
+# Add the log message handler to the logger
+logging.basicConfig(filename=filename,
+                    format='%(asctime)s - %(levelname)s - %(message)s', 
+                    level=logging.INFO)
 
-""")
+logging.info('Starting Program')
 
 unicornhatmini = UnicornHATMini()
 unicornhatmini.set_brightness(0.1)
