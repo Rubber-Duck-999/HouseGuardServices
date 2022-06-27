@@ -35,7 +35,7 @@ def is_night():
     sunrise = sun.get_local_sunrise_time()
     sunset = sun.get_local_sunset_time()
 
-    now = datetime.datetime.now().time()
+    now = datetime.datetime.now()
     if now < sunrise or now > sunset:
         logging.info('Its night')
         return True
